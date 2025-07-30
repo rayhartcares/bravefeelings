@@ -1,109 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Emotion Navigator</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="style.css?v=TIMESTAMP_PLACEHOLDER">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brave Feelings</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8fbfd;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .hero-image {
+      max-width: 90%;
+      height: auto;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+      background-color: #555;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 2.5em;
+      margin: 0;
+    }
+
+    p {
+      background-color: #999;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 1.1em;
+      max-width: 700px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8em;
+        padding: 10px 20px;
+      }
+
+      p {
+        font-size: 1em;
+        padding: 10px 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="app-container">
-        <div id="intro-stage" class="stage active">
-            <img src="https://raw.githubusercontent.com/rayhartcares/emotion-navigator-for-kids/main/assets/hero.png" alt="Friendly Teacher" class="teacher-img">
-            <p class="intro-text">Hello there, wonderful friend! My name is <span id="teacher-name-display">[Teacher/Coach Name]</span>, and I'm so happy you're here. We're going on an adventure to learn all about our amazing feelings!</p>
-            <p class="intro-text">Sometimes our feelings can feel big, and that's okay! Let's find out how you're feeling right now.</p>
-            <button id="start-feelings-btn" class="main-btn">Let's Explore Feelings!</button>
-        </div>
+  <!-- ✅ Hero Image (make sure hero.png is pushed to GitHub) -->
+  <img src="hero.png" alt="Brave Feelings Hero Image - Diverse Family Together" class="hero-image" />
 
-        <div id="emotion-select-stage" class="stage">
-            <h2>How are you feeling right now?</h2>
-            <div class="emotions-grid">
-                <button class="emotion-btn" data-emotion="happy">😃 Happy</button>
-                <button class="emotion-btn" data-emotion="sad">😔 Sad</button>
-                <button class="emotion-btn" data-emotion="angry">😡 Angry</button>
-                <button class="emotion-btn" data-emotion="scared">😨 Scared</button>
-                <button class="emotion-btn" data-emotion="excited">🤩 Excited</button>
-                <button class="emotion-btn" data-emotion="calm">😌 Calm</button>
-                <button class="emotion-btn" data-emotion="frustrated">😤 Frustrated</button>
-                <button class="emotion-btn" data-emotion="shy">😳 Shy</button>
-                <button class="emotion-btn" data-emotion="confused">🤔 Confused</button>
-                <button class="emotion-btn" data-emotion="proud">🥳 Proud</button>
-                <button class="emotion-btn" data-emotion="lonely">😢 Lonely</button>
-                <button class="emotion-btn" data-emotion="disappointed">😞 Disappointed</button>
-            </div>
-            <button id="back-to-intro-btn" class="secondary-btn">Go back to Teacher</button>
-        </div>
-
-        <div id="why-do-stage" class="stage">
-            <h2 id="current-emotion-prompt">You're feeling [Emotion Name]!</h2>
-            <span id="large-emotion-emoji" class="large-emotion-emoji-style"></span>
-
-            <div class="question-section">
-                <p>Can you tell me **why** you feel <span id="why-emotion-display">[Emotion Name]</span> right now? (Choose all that apply)</p>
-                <div id="reasons-checkboxes" class="choices-grid">
-                    </div>
-                <label class="checkbox-container">
-                    <input type="checkbox" id="other-reason-checkbox"> My own reason / Something else
-                    <span class="checkmark"></span>
-                </label>
-                <textarea id="why-feeling-other" class="other-textarea" placeholder="Type your own reason here..." rows="3"></textarea>
-                <span id="why-flash-message" class="flash-message why-message"></span>
-            </div>
-
-            <div class="question-section">
-                <p>What do you **usually do** when you feel <span id="what-do-emotion-display">[Emotion Name]</span>? (Choose all that apply)</p>
-                <div id="actions-checkboxes" class="choices-grid">
-                    </div>
-                <label class="checkbox-container">
-                    <input type="checkbox" id="other-action-checkbox"> My own action / Something else
-                    <span class="checkmark"></span>
-                </label>
-                <textarea id="what-do-other" class="other-textarea" placeholder="Type what you usually do here..." rows="3"></textarea>
-                <span id="what-do-flash-message" class="flash-message what-do-message"></span>
-
-                <p id="stage3-feedback-message" class="feedback-message">It's brave to share your feelings! When you're ready, click 'What Can I Do!'</p>
-            </div>
-
-            <button id="next-coping-btn" class="main-btn">What Can I Do?</button>
-            <button id="back-to-emotions-btn" class="secondary-btn">Go back to feelings</button>
-        </div>
-
-        <div id="coping-stage" class="stage">
-            <h2 id="coping-intro-prompt"></h2>
-            <p id="coping-suggestion-text"></p>
-            <div class="coping-options">
-                </div>
-            <button id="choose-next-action-btn" class="main-btn">What should I do now?</button>
-            <button id="back-to-why-do-btn" class="secondary-btn">Back to my thoughts</button>
-        </div>
-
-        <div id="final-action-stage" class="stage">
-            <h2>You're doing great! What's next?</h2>
-            <div class="final-actions-grid">
-                <button class="action-btn" data-action="try-coping">Try a Coping Strategy from the List</button>
-                <button class="action-btn" data-action="talk-to-adult">Talk to a Trusted Adult</button>
-                <button class="action-btn" data-action="mindful-moment">Do a Mindful Moment Activity</button>
-                <button class="action-btn" data-action="calming-activity">Engage in a Calming Activity</button>
-                <button class="action-btn" data-action="move-body">Move My Body Safely</button>
-                <button class="action-btn" data-action="practice-gratitude">Practice Gratitude</button>
-                <button class="action-btn secondary-btn" data-action="start-over">Start Over (New Feeling)</button>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="custom-feedback-modal-overlay" class="modal-overlay">
-        <div class="modal-content">
-            <h3 id="modal-feedback-title" class="modal-title"></h3>
-            <p id="modal-feedback-message" class="modal-message"></p>
-            <button id="modal-close-btn" class="main-btn modal-close-btn">Got It!</button>
-        </div>
-    </div>
-
-    <script src="script.js?v=TIMESTAMP_PLACEHOLDER"></script>
+  <!-- ✅ Headline and Subheading -->
+  <h1>Welcome to Brave Feelings</h1>
+  <p>Empowering children, students, and adults with tools to understand, express, and transform emotions.</p>
 </body>
 </html>
