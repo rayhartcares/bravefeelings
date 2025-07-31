@@ -1,0 +1,30 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+}
+.hero {
+  background: url('homepage-hero.jpg') no-repeat center center/cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.button-group {
+  text-align: center;
+}
+.btn {
+  display: inline-block;
+  margin: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #e67e22;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+}
+.btn.secondary {
+  background-color: #3498db;
+}
