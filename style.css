@@ -7,6 +7,12 @@ body {
   background-color: #fffefc;
   color: #333;
 }
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 .hero-buttons {
   display: flex;
   justify-content: center;
