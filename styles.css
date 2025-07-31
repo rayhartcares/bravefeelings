@@ -5,13 +5,14 @@ body, html {
   font-family: 'Segoe UI', sans-serif;
 }
 .hero {
-  background: url('homepage-hero.jpg') no-repeat center center/cover;
   height: 100vh;
+  background: url('homepage-hero.png') no-repeat center center/cover;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
 }
+
 .button-group {
   text-align: center;
 }
