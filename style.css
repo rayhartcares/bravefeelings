@@ -7,61 +7,37 @@ body {
   background-color: #fffefc;
   color: #333;
 }
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
 .hero-buttons .btn {
-  margin: 0.5rem;
   padding: 0.75rem 1.5rem;
   text-decoration: none;
   color: white;
   background-color: #e67e22;
   border-radius: 8px;
-}
-.btn.secondary {
-  background-color: #3498db;
-}
-/* (and the old .hero-buttons mobile styles too) */
-
-.btn.secondary {
-  background-color: #3498db;
-}
-section {
-  padding: 2rem 1rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-section h2 {
-  color: #222;
-}
-.tool-list .tool {
-  padding: 0.5rem 0;
-}
-.locked {
-  color: #999;
-}
-.signup-form {
-  margin-top: 1rem;
-}
-.signup-form input {
-  padding: 0.5rem;
-  width: 60%;
-  max-width: 300px;
-}
-.signup-form button {
-  padding: 0.5rem 1rem;
-  background-color: #27ae60;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-footer {
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  background-color: #f0f0f0;
-  margin-top: 2rem;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
-/* Mobile responsive fix */
+.hero-buttons .btn.secondary {
+  background-color: #3498db;
+}
+
+.hero-buttons .btn:hover {
+  background-color: #d35400;
+}
+
+.hero-buttons .btn.secondary:hover {
+  background-color: #2980b9;
+}
+
 @media (max-width: 600px) {
   .hero-buttons {
     flex-direction: column;
@@ -70,5 +46,7 @@ footer {
 
   .hero-buttons .btn {
     width: 90%;
+    max-width: 300px;
   }
 }
+
