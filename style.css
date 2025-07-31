@@ -16,13 +16,22 @@ header.hero {
   font-size: 2.5rem;
   margin-bottom: 1rem;
 }
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 1.5rem;
+}
 .hero-buttons .btn {
-  margin: 0.5rem;
   padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1 1 200px;
+  min-width: 150px;
   text-decoration: none;
   color: white;
   background-color: #e67e22;
-  border-radius: 8px;
 }
 .btn.secondary {
   background-color: #3498db;
@@ -64,22 +73,9 @@ footer {
   background-color: #f0f0f0;
   margin-top: 2rem;
 }
-.hero-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 1.5rem;
-}
 
-.hero-buttons .btn {
-  flex: 1 1 200px;
-  min-width: 160px;
-  text-align: center;
-}
-
-/* Mobile Fix: Stack buttons vertically on small screens */
-@media (max-width: 480px) {
+/* Mobile responsive fix */
+@media (max-width: 600px) {
   .hero-buttons {
     flex-direction: column;
     align-items: center;
