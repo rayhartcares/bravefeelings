@@ -1,96 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    color: white;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.homepage-container {
-    background-image: url('canva4444.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
+.hero-image {
+  height: 100vh;
+  width: 100%;
+  background: url('homepage-hero.png') no-repeat center center/cover;
+  position: relative;
+  z-index: 0;
 }
 
-.homepage-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Adds a dark overlay for better text readability */
+/* Sticky Navigation Bar */
+.navbar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding: 15px 30px;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  z-index: 2;
 }
 
-header {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 10;
+.navbar .nav-left {
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
+.navbar .nav-right a {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: 500;
 }
 
-nav ul li {
-    margin: 0 15px;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2em;
-    padding: 5px 10px;
-    transition: background-color 0.3s;
-}
-
-nav ul li a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-}
-
-.content {
-    position: relative;
-    z-index: 5;
-}
-
-h1 {
-    font-size: 3em;
-    margin-bottom: 0.5em;
-}
-
-p {
-    font-size: 1.2em;
-    margin-bottom: 2em;
-}
-
-.cta-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    cursor: pointer;
-    border-radius: 5px;
-    text-transform: uppercase;
-    transition: background-color 0.3s;
-}
-
-.cta-button:hover {
-    background-color: #0056b3;
+.navbar .nav-right a:hover {
+  text-decoration: underline;
 }
