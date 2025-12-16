@@ -1,1 +1,103 @@
-text
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brave Feelings Lab - Login</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0b1220; color:#e5e7eb; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .card { width:min(520px, 92vw); background:#111827; border:1px solid #1f2937; border-radius:18px; padding:22px; box-shadow:0 20px 50px rgba(0,0,0,.35); }
+    h1 { margin:0 0 8px; font-size:22px; }
+    p { margin:0 0 16px; color:#9ca3af; line-height:1.4; }
+    label { display:block; margin:12px 0 6px; color:#cbd5e1; font-weight:700; font-size:13px; }
+    input { width:100%; padding:12px 12px; border-radius:12px; border:1px solid #334155; background:#0b1220; color:#e5e7eb; outline:none; font-size:16px; }
+    button { width:100%; padding:12px; border-radius:12px; border:0; background:#2563eb; color:white; font-weight:800; font-size:16px; cursor:pointer; margin-top:14px; }
+    button:hover { background:#1d4ed8; }
+    .msg { margin-top:12px; font-weight:700; }
+    .ok { color:#34d399; }
+    .err { color:#fb7185; }
+    .small { margin-top:10px; font-size:12px; color:#94a3b8; }
+    a { color:#93c5fd; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Brave Feelings Lab</h1>
+    <p>Enter the password to continue.</p>
+
+    <form id="form">
+      <label for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="current-password" required />
+      <button type="submit">Unlock</button>
+      <div id="msg" class="msg"></div>
+    </form>
+
+    <div class="small">
+      Admin note: default password is <b>BFL2025!</b>. You can change it using <a href="./hash.html">hash.html</a>.
+    </div>
+  </div>
+
+<script>
+  const TOKEN_KEY = "bfl_auth_v1";
+  const RETURN_KEY = "bfl_return_to";
+  const SESSION_HOURS = 12;
+
+  // Must match password-gate.js
+  const EXPECTED_HASH =
+    "b2fceca9406e2400efe0e9379e5b05a376e4fed14eeb6177ea3709273dab0095";
+
+  function detectBase() {
+    const host = (location.hostname || "").toLowerCase();
+    if (host.endsWith("github.io")) {
+      const seg = (location.pathname.split("/").filter(Boolean)[0] || "").trim();
+      return seg ? `/${seg}` : "";
+    }
+    return "";
+  }
+  const BASE = detectBase();
+
+  async function sha256Hex(text) {
+    const enc = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    const bytes = Array.from(new Uint8Array(buf));
+    return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  function setAuthed() {
+    const exp = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
+    localStorage.setItem(TOKEN_KEY, JSON.stringify({ ok: true, exp }));
+  }
+
+  const form = document.getElementById("form");
+  const pw = document.getElementById("pw");
+  const msg = document.getElementById("msg");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    msg.className = "msg";
+
+    const entered = pw.value || "";
+    const hash = await sha256Hex(entered);
+
+    if (hash === EXPECTED_HASH) {
+      setAuthed();
+      msg.textContent = "Unlocked.";
+      msg.classList.add("ok");
+
+      const returnTo = sessionStorage.getItem(RETURN_KEY) || "/";
+      sessionStorage.removeItem(RETURN_KEY);
+
+      // returnTo already excludes BASE, so we add BASE back:
+      location.replace(BASE + returnTo);
+    } else {
+      msg.textContent = "Wrong password.";
+      msg.classList.add("err");
+      pw.focus();
+      pw.select();
+    }
+  });
+</script>
+</body>
+</html>
