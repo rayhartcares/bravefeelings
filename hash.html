@@ -1,1 +1,55 @@
-text
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Hash Tool</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0b1220; color:#e5e7eb; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .card { width:min(700px, 92vw); background:#111827; border:1px solid #1f2937; border-radius:18px; padding:22px; }
+    input, textarea { width:100%; padding:12px; border-radius:12px; border:1px solid #334155; background:#0b1220; color:#e5e7eb; font-size:15px; }
+    textarea { min-height:90px; margin-top:10px; }
+    button { padding:10px 14px; border-radius:12px; border:0; background:#2563eb; color:white; font-weight:800; cursor:pointer; margin-top:10px; }
+    button:hover { background:#1d4ed8; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+    .hint { color:#9ca3af; font-size:13px; margin-top:8px; line-height:1.4; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 8px;">Password Hash Tool (SHA-256)</h2>
+    <div class="hint">
+      Type your new password here, click Generate, then copy the hash into BOTH:
+      password-gate.js (EXPECTED_HASH) and login.html (EXPECTED_HASH).
+    </div>
+
+    <input id="pw" type="text" placeholder="Type new password here" />
+    <div class="row">
+      <button id="gen">Generate Hash</button>
+      <button id="copy">Copy Hash</button>
+    </div>
+    <textarea id="out" readonly placeholder="Hash will appear here..."></textarea>
+  </div>
+
+<script>
+  async function sha256Hex(text) {
+    const enc = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    const bytes = Array.from(new Uint8Array(buf));
+    return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  const pw = document.getElementById("pw");
+  const out = document.getElementById("out");
+
+  document.getElementById("gen").onclick = async () => {
+    out.value = await sha256Hex(pw.value || "");
+  };
+
+  document.getElementById("copy").onclick = async () => {
+    if (!out.value) return;
+    await navigator.clipboard.writeText(out.value);
+  };
+</script>
+</body>
+</html>
