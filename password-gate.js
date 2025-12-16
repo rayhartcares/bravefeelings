@@ -9,7 +9,7 @@
   // Default password is: BFL2025!
   // SHA-256("BFL2025!") =
   const EXPECTED_HASH =
-    "b2fceca9406e2400efe0e9379e5b05a376e4fed14eeb6177ea3709273dab0095";
+    "154c31e9430d83d2072afe09f304dae1cdbc576d073e216af41040e6556cdf68";
 
   function detectBase() {
     const host = (location.hostname || "").toLowerCase();
