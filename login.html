@@ -4,28 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brave Feelings Lab - Login</title>
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BraveFeelings</title>
-
-  <script src="/bravefeelings/password-config.js"></script>
-<script src="/bravefeelings/password-gate.js"></script>
-<script>
-  // login logic should compare typed password hash to window.BFL_EXPECTED_HASH
-</script>
-
-  <style>
-    body { margin:0; padding:0; background:#fff; font-family: Arial, sans-serif; }
-    .hero-image { width:100%; max-width:1200px; height:auto; display:block; margin:0 auto; }
-  </style>
-</head>
-<body>
-  <img src="benn.png" alt="BraveFeelings Hero Image" class="hero-image" />
-</body>
-</html>
 
   <style>
     body { font-family: Arial, sans-serif; background:#0b1220; color:#e5e7eb; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; }
@@ -33,21 +11,26 @@
     h1 { margin:0 0 8px; font-size:22px; }
     p { margin:0 0 16px; color:#9ca3af; line-height:1.4; }
     label { display:block; margin:12px 0 6px; color:#cbd5e1; font-weight:700; font-size:13px; }
-    input { width:100%; padding:12px 12px; border-radius:12px; border:1px solid #334155; background:#0b1220; color:#e5e7eb; outline:none; font-size:16px; }
+    input { width:100%; padding:12px; border-radius:12px; border:1px solid #334155; background:#0b1220; color:#e5e7eb; outline:none; font-size:16px; }
     button { width:100%; padding:12px; border-radius:12px; border:0; background:#2563eb; color:white; font-weight:800; font-size:16px; cursor:pointer; margin-top:14px; }
     button:hover { background:#1d4ed8; }
+    .btn2 { background:#334155; margin-top:10px; }
+    .btn2:hover { background:#475569; }
     .msg { margin-top:12px; font-weight:700; }
     .ok { color:#34d399; }
     .err { color:#fb7185; }
-    .small { margin-top:10px; font-size:12px; color:#94a3b8; }
+    .small { margin-top:12px; font-size:12px; color:#94a3b8; }
     a { color:#93c5fd; text-decoration:none; }
     a:hover { text-decoration:underline; }
+    .pill { display:inline-block; padding:4px 10px; border:1px solid #334155; border-radius:999px; font-size:12px; color:#cbd5e1; margin-top:6px; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Brave Feelings Lab</h1>
     <p>Enter the password to continue.</p>
+
+    <div id="cfg" class="pill">Config: checking…</div>
 
     <form id="form">
       <label for="pw">Password</label>
@@ -56,71 +39,90 @@
       <div id="msg" class="msg"></div>
     </form>
 
+    <button id="clear" type="button" class="btn2">Clear Saved Login (force prompt)</button>
+
     <div class="small">
-      Admin note: default password is <b>BFL2025!</b>. You can change it using <a href="./hash.html">hash.html</a>.
+      To change the password: open <a href="./hash.html">hash.html</a>, generate a hash, then paste it into <b>password-config.js</b>.
     </div>
   </div>
 
-<script>
-  const TOKEN_KEY = "bfl_auth_v1";
-  const RETURN_KEY = "bfl_return_to";
-  const SESSION_HOURS = 12;
+  <!-- IMPORTANT: these must be in the SAME folder as login.html -->
+  <script src="./password-config.js"></script>
 
-  // Must match password-gate.js
-  const EXPECTED_HASH =
-    "3acaebf0ecc495504fc1154fef9bc90fa4bc472d3b2abe402329eb2adb9f8b56";
+  <script>
+    const TOKEN_KEY = "bfl_auth_v1";
+    const RETURN_KEY = "bfl_return_to";
+    const SESSION_HOURS = 12;
 
-  function detectBase() {
-    const host = (location.hostname || "").toLowerCase();
-    if (host.endsWith("github.io")) {
-      const seg = (location.pathname.split("/").filter(Boolean)[0] || "").trim();
-      return seg ? `/${seg}` : "";
+    function getExpectedHash() {
+      return (window.BFL_EXPECTED_HASH || "").trim();
     }
-    return "";
-  }
-  const BASE = detectBase();
 
-  async function sha256Hex(text) {
-    const enc = new TextEncoder().encode(text);
-    const buf = await crypto.subtle.digest("SHA-256", enc);
-    const bytes = Array.from(new Uint8Array(buf));
-    return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
-  }
+    async function sha256Hex(text) {
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      const bytes = Array.from(new Uint8Array(buf));
+      return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
 
-  function setAuthed() {
-    const exp = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
-    localStorage.setItem(TOKEN_KEY, JSON.stringify({ ok: true, exp }));
-  }
+    function setAuthed() {
+      const exp = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
+      localStorage.setItem(TOKEN_KEY, JSON.stringify({ ok: true, exp }));
+    }
 
-  const form = document.getElementById("form");
-  const pw = document.getElementById("pw");
-  const msg = document.getElementById("msg");
+    const cfg = document.getElementById("cfg");
+    const msg = document.getElementById("msg");
+    const form = document.getElementById("form");
+    const pw = document.getElementById("pw");
+    const clearBtn = document.getElementById("clear");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    msg.textContent = "";
-    msg.className = "msg";
-
-    const entered = pw.value || "";
-    const hash = await sha256Hex(entered);
-
-    if (hash === EXPECTED_HASH) {
-      setAuthed();
-      msg.textContent = "Unlocked.";
-      msg.classList.add("ok");
-
-      const returnTo = sessionStorage.getItem(RETURN_KEY) || "/";
-      sessionStorage.removeItem(RETURN_KEY);
-
-      // returnTo already excludes BASE, so we add BASE back:
-      location.replace(BASE + returnTo);
+    // Show config status
+    if (getExpectedHash()) {
+      cfg.textContent = "Config: loaded";
     } else {
-      msg.textContent = "Wrong password.";
-      msg.classList.add("err");
-      pw.focus();
-      pw.select();
+      cfg.textContent = "Config: MISSING HASH";
+      cfg.style.borderColor = "#fb7185";
+      cfg.style.color = "#fb7185";
+      msg.textContent = "Your password-config.js has no hash. Add window.BFL_EXPECTED_HASH there.";
+      msg.className = "msg err";
     }
-  });
-</script>
+
+    clearBtn.addEventListener("click", () => {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(RETURN_KEY);
+      location.reload();
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "";
+      msg.className = "msg";
+
+      const expected = getExpectedHash();
+      if (!expected) {
+        msg.textContent = "Missing expected hash (check password-config.js).";
+        msg.classList.add("err");
+        return;
+      }
+
+      const entered = pw.value || "";
+      const hash = await sha256Hex(entered);
+
+      if (hash === expected) {
+        setAuthed();
+        msg.textContent = "Unlocked.";
+        msg.classList.add("ok");
+
+        const returnTo = localStorage.getItem(RETURN_KEY) || "/";
+        localStorage.removeItem(RETURN_KEY);
+        location.replace(returnTo);
+      } else {
+        msg.textContent = "Wrong password.";
+        msg.classList.add("err");
+        pw.focus();
+        pw.select();
+      }
+    });
+  </script>
 </body>
 </html>
