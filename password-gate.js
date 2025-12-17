@@ -14,7 +14,7 @@
     // Put SHA-256 hex hash(es) of allowed password(s) here.
     // Replace this with YOUR hash from /hash.html
     expectedHashes: [
-      "b2fceca9406e2400efe0e9379e5b05a376e4fed14eeb6177ea3709273dab0095", // default BFL2025!
+      "3acaebf0ecc495504fc1154fef9bc90fa4bc472d3b2abe402329eb2adb9f8b56", // default BFL2025!
     ],
 
     // Pages that are always public (no password)
