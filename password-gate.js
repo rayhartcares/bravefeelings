@@ -1,15 +1,6 @@
-/* Brave Feelings Lab - Password Gate (GitHub Pages + Custom Domain)
-   Note: This is a lightweight gate (client-side). Not true security.
-*/
 (() => {
   const TOKEN_KEY = "bfl_auth_v1";
   const RETURN_KEY = "bfl_return_to";
-  const SESSION_HOURS = 12;
-
-  // Default password is: BFL2025!
-  // SHA-256("BFL2025!") =
-  const EXPECTED_HASH =
-    "c63d15ad656cad56b4e65e8d5099e3f96254078487018d42e98423d5cd4b5a61";
 
   function detectBase() {
     const host = (location.hostname || "").toLowerCase();
@@ -22,30 +13,34 @@
 
   const BASE = detectBase();
 
-  function getPathNoBase() {
-    const p = location.pathname || "/";
-    if (BASE && p.startsWith(BASE + "/")) return p.slice(BASE.length) || "/";
-    return p;
+  async function loadAuthConfig() {
+    // cache-bust so updates show immediately
+    const url = `${BASE}/auth.json?v=${Date.now()}`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error("auth.json not found");
+    return await res.json();
   }
 
-  function currentFile(p) {
-    const parts = (p || "/").split("/").filter(Boolean);
-    if (!parts.length) return "index.html";
-    const last = parts[parts.length - 1];
+  function currentFile(pathname) {
+    const p = (pathname || "/");
+    const parts = p.split("/").filter(Boolean);
+    const last = parts[parts.length - 1] || "index.html";
     return last.includes(".") ? last : "index.html";
   }
 
-  function isPublic(p) {
-    const file = currentFile(p);
-
-    // Pages that must always remain accessible
+  function isPublic(pathname) {
+    const file = currentFile(pathname);
     if (file === "login.html" || file === "hash.html") return true;
-    if (file === "password-gate.js") return true;
+    if (file === "password-gate.js" || file === "auth.json") return true;
 
-    // Let assets load without being blocked
-    if (p.startsWith("/assets/") || p.startsWith("/images/") || p.startsWith("/css/") || p.startsWith("/js/") || p.startsWith("/fonts/")) {
-      return true;
-    }
+    // allow assets
+    if (
+      pathname.startsWith("/assets/") ||
+      pathname.startsWith("/images/") ||
+      pathname.startsWith("/css/") ||
+      pathname.startsWith("/js/") ||
+      pathname.startsWith("/fonts/")
+    ) return true;
 
     return false;
   }
@@ -55,21 +50,36 @@
     if (!raw) return false;
     try {
       const obj = JSON.parse(raw);
-      return obj.ok === true && (!obj.exp || Date.now() < obj.exp);
+      return obj.ok === true && Date.now() < (obj.exp || 0);
     } catch {
       return false;
     }
   }
 
-  function goLogin() {
-    const returnTo = getPathNoBase() + (location.search || "") + (location.hash || "");
-    sessionStorage.setItem(RETURN_KEY, returnTo || "/");
-    location.replace(BASE + "/login.html");
+  function redirectToLogin() {
+    const returnTo = location.pathname + location.search + location.hash;
+    localStorage.setItem(RETURN_KEY, returnTo);
+    location.replace(`${BASE}/login.html`);
   }
 
-  const pathNoBase = getPathNoBase();
+  (async () => {
+    // Normalize pathname when BASE exists (github.io)
+    const pathname = location.pathname.startsWith(BASE + "/")
+      ? location.pathname.slice(BASE.length) || "/"
+      : location.pathname;
 
-  if (!isAuthed() && !isPublic(pathNoBase)) {
-    goLogin();
-  }
+    if (isPublic(pathname)) return;
+    if (isAuthed()) return;
+
+    // If auth.json is missing, do NOT block the site (fail open)
+    try {
+      const cfg = await loadAuthConfig();
+      if (!cfg.expectedHash || String(cfg.expectedHash).length < 20) return;
+      // if there is an expectedHash, then enforce login
+      redirectToLogin();
+    } catch {
+      // fail open if config missing
+      return;
+    }
+  })();
 })();
