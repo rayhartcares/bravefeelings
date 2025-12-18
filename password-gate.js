@@ -6,25 +6,17 @@
 (() => {
   "use strict";
 
-  const CONFIG = {
-    tokenKey: "bfl_auth_v1",
-    returnKey: "bfl_return_to_v1",
-    sessionHours: 12,
+ const CONFIG = {
+  tokenKey: "bfl_auth_v1",
+  returnKey: "bfl_return_to_v1",
+  sessionHours: 12,
 
-    expectedHashes: [
-      "2b4bbd6e1d0652763364a64521b10ec2ee8f1ea1732d43f63bcb5047790fa73d", // Replace the old one here
-    ],
-// ... rest of code
+  // Change this to pull from the config file variable:
+  expectedHashes: [window.BFL_EXPECTED_HASH], 
 
-    // Put SHA-256 hex hash(es) of allowed password(s) here.
-    // Replace this with YOUR hash from /hash.html
-    expectedHashes: [
-      "3acaebf0ecc495504fc1154fef9bc90fa4bc472d3b2abe402329eb2adb9f8b56", // default BFL2025!
-    ],
-
-    // Pages that are always public (no password)
-    publicPages: new Set(["login.html", "hash.html"]),
-
+  publicPages: new Set(["login.html", "hash.html"]),
+  bypassParam: "nogate",
+};
     // Optional bypass for debugging: add ?nogate=1
     bypassParam: "nogate",
   };
