@@ -1,7 +1,1 @@
-{
-
-  "expectedHash": "2b4bbd6e1d0652763364a64521b10ec2ee8f1ea1732d43f63bcb5047790fa73d",
-
-  "sessionHours": 12
-
-}
+window.BFL_EXPECTED_HASH = "2b4bbd6e1d0652763364a64521b10ec2ee8f1ea1732d43f63bcb5047790fa73d";
