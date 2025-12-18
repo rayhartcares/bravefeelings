@@ -11,6 +11,11 @@
     returnKey: "bfl_return_to_v1",
     sessionHours: 12,
 
+    expectedHashes: [
+      "PASTE_YOUR_NEW_HASH_HERE", // Replace the old one here
+    ],
+// ... rest of code
+
     // Put SHA-256 hex hash(es) of allowed password(s) here.
     // Replace this with YOUR hash from /hash.html
     expectedHashes: [
