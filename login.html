@@ -93,26 +93,25 @@
       location.reload();
     });
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      msg.textContent = "";
-      msg.className = "msg";
+    // Inside the <script> at the bottom of login.html
+function getExpectedHash() {
+  // Use the window variable from password-config.js
+  return (window.BFL_EXPECTED_HASH || "").trim();
+}
 
-      const expected = getExpectedHash();
-      if (!expected) {
-        msg.textContent = "Missing expected hash (check password-config.js).";
-        msg.classList.add("err");
-        return;
-      }
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const expected = getExpectedHash();
+  const entered = pw.value.trim(); // Added .trim() to prevent space errors
+  const hash = await sha256Hex(entered);
 
-      const entered = pw.value || "";
-      const hash = await sha256Hex(entered);
-
-      if (hash === expected) {
-        setAuthed();
-        msg.textContent = "Unlocked.";
-        msg.classList.add("ok");
-
+  if (hash === expected) {
+    setAuthed();
+    // ... rest of your redirect code
+  } else {
+    alert("Wrong password!");
+  }
+});
         const returnTo = localStorage.getItem(RETURN_KEY) || "/";
         localStorage.removeItem(RETURN_KEY);
         location.replace(returnTo);
