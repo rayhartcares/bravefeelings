@@ -12,7 +12,10 @@
   sessionHours: 12,
 
   // Change this to pull from the config file variable:
-  expectedHashes: [window.BFL_EXPECTED_HASH], 
+  // Put SHA-256 hex hash(es) of allowed password(s) here.
+    expectedHashes: [
+       "2b4bbd6e1d0652763364a64521b10ec2ee8f1ea1732d43f63bcb5047790fa73d", 
+    ], 
 
   publicPages: new Set(["login.html", "hash.html"]),
   bypassParam: "nogate",
