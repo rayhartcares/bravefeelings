@@ -4,25 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brave Feelings Lab - Login</title>
-
   <style>
     body { font-family: Arial, sans-serif; background:#0b1220; color:#e5e7eb; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; }
     .card { width:min(520px, 92vw); background:#111827; border:1px solid #1f2937; border-radius:18px; padding:22px; box-shadow:0 20px 50px rgba(0,0,0,.35); }
     h1 { margin:0 0 8px; font-size:22px; }
     p { margin:0 0 16px; color:#9ca3af; line-height:1.4; }
     label { display:block; margin:12px 0 6px; color:#cbd5e1; font-weight:700; font-size:13px; }
-    input { width:100%; padding:12px; border-radius:12px; border:1px solid #334155; background:#0b1220; color:#e5e7eb; outline:none; font-size:16px; }
+    input { width:100%; padding:12px; border-radius:12px; border:1px solid #334155; background:#0b1220; color:#e5e7eb; outline:none; font-size:16px; box-sizing: border-box; }
     button { width:100%; padding:12px; border-radius:12px; border:0; background:#2563eb; color:white; font-weight:800; font-size:16px; cursor:pointer; margin-top:14px; }
     button:hover { background:#1d4ed8; }
-    .btn2 { background:#334155; margin-top:10px; }
-    .btn2:hover { background:#475569; }
-    .msg { margin-top:12px; font-weight:700; }
-    .ok { color:#34d399; }
+    .btn2 { background:#334155; margin-top:10px; cursor:pointer; color:white; border:0; width:100%; padding:8px; border-radius:8px; font-size: 12px; }
+    .msg { margin-top:12px; font-weight:700; min-height: 20px; }
     .err { color:#fb7185; }
-    .small { margin-top:12px; font-size:12px; color:#94a3b8; }
-    a { color:#93c5fd; text-decoration:none; }
-    a:hover { text-decoration:underline; }
-    .pill { display:inline-block; padding:4px 10px; border:1px solid #334155; border-radius:999px; font-size:12px; color:#cbd5e1; margin-top:6px; }
+    .ok { color:#34d399; }
   </style>
 </head>
 <body>
@@ -30,98 +24,72 @@
     <h1>Brave Feelings Lab</h1>
     <p>Enter the password to continue.</p>
 
-    <div id="cfg" class="pill">Config: checking…</div>
-
     <form id="form">
       <label for="pw">Password</label>
-      <input id="pw" type="password" autocomplete="current-password" required />
+      <input id="pw" type="password" required autofocus autocomplete="current-password" />
       <button type="submit">Unlock</button>
       <div id="msg" class="msg"></div>
     </form>
 
-    <button id="clear" type="button" class="btn2">Clear Saved Login (force prompt)</button>
-
-    <div class="small">
-      To change the password: open <a href="./hash.html">hash.html</a>, generate a hash, then paste it into <b>password-config.js</b>.
-    </div>
+    <button id="clear" type="button" class="btn2">Clear Saved Session</button>
   </div>
 
-  <!-- IMPORTANT: these must be in the SAME folder as login.html -->
-  <script src="./password-config.js"></script>
+  <script src="password-config.js?v=2"></script>
 
   <script>
     const TOKEN_KEY = "bfl_auth_v1";
-    const RETURN_KEY = "bfl_return_to";
-    const SESSION_HOURS = 12;
+    const RETURN_KEY = "bfl_return_to_v1";
 
-    function getExpectedHash() {
-      return (window.BFL_EXPECTED_HASH || "").trim();
-    }
-
+    // Standard SHA-256 Hashing function
     async function sha256Hex(text) {
       const enc = new TextEncoder().encode(text);
       const buf = await crypto.subtle.digest("SHA-256", enc);
-      const bytes = Array.from(new Uint8Array(buf));
-      return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    function setAuthed() {
-      const exp = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
-      localStorage.setItem(TOKEN_KEY, JSON.stringify({ ok: true, exp }));
-    }
-
-    const cfg = document.getElementById("cfg");
-    const msg = document.getElementById("msg");
-    const form = document.getElementById("form");
-    const pw = document.getElementById("pw");
-    const clearBtn = document.getElementById("clear");
-
-    // Show config status
-    if (getExpectedHash()) {
-      cfg.textContent = "Config: loaded";
-    } else {
-      cfg.textContent = "Config: MISSING HASH";
-      cfg.style.borderColor = "#fb7185";
-      cfg.style.color = "#fb7185";
-      msg.textContent = "Your password-config.js has no hash. Add window.BFL_EXPECTED_HASH there.";
-      msg.className = "msg err";
-    }
-
-    clearBtn.addEventListener("click", () => {
+    // Clear local storage to force a re-login
+    document.getElementById("clear").onclick = () => {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(RETURN_KEY);
       location.reload();
-    });
+    };
 
-    // Inside the <script> at the bottom of login.html
-function getExpectedHash() {
-  // Use the window variable from password-config.js
-  return (window.BFL_EXPECTED_HASH || "").trim();
-}
+    document.getElementById("form").onsubmit = async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById("msg");
+      const pwInput = document.getElementById("pw");
+      const entered = pwInput.value.trim();
+      
+      // Perform hashing
+      const hash = await sha256Hex(entered);
+      
+      // Compare with the hash in password-config.js
+      const expected = window.BFL_EXPECTED_HASH;
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const expected = getExpectedHash();
-  const entered = pw.value.trim(); // Added .trim() to prevent space errors
-  const hash = await sha256Hex(entered);
-
-  if (hash === expected) {
-    setAuthed();
-    // ... rest of your redirect code
-  } else {
-    alert("Wrong password!");
-  }
-});
-        const returnTo = localStorage.getItem(RETURN_KEY) || "/";
+      if (hash === expected) {
+        msg.textContent = "Unlocked. Redirecting...";
+        msg.className = "msg ok";
+        
+        // Save auth state for 12 hours
+        const hours = window.BFL_SESSION_HOURS || 12;
+        const exp = Date.now() + (hours * 60 * 60 * 1000);
+        localStorage.setItem(TOKEN_KEY, JSON.stringify({ ok: true, exp }));
+        
+        // Redirect back to original page or index
+        const dest = localStorage.getItem(RETURN_KEY) || "index.html";
         localStorage.removeItem(RETURN_KEY);
-        location.replace(returnTo);
+        
+        // Small delay so the user sees the 'Unlocked' message
+        setTimeout(() => {
+          location.replace(dest);
+        }, 500);
       } else {
         msg.textContent = "Wrong password.";
-        msg.classList.add("err");
-        pw.focus();
-        pw.select();
+        msg.className = "msg err";
+        pwInput.value = "";
+        pwInput.focus();
       }
-    });
+    };
   </script>
 </body>
 </html>
