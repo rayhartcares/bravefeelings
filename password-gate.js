@@ -12,7 +12,7 @@
     sessionHours: 12,
 
     expectedHashes: [
-      "PASTE_YOUR_NEW_HASH_HERE", // Replace the old one here
+      "c63d15ad656cad56b4e65e8d5099e3f96254078487018d42e98423d5cd4b5a61", // Replace the old one here
     ],
 // ... rest of code
 
