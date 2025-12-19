@@ -10,7 +10,7 @@
     sessionHours: 12,
     // Pulls from password-config.js; falls back to the new hash if missing
     expectedHashes: [
-      window.BFL_EXPECTED_HASH || "2b4bbd6e1d0652763364a64521b10ec2ee8f1ea1732d43f63bcb5047790fa73d"
+      window.BFL_EXPECTED_HASH || "b8a137cb2c0a7f90827dc03b78395624d32d7dc701b6e094a8bc5d8940723752"
     ],
     publicPages: new Set(["login.html", "hash.html"]),
     bypassParam: "nogate",
@@ -59,7 +59,7 @@
 
   const requireAuth = () => {
     if (isPublicPage() || isAuthed()) return;
-    localStorage.setItem(CONFIG.returnKey, stripBase(location.pathname) + location.search + location.hash);
+    localStorage.setItem(CONFIG.returnKey, stripBase(location.pathname) + location.search + location.);
     location.replace(siteUrl("/login.html"));
   };
 
