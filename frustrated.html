@@ -6,7 +6,7 @@
   <title>Understanding Frustration</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* --- THEME (MATCHING ANGER APP) --- */
+    /* --- THEME --- */
     body { margin: 0; padding: 0; background-color: #FFF8F0; font-family: 'Fredoka', sans-serif; color: #2D3748; display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
     #app-container { width: 100%; max-width: 800px; padding: 40px 20px; position: relative; }
     
@@ -15,14 +15,36 @@
     
     .sticker-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); z-index: 2; position: relative; }
     
-    /* --- ANIMATIONS --- */
-    @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
-    @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
-    @keyframes pulse-orange { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(237, 137, 54, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(237, 137, 54, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(237, 137, 54, 0); } }
+    /* --- EXAGGERATED ANIMATIONS --- */
+    /* Big Float */
+    @keyframes super-float { 
+        0%, 100% { transform: translateY(0) scale(1) rotate(0deg); } 
+        50% { transform: translateY(-15px) scale(1.1) rotate(5deg); } 
+    }
+    /* Violent Shake */
+    @keyframes super-shake { 
+        0% { transform: translate(1px, 1px) rotate(0deg); }
+        10% { transform: translate(-3px, -2px) rotate(-10deg); }
+        20% { transform: translate(-3px, 0px) rotate(10deg); }
+        30% { transform: translate(3px, 2px) rotate(0deg); }
+        40% { transform: translate(1px, -1px) rotate(10deg); }
+        50% { transform: translate(-1px, 2px) rotate(-10deg); }
+        60% { transform: translate(-3px, 1px) rotate(0deg); }
+        70% { transform: translate(3px, 1px) rotate(-10deg); }
+        80% { transform: translate(-1px, -1px) rotate(10deg); }
+        90% { transform: translate(1px, 2px) rotate(0deg); }
+        100% { transform: translate(1px, -2px) rotate(-10deg); }
+    }
+    /* Big Pulse */
+    @keyframes super-pulse { 
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(237, 137, 54, 0.7); } 
+        50% { transform: scale(1.2); box-shadow: 0 0 0 30px rgba(237, 137, 54, 0); } 
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(237, 137, 54, 0); } 
+    }
     
-    .animate-float { animation: float 3s infinite ease-in-out; }
-    .animate-shake { animation: shake 0.5s infinite ease-in-out; }
-    .animate-pulse { animation: pulse-orange 2s infinite; }
+    .animate-float { animation: super-float 3s infinite ease-in-out; }
+    .animate-shake { animation: super-shake 0.5s infinite linear; }
+    .animate-pulse { animation: super-pulse 1.5s infinite; }
 
     /* --- UI ELEMENTS --- */
     .title { font-size: 36px; font-weight: bold; text-align: center; margin-bottom: 10px; }
@@ -31,9 +53,8 @@
     .card-desc { font-size: 16px; color: #718096; line-height: 1.5; }
     
     .btn { padding: 14px 28px; border-radius: 16px; font-weight: bold; font-size: 18px; border: none; cursor: pointer; color: white; transition: all 0.2s; width: 100%; margin-top: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+    .btn:hover { transform: scale(1.05); filter: brightness(1.1); }
     
-    /* COLORS TAILORED FOR FRUSTRATION (ORANGE THEME) */
     .btn-orange { background: linear-gradient(135deg, #ED8936, #DD6B20); }
     .btn-green { background: linear-gradient(135deg, #48BB78, #38A169); }
     .btn-blue { background: linear-gradient(135deg, #4299E1, #3182CE); }
@@ -51,7 +72,7 @@
   <script>
     const container = document.getElementById('app-container');
 
-    // --- VIEW 1: HOME (THE TRIGGER) ---
+    // --- VIEW 1: HOME ---
     function showHome() { 
         container.innerHTML = `
             <h1 class="title">Understanding Frustration</h1>
@@ -59,9 +80,9 @@
             
             <div class="grid-2">
                 <div class="white-card">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Knot.png" class="sticker-img animate-float">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Yarn.png" class="sticker-img animate-float">
                     <div class="card-title">The Big Tangle</div>
-                    <p class="card-desc">"I can't do it! It's too hard!"</p>
+                    <p class="card-desc">"I can't do it! It's messy!"</p>
                     <button onclick="showReactions()" class="btn btn-orange">See The Mess</button>
                 </div>
                 <div class="white-card">
@@ -75,7 +96,7 @@
         `;
     }
 
-    // --- VIEW 2: BEHAVIORS (HOW DO WE REACT?) ---
+    // --- VIEW 2: BEHAVIORS ---
     function showReactions() {
         container.innerHTML = `
             <button onclick="showHome()" class="btn-back">← Back</button>
@@ -86,52 +107,48 @@
                 <div class="white-card">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Shrugging.png" class="sticker-img animate-shake">
                     <div class="card-title">Giving Up</div>
-                    <p class="card-desc">"I quit. I'm never doing this again."</p>
                 </div>
                 <div class="white-card">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Wastebasket.png" class="sticker-img animate-shake">
                     <div class="card-title">Destroying Work</div>
-                    <p class="card-desc">Crumpling paper or breaking blocks.</p>
                 </div>
                 <div class="white-card">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Face%20with%20Symbols%20on%20Mouth.png" class="sticker-img animate-shake">
                     <div class="card-title">Mean Words</div>
-                    <p class="card-desc">"I am stupid!" or "This is dumb!"</p>
                 </div>
                 <div class="white-card">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Pleading%20Face.png" class="sticker-img animate-float">
                     <div class="card-title">Whining</div>
-                    <p class="card-desc">Crying without asking for help.</p>
                 </div>
             </div>
 
             <div class="white-card" style="margin-top: 30px; border-bottom-color: #ED8936;">
-                <p style="font-weight: bold; font-size: 20px; color: #C05621;">Does this help solve the problem?</p>
+                <p style="font-weight: bold; font-size: 20px; color: #C05621;">Does this help?</p>
                 <button onclick="showConsequences()" class="btn btn-orange" style="width: auto;">See The Result ➔</button>
             </div>
         `;
     }
 
-    // --- VIEW 3: CONSEQUENCES (GETTING STUCK) ---
+    // --- VIEW 3: CONSEQUENCES ---
     function showConsequences() { 
         container.innerHTML = `
             <button onclick="showReactions()" class="btn-back">← Back</button>
             <h1 class="title orange-title">Still Stuck... 🚧</h1>
-            <p style="text-align: center; color: #718096; margin-bottom: 30px;">When we panic, the problem stays the same.</p>
+            <p style="text-align: center; color: #718096; margin-bottom: 30px;">Panic makes it worse.</p>
 
             <div class="grid-2">
-                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Cloud%20with%20Lightning.png" class="sticker-img"><div class="card-title">Brain Fog</div><p class="card-desc">You can't see the answer.</p></div>
-                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Hourglass%20Not%20Done.png" class="sticker-img"><div class="card-title">Time Wasted</div><p class="card-desc">You lose play time.</p></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Cloud%20with%20Lightning.png" class="sticker-img"><div class="card-title">Brain Fog</div></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Hourglass%20Not%20Done.png" class="sticker-img"><div class="card-title">Time Wasted</div></div>
             </div>
             
             <div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;">
-                <p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 There is a smarter way!</p>
-                <button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Un-Tangle My Brain ➔</button>
+                <p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 Use your superpowers!</p>
+                <button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Un-Tangle Brain ➔</button>
             </div>
         `;
     }
 
-    // --- VIEW 4: SOLUTIONS (THE FIX) ---
+    // --- VIEW 4: SOLUTIONS (FIXED IMAGES & ANIMATIONS) ---
     function showSolutions() {
       container.innerHTML = `
         <button onclick="showHome()" class="btn-back">← Back to Start</button>
@@ -139,17 +156,21 @@
         <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
 
           <div class="white-card" style="text-align: left; border-bottom-color: #4299E1;">
-             <div style="text-align: center;"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Raising%20Hand.png" class="sticker-img animate-float"></div>
+             <div style="text-align: center;">
+                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Raising%20Hand.png" class="sticker-img animate-float">
+             </div>
              <div class="card-title" style="text-align: center; color: #4299E1;">Ask for a Clue</div>
-             <p class="card-desc" style="text-align: center;">You don't have to do it alone. Ask an adult for one small hint.</p>
+             <p class="card-desc" style="text-align: center;">Ask an adult for one small hint.</p>
              <div id="help-bubble" style="background:#EBF8FF; color:#2B6CB0; padding:15px; border-radius:15px; text-align:center; display:none; margin-top:10px; font-weight:bold;">"Excuse me, can you help me start?"</div>
              <button onclick="askHelp()" class="btn btn-blue">Practice Asking</button>
           </div>
 
           <div class="white-card" style="text-align: left; border-bottom-color: #48BB78;">
-             <div style="text-align: center;"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Battery.png" class="sticker-img animate-float" id="battery-img"></div>
+             <div style="text-align: center;">
+                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Battery.png" class="sticker-img animate-float" id="battery-img">
+             </div>
              <div class="card-title" style="text-align: center; color: #48BB78;">Recharge Battery</div>
-             <p class="card-desc" style="text-align: center;">Your brain is tired. Walk away for 10 seconds to recharge.</p>
+             <p class="card-desc" style="text-align: center;">Walk away for 10 seconds to recharge.</p>
              <div style="text-align: center; font-size: 30px; font-weight: bold; color: #48BB78; margin-top:10px;" id="charge-timer"></div>
              <button onclick="startCharge()" class="btn btn-green">Start Recharge (10s)</button>
           </div>
@@ -163,10 +184,12 @@
              <button onclick="toggleBreath()" class="btn btn-orange">Start Breathing</button>
           </div>
 
-          <div class="white-card" style="text-align: left; border-bottom-color: #9F7AEA;">
-             <div style="text-align: center;"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Dancing.png" class="sticker-img animate-shake" id="dance-img"></div>
+          <div class="white-card" id="shake-card" style="text-align: left; border-bottom-color: #9F7AEA;">
+             <div style="text-align: center;">
+                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Dancing.png" class="sticker-img animate-shake" id="dance-img">
+             </div>
              <div class="card-title" style="text-align: center; color: #805AD5;">Shake It Off</div>
-             <p class="card-desc" style="text-align: center;">Frustration feels tight. Wiggle your body to get loose!</p>
+             <p class="card-desc" style="text-align: center;">Frustration feels tight. Wiggle your body!</p>
              <button onclick="shakeScreen()" class="btn btn-purple">Wiggle & Shake!</button>
           </div>
 
@@ -174,34 +197,33 @@
       `;
     }
 
-    // --- LOGIC FUNCTIONS ---
-
-    // 1. HELP BUBBLE
+    // --- LOGIC ---
     function askHelp() {
         const bubble = document.getElementById('help-bubble');
         bubble.style.display = 'block';
-        bubble.classList.add('animate-pulse');
+        bubble.classList.add('animate-pulse'); // EXAGGERATED PULSE
     }
 
-    // 2. BATTERY CHARGE
     function startCharge() {
         let t = 10;
         const timer = document.getElementById('charge-timer');
         const img = document.getElementById('battery-img');
         timer.innerText = "⚡ Charging...";
+        img.classList.remove('animate-float');
+        img.classList.add('animate-pulse'); // PULSE WHILE CHARGING
         
         const i = setInterval(() => {
             t--;
-            timer.innerText = `⚡ ${t}s remaining`;
+            timer.innerText = `⚡ ${t}s`;
             if(t<=0) { 
                 clearInterval(i); 
                 timer.innerText = "🔋 Fully Charged!"; 
-                img.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/High%20Voltage.png";
+                img.classList.remove('animate-pulse');
+                img.classList.add('animate-float');
             }
         }, 1000);
     }
 
-    // 3. BREATHING
     let breathInterval;
     function toggleBreath() {
        const circle = document.getElementById('breath-circle');
@@ -216,20 +238,20 @@
        }
     }
 
-    // 4. SHAKE SCREEN
     function shakeScreen() {
-        const body = document.body;
+        const card = document.getElementById('shake-card');
         const img = document.getElementById('dance-img');
-        body.style.animation = "shake 0.5s infinite";
-        img.style.transform = "scale(1.5)";
+        
+        // EXAGGERATED SHAKE
+        card.style.animation = "super-shake 0.5s infinite"; 
+        img.style.transform = "scale(1.3)"; // BIGGER
         
         setTimeout(() => {
-            body.style.animation = "none";
+            card.style.animation = "none";
             img.style.transform = "scale(1)";
         }, 2000);
     }
 
-    // Initialize
     showHome();
   </script>
 </body>
