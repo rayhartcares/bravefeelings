@@ -12,16 +12,39 @@
     
     .white-card { background: white; border-radius: 24px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: center; margin-bottom: 24px; border-bottom: 6px solid #EDF2F7; position: relative; overflow: visible; transition: transform 0.2s;}
     .white-card:hover { transform: translateY(-5px); }
+    
     .sticker-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); z-index: 2; position: relative; }
     
-    /* ANIMATIONS */
+    /* --- ANIMATIONS --- */
     @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
+    @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
+    
     .animate-float { animation: float 3s infinite ease-in-out; }
+    .animate-shake { animation: shake 0.5s infinite ease-in-out; }
+
+    /* Active Tool Animations */
+    @keyframes melt-drip { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(60px) scale(0.5); opacity: 0; } }
+    @keyframes cool-pulse { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+    @keyframes roar-shake { 
+        0% { transform: scale(1) rotate(0deg); } 
+        10%, 90% { transform: scale(1.2) rotate(-5deg); } 
+        20%, 80% { transform: scale(1.2) rotate(5deg); } 
+        30%, 50%, 70% { transform: scale(1.2) rotate(-5deg); } 
+        40%, 60% { transform: scale(1.2) rotate(5deg); } 
+        100% { transform: scale(1) rotate(0deg); } 
+    }
+    @keyframes sound-blast { 0% { transform: scale(0.8); opacity: 1; border-width: 10px; } 100% { transform: scale(2.5); opacity: 0; border-width: 0px; } }
+
+    .roaring { animation: roar-shake 0.8s ease-in-out; }
+    .melting { transition: transform 10s linear; transform: scale(0.4) translateY(50px); }
+
+    /* --- PARTICLES --- */
     .particle { position: absolute; border-radius: 50%; pointer-events: none; z-index: 1; }
     .water-drop { width: 10px; height: 15px; background: #90CDF4; border-radius: 50% 50% 30% 30%; animation: melt-drip 1s linear forwards; }
-    @keyframes melt-drip { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(60px) scale(0.5); opacity: 0; } }
+    .cool-aura { width: 100px; height: 100px; background: radial-gradient(circle, #4299E1 0%, transparent 70%); opacity: 0.5; animation: cool-pulse 2s infinite ease-out; position: absolute; top: 50%; left: 50%; margin-top: -50px; margin-left: -50px; z-index: 0;}
+    .sound-wave { position: absolute; border: 4px solid #ECC94B; border-radius: 50%; width: 140px; height: 140px; top: 50%; left: 50%; margin-top: -70px; margin-left: -70px; opacity: 0; animation: sound-blast 1s ease-out forwards; pointer-events: none;}
 
-    /* UI ELEMENTS */
+    /* --- UI ELEMENTS --- */
     .title { font-size: 36px; font-weight: bold; text-align: center; margin-bottom: 10px; }
     .green-title { color: #48BB78; } .red-title { color: #E53E3E; }
     .card-title { font-size: 22px; font-weight: bold; margin-bottom: 8px; color: #2D3748; }
@@ -29,6 +52,8 @@
     
     .btn { padding: 14px 28px; border-radius: 16px; font-weight: bold; font-size: 18px; border: none; cursor: pointer; color: white; transition: all 0.2s; width: 100%; margin-top: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     .btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    
     .btn-red { background: linear-gradient(135deg, #E53E3E, #C53030); }
     .btn-green { background: linear-gradient(135deg, #48BB78, #38A169); }
     .btn-blue { background: linear-gradient(135deg, #4299E1, #3182CE); }
@@ -36,83 +61,105 @@
     .btn-yellow { background: linear-gradient(135deg, #ECC94B, #D69E2E); color: #FFF; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
     .btn-gray { background: linear-gradient(135deg, #A0AEC0, #718096); }
     .btn-back { background: white; border: 2px solid #CBD5E0; color: #4A5568; padding: 8px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
+    
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; } 
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
-
-    /* START SCREEN & DEBUGGER */
-    #start-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #FFF8F0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    #status-text { margin-top: 20px; font-size: 14px; color: #718096; }
-    #sound-toggle { position: absolute; top: 10px; right: 20px; background: white; border: 2px solid #CBD5E0; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 100; }
   </style>
 </head>
 <body>
-
-  <div id="start-screen">
-      <h1 class="title">Brave Feelings 🐻</h1>
-      <p style="color: #718096; margin-bottom: 30px;">Click below to start with music.</p>
-      <button id="start-btn" onclick="enterApp()" class="btn btn-green" style="width: auto; padding: 20px 40px; font-size: 24px;">▶ ENTER APP</button>
-      <div id="status-text">Checking audio system...</div>
-  </div>
-
-  <audio id="bg-music" loop>
-      <source src="calm.mp3" type="audio/mpeg">
-      <source src="assets/calm.mp3" type="audio/mpeg">
-      <source src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Erik_Satie_-_Gymnop%C3%A9die_No._1.ogg" type="audio/ogg">
-  </audio>
-
-  <button id="sound-toggle" onclick="toggleSound()">🔊</button>
+  
   <div id="app-container"></div>
 
   <script>
     const container = document.getElementById('app-container');
-    const music = document.getElementById('bg-music');
-    const startScreen = document.getElementById('start-screen');
-    const statusText = document.getElementById('status-text');
-    const soundToggle = document.getElementById('sound-toggle');
 
-    // --- DIAGNOSTICS ---
-    music.addEventListener('canplaythrough', () => {
-        statusText.innerText = "✅ Music Loaded & Ready!";
-        statusText.style.color = "green";
-    });
-    music.addEventListener('error', (e) => {
-        statusText.innerText = "⚠️ Music file issue (Trying backup...)";
-    });
-
-    // --- START LOGIC ---
-    function enterApp() {
-        startScreen.style.opacity = '0';
-        setTimeout(() => startScreen.remove(), 500);
-        soundToggle.style.display = 'flex';
-        
-        music.volume = 0.5;
-        music.play().then(() => {
-            console.log("Music playing success");
-        }).catch(e => {
-            console.log("Music failed:", e);
-            alert("Music blocked by browser settings. Please try turning off Silent Mode on your device.");
-        });
-        
-        showHome();
-    }
-
-    function toggleSound() {
-        if (music.paused) { music.play(); soundToggle.innerText = "🔊"; } 
-        else { music.pause(); soundToggle.innerText = "🔇"; }
-    }
-
-    // --- VIEWS ---
+    // --- HOME VIEW ---
     function showHome() { 
-        container.innerHTML = `<h1 class="title">Understanding Anger</h1><p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p><div class="grid-2"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float"><div class="card-title">The Anger Volcano</div><p class="card-desc">Ready to explode?</p><button onclick="showNegative()" class="btn btn-red">See Explosion</button></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float"><div class="card-title">Cool Down Tools</div><p class="card-desc">Smart ways to chill.</p><button onclick="showSolutions()" class="btn btn-green">Show Solutions</button></div></div><div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>`;
+        container.innerHTML = `
+            <h1 class="title">Understanding Anger</h1>
+            <p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p>
+            
+            <div class="grid-2">
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float">
+                    <div class="card-title">The Anger Volcano</div>
+                    <p class="card-desc">Ready to explode?</p>
+                    <button onclick="showReactions()" class="btn btn-red">See Explosion</button>
+                </div>
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float">
+                    <div class="card-title">Cool Down Tools</div>
+                    <p class="card-desc">Smart ways to chill.</p>
+                    <button onclick="showSolutions()" class="btn btn-green">Show Solutions</button>
+                </div>
+            </div>
+             <div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>
+        `;
     }
 
-    function showNegative() { 
-        container.innerHTML = `<button onclick="showHome()" class="btn-back">← Back</button><h1 class="title red-title">When Anger Explodes! 💥</h1><div class="grid-2" style="margin-top: 30px;"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div></div><div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;"><p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p><button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button></div>`;
+    // --- STEP 2: NEGATIVE REACTIONS (THE EXPLOSION) ---
+    // This is the new page you asked for!
+    function showReactions() {
+        container.innerHTML = `
+            <button onclick="showHome()" class="btn-back">← Back</button>
+            <h1 class="title red-title">How Do I Explode? 🌋</h1>
+            <p style="text-align: center; color: #E53E3E; margin-bottom: 30px; font-weight:bold;">These are unsafe ways to let anger out.</p>
+            
+            <div class="grid-2">
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Face%20with%20Symbols%20on%20Mouth.png" class="sticker-img animate-shake">
+                    <div class="card-title">Yelling & Screaming</div>
+                    <p class="card-desc">Using loud or mean words.</p>
+                </div>
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Collision.png" class="sticker-img animate-shake">
+                    <div class="card-title">Hitting & Fighting</div>
+                    <p class="card-desc">Using hands or feet to hurt.</p>
+                </div>
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bomb.png" class="sticker-img animate-shake">
+                    <div class="card-title">Throwing Things</div>
+                    <p class="card-desc">Breaking toys or making a mess.</p>
+                </div>
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Pouting.png" class="sticker-img animate-shake">
+                    <div class="card-title">Stomping</div>
+                    <p class="card-desc">Refusing to listen or talk.</p>
+                </div>
+            </div>
+
+            <div class="white-card" style="margin-top: 30px; border-bottom-color: #E53E3E;">
+                <p style="font-weight: bold; font-size: 20px; color: #C53030;">What happens when I do these things?</p>
+                <button onclick="showConsequences()" class="btn btn-red" style="width: auto;">See The Damage ➔</button>
+            </div>
+        `;
     }
 
+    // --- STEP 3: CONSEQUENCES (THE DAMAGE) ---
+    function showConsequences() { 
+        container.innerHTML = `
+            <button onclick="showReactions()" class="btn-back">← Back</button>
+            <h1 class="title red-title">The Damage 💔</h1>
+            <p style="text-align: center; color: #718096; margin-bottom: 30px;">Explosions hurt us and the people around us.</p>
+
+            <div class="grid-2">
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div><p class="card-desc">You can't think clearly.</p></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div><p class="card-desc">Friends feel sad or scared.</p></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div><p class="card-desc">Your heart beats too fast.</p></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div><p class="card-desc">You might get in trouble.</p></div>
+            </div>
+            
+            <div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;">
+                <p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 But I can choose a better way!</p>
+                <button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers ➔</button>
+            </div>
+        `;
+    }
+
+    // --- STEP 4: SOLUTIONS (COOL DOWN) ---
     function showSolutions() {
       container.innerHTML = `
-        <button onclick="showHome()" class="btn-back">← Back</button>
+        <button onclick="showHome()" class="btn-back">← Back to Start</button>
         <h1 class="title green-title">Your Cool Down Powers 🛡️</h1>
         <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
 
@@ -252,6 +299,9 @@
             if(t<=0) { clearInterval(i); timer.innerText = "Done!"; }
         }, 1000);
     }
+
+    // Initialize
+    showHome();
   </script>
 </body>
 </html>
