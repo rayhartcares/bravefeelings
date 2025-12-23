@@ -12,14 +12,11 @@
     
     .white-card { background: white; border-radius: 24px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: center; margin-bottom: 24px; border-bottom: 6px solid #EDF2F7; position: relative; overflow: visible; transition: transform 0.2s;}
     .white-card:hover { transform: translateY(-5px); }
-    
     .sticker-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); z-index: 2; position: relative; }
     
-    /* --- ANIMATIONS --- */
+    /* ANIMATIONS */
     @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
     .animate-float { animation: float 3s infinite ease-in-out; }
-    
-    /* PARTICLES */
     .particle { position: absolute; border-radius: 50%; pointer-events: none; z-index: 1; }
     .water-drop { width: 10px; height: 15px; background: #90CDF4; border-radius: 50% 50% 30% 30%; animation: melt-drip 1s linear forwards; }
     @keyframes melt-drip { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(60px) scale(0.5); opacity: 0; } }
@@ -32,8 +29,6 @@
     
     .btn { padding: 14px 28px; border-radius: 16px; font-weight: bold; font-size: 18px; border: none; cursor: pointer; color: white; transition: all 0.2s; width: 100%; margin-top: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     .btn:hover { transform: scale(1.02); filter: brightness(1.1); }
-    .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
-    
     .btn-red { background: linear-gradient(135deg, #E53E3E, #C53030); }
     .btn-green { background: linear-gradient(135deg, #48BB78, #38A169); }
     .btn-blue { background: linear-gradient(135deg, #4299E1, #3182CE); }
@@ -41,68 +36,94 @@
     .btn-yellow { background: linear-gradient(135deg, #ECC94B, #D69E2E); color: #FFF; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
     .btn-gray { background: linear-gradient(135deg, #A0AEC0, #718096); }
     .btn-back { background: white; border: 2px solid #CBD5E0; color: #4A5568; padding: 8px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
-    
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; } 
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
 
-    /* Sound Controls */
-    #sound-toggle { position: absolute; top: 10px; right: 20px; background: white; border: 2px solid #CBD5E0; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; }
-    #music-status { position: absolute; top: 15px; right: 70px; font-size: 14px; font-weight: bold; color: #48BB78; display: none; }
+    /* CONTROLS & OVERLAYS */
+    #sound-toggle { position: absolute; top: 10px; right: 20px; background: white; border: 2px solid #CBD5E0; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 100; }
+    
+    /* OVERLAY TO FORCE CLICK */
+    #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,248,240, 0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    
+    /* ERROR BAR */
+    #error-bar { position: fixed; top: 0; left: 0; width: 100%; background: #E53E3E; color: white; text-align: center; padding: 10px; font-weight: bold; font-size: 14px; display: none; z-index: 10000; }
   </style>
 </head>
 <body>
+
+  <div id="error-bar"></div>
+
+  <div id="start-overlay">
+      <h1 class="title">Welcome! 🐻</h1>
+      <p style="font-size: 18px; margin-bottom: 30px; color: #718096;">Click Start to enable sound & music.</p>
+      <button onclick="startApp()" class="btn btn-green" style="width: auto; font-size: 24px; padding: 20px 40px;">▶ START APP</button>
+  </div>
   
   <div id="app-container"></div>
   <button id="sound-toggle" onclick="toggleMute()">🔊</button>
-  <div id="music-status">🎵 Playing</div>
 
   <audio id="bg-calm" loop>
-      <source src="calm.mp3?v=999" type="audio/mpeg">
+      <source src="calm.mp3" type="audio/mpeg">
   </audio>
 
   <script>
     const container = document.getElementById('app-container');
+    const calmMusic = document.getElementById('bg-calm');
+    const soundToggle = document.getElementById('sound-toggle');
+    const overlay = document.getElementById('start-overlay');
+    const errorBar = document.getElementById('error-bar');
     let isMuted = false;
-    let calmMusic = document.getElementById('bg-calm');
+
+    // --- INITIALIZATION ---
+    function startApp() {
+        // 1. Hide Overlay
+        overlay.style.display = 'none';
+        soundToggle.style.display = 'flex';
+        
+        // 2. Unlock Audio Context
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        audioCtx.resume();
+
+        // 3. Try to play music immediately (volume 0) just to test file
+        calmMusic.volume = 0;
+        calmMusic.play().then(() => {
+            // Success! File found and browser allowed it.
+            calmMusic.pause();
+            calmMusic.currentTime = 0;
+            calmMusic.volume = 0.5;
+            showHome();
+        }).catch(error => {
+            // Failed! Show exactly why.
+            errorBar.style.display = 'block';
+            if (error.name === 'NotAllowedError') {
+                errorBar.innerText = "⚠️ Browser blocked sound. Please check site permissions.";
+            } else if (error.name === 'NotSupportedError') {
+                errorBar.innerText = "⚠️ Audio format not supported. Is it a real MP3?";
+            } else {
+                errorBar.innerText = "❌ Music file not found! (Check 'calm.mp3' in GitHub)";
+            }
+            showHome(); // Show app anyway
+        });
+    }
 
     function toggleMute() {
         isMuted = !isMuted;
-        const btn = document.getElementById('sound-toggle');
-        const status = document.getElementById('music-status');
-        
         if (isMuted) {
-            btn.innerText = "🔇";
-            status.style.display = "none";
+            soundToggle.innerText = "🔇";
             calmMusic.pause();
         } else {
-            btn.innerText = "🔊";
-            // Attempt to play immediately
-            calmMusic.volume = 0.5;
-            calmMusic.play().then(() => {
-                status.style.display = "block";
-                status.innerText = "🎵 Playing";
-            }).catch(e => {
-                status.style.display = "block";
-                status.style.color = "orange";
-                status.innerText = "⚠️ Click page first";
-            });
+            soundToggle.innerText = "🔊";
+            if (document.getElementById('solution-view')) calmMusic.play();
         }
     }
 
     // --- HOME VIEW ---
     function showHome() { 
-        // Stop music on home
         calmMusic.pause();
-        document.getElementById('music-status').style.display = "none";
-
         container.innerHTML = `
             <h1 class="title">Understanding Anger</h1>
             <p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p>
-            
-            <div style="text-align:center; margin-bottom:20px;">
-                <button onclick="toggleMute()" style="background:#CBD5E0; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Test Sound 🎵</button>
-            </div>
-
             <div class="grid-2">
                 <div class="white-card">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float">
@@ -139,14 +160,12 @@
 
     // --- SOLUTIONS VIEW ---
     function showSolutions() {
-      // START MUSIC LOGIC
+      // PLAY MUSIC
       if (!isMuted) {
           calmMusic.volume = 0.5;
-          calmMusic.play().then(() => {
-              document.getElementById('music-status').style.display = "block";
-              document.getElementById('music-status').innerText = "🎵 Playing";
-          }).catch(error => {
-              console.log("Autoplay blocked, waiting for click");
+          calmMusic.play().catch(e => {
+              errorBar.style.display = 'block';
+              errorBar.innerText = "❌ Playback Error: " + e.message;
           });
       }
 
@@ -301,9 +320,6 @@
             if(t<=0) { clearInterval(i); timer.innerText = "Done!"; }
         }, 1000);
     }
-
-    // Initialize
-    showHome();
   </script>
 </body>
 </html>
