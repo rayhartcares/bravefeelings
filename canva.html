@@ -29,6 +29,8 @@
     
     .btn { padding: 14px 28px; border-radius: 16px; font-weight: bold; font-size: 18px; border: none; cursor: pointer; color: white; transition: all 0.2s; width: 100%; margin-top: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     .btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    
     .btn-red { background: linear-gradient(135deg, #E53E3E, #C53030); }
     .btn-green { background: linear-gradient(135deg, #48BB78, #38A169); }
     .btn-blue { background: linear-gradient(135deg, #4299E1, #3182CE); }
@@ -39,26 +41,22 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; } 
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
 
-    /* DIAGNOSTIC PLAYER BAR */
+    /* PLAYER BAR */
     #audio-bar {
         position: fixed; bottom: 0; left: 0; width: 100%; 
         background: #2D3748; color: white; padding: 10px;
         display: flex; align-items: center; justify-content: center;
         z-index: 10000; box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
     }
-    #audio-bar span { margin-right: 10px; font-weight: bold; font-size: 14px; }
-    audio { height: 30px; border-radius: 5px; background: #f1f3f4; }
+    audio { height: 35px; width: 80%; max-width: 400px; border-radius: 20px; background: #f1f3f4; }
   </style>
 </head>
 <body>
 
   <div id="audio-bar">
-      <span>🎵 Music Controller:</span>
+      <span style="margin-right:10px;">🎵 Calm:</span>
       <audio id="bg-calm" controls loop>
-          <source src="calm.mp3?v=cachebust1" type="audio/mpeg">
-          <source src="Calm.mp3?v=cachebust1" type="audio/mpeg">
-          <source src="assets/calm.mp3?v=cachebust1" type="audio/mpeg">
-          Your browser does not support the audio element.
+          <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e1/Erik_Satie_-_Gymnop%C3%A9die_No._1.ogg/Erik_Satie_-_Gymnop%C3%A9die_No._1.ogg.mp3" type="audio/mpeg">
       </audio>
   </div>
   
@@ -68,11 +66,11 @@
     const container = document.getElementById('app-container');
     const calmMusic = document.getElementById('bg-calm');
 
-    // Attempt to play music automatically when user enters specific screens
+    // Attempt to play music when user starts solutions
     function tryPlayMusic() {
         calmMusic.volume = 0.5;
         calmMusic.play().catch(e => {
-            console.log("Auto-play blocked. User must use the bottom bar.");
+            console.log("Auto-play blocked. User must click play on the bar.");
         });
     }
 
@@ -117,9 +115,7 @@
 
     // --- SOLUTIONS VIEW ---
     function showSolutions() {
-      // Try to trigger music
       tryPlayMusic();
-
       container.innerHTML = `
         <div id="solution-view"></div>
         <button onclick="showHome()" class="btn-back">← Back</button>
