@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Understanding Anger</title>
+  <title>Brave Feelings - Anger</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
   <style>
     /* --- THEME --- */
@@ -61,14 +61,70 @@
     
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; } 
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* --- THE MUSIC GATES --- */
+    #start-screen {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: #FFF8F0; z-index: 9999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    #music-controls {
+        position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+        background: white; padding: 10px; border-radius: 50px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: none;
+    }
   </style>
 </head>
 <body>
+
+  <div id="start-screen">
+      <h1 class="title" style="margin-bottom: 5px;">Welcome to Brave Feelings 🐻</h1>
+      <p style="color: #718096; margin-bottom: 30px;">Let's calm down together.</p>
+      <button onclick="enterApp()" class="btn btn-green" style="width: auto; padding: 20px 40px; font-size: 24px;">▶ Start Journey</button>
+  </div>
+
+  <audio id="bg-music" loop>
+      <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e1/Erik_Satie_-_Gymnop%C3%A9die_No._1.ogg/Erik_Satie_-_Gymnop%C3%A9die_No._1.ogg.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="music-controls">
+      <button onclick="toggleSound()" style="background:none; border:none; font-size: 24px; cursor: pointer;" id="mute-btn">🔊</button>
+  </div>
+
   <div id="app-container"></div>
+
   <script>
     const container = document.getElementById('app-container');
+    const music = document.getElementById('bg-music');
+    const startScreen = document.getElementById('start-screen');
+    const controls = document.getElementById('music-controls');
+    const muteBtn = document.getElementById('mute-btn');
+    
+    // --- MUSIC LOGIC ---
+    function enterApp() {
+        // This function runs ONLY when user clicks "Start Journey"
+        // This is the "Magic Moment" that unlocks audio
+        startScreen.style.opacity = '0';
+        setTimeout(() => startScreen.remove(), 500);
+        
+        controls.style.display = 'block';
+        music.volume = 0.4; // Nice background volume
+        music.play().catch(e => console.log("Audio issue:", e));
+        
+        showHome();
+    }
 
-    // --- HOME & NEGATIVE VIEWS ---
+    function toggleSound() {
+        if (music.paused) {
+            music.play();
+            muteBtn.innerText = "🔊";
+        } else {
+            music.pause();
+            muteBtn.innerText = "🔇";
+        }
+    }
+
+    // --- APP VIEWS ---
     function showHome() { 
         container.innerHTML = `<h1 class="title">Understanding Anger</h1><p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p><div class="grid-2"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float"><div class="card-title">The Anger Volcano</div><p class="card-desc">Ready to explode?</p><button onclick="showNegative()" class="btn btn-red">See Explosion</button></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float"><div class="card-title">Cool Down Tools</div><p class="card-desc">Smart ways to chill.</p><button onclick="showSolutions()" class="btn btn-green">Show Solutions</button></div></div><div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>`;
     }
@@ -180,12 +236,14 @@
 
         // Drip particles
         const dripInterval = setInterval(() => {
-            const rect = iceImg.getBoundingClientRect(); const cardRect = iceCard.getBoundingClientRect();
+            const rect = iceImg.getBoundingClientRect(); 
+            if (!document.getElementById('ice-card')) { clearInterval(dripInterval); return; }
+            const cardRect = document.getElementById('ice-card').getBoundingClientRect();
             const drop = document.createElement('div');
             drop.classList.add('particle', 'water-drop');
             drop.style.left = (rect.left + rect.width/2 - cardRect.left) + (Math.random()*20-10) + 'px';
             drop.style.top = (rect.top + rect.height/2 - cardRect.top) + 'px';
-            iceCard.appendChild(drop);
+            document.getElementById('ice-card').appendChild(drop);
             setTimeout(() => drop.remove(), 1000);
         }, 300);
 
@@ -243,9 +301,6 @@
             if(t<=0) { clearInterval(i); timer.innerText = "Done!"; }
         }, 1000);
     }
-
-    // Initialize
-    showHome();
   </script>
 </body>
 </html>
