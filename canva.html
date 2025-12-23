@@ -75,30 +75,10 @@
 
     // --- HOME VIEW ---
     function showHome() { 
-        container.innerHTML = `
-            <h1 class="title">Understanding Anger</h1>
-            <p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p>
-            
-            <div class="grid-2">
-                <div class="white-card">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float">
-                    <div class="card-title">The Anger Volcano</div>
-                    <p class="card-desc">Ready to explode?</p>
-                    <button onclick="showReactions()" class="btn btn-red">See Explosion</button>
-                </div>
-                <div class="white-card">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float">
-                    <div class="card-title">Cool Down Tools</div>
-                    <p class="card-desc">Smart ways to chill.</p>
-                    <button onclick="showSolutions()" class="btn btn-green">Show Solutions</button>
-                </div>
-            </div>
-             <div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>
-        `;
+        container.innerHTML = `<h1 class="title">Understanding Anger</h1><p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p><div class="grid-2"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float"><div class="card-title">The Anger Volcano</div><p class="card-desc">Ready to explode?</p><button onclick="showReactions()" class="btn btn-red">See Explosion</button></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float"><div class="card-title">Cool Down Tools</div><p class="card-desc">Smart ways to chill.</p><button onclick="showSolutions()" class="btn btn-green">Show Solutions</button></div></div><div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>`;
     }
 
-    // --- STEP 2: NEGATIVE REACTIONS (THE EXPLOSION) ---
-    // This is the new page you asked for!
+    // --- STEP 2: NEGATIVE REACTIONS (IMAGES FIXED) ---
     function showReactions() {
         container.innerHTML = `
             <button onclick="showHome()" class="btn-back">← Back</button>
@@ -112,12 +92,12 @@
                     <p class="card-desc">Using loud or mean words.</p>
                 </div>
                 <div class="white-card">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Collision.png" class="sticker-img animate-shake">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Boxing%20Glove.png" class="sticker-img animate-shake">
                     <div class="card-title">Hitting & Fighting</div>
                     <p class="card-desc">Using hands or feet to hurt.</p>
                 </div>
                 <div class="white-card">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bomb.png" class="sticker-img animate-shake">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Wastebasket.png" class="sticker-img animate-shake">
                     <div class="card-title">Throwing Things</div>
                     <p class="card-desc">Breaking toys or making a mess.</p>
                 </div>
@@ -244,22 +224,26 @@
         const iceImg = document.getElementById('ice-img');
         const iceMsg = document.getElementById('ice-msg');
         const iceAura = document.getElementById('ice-aura');
+        const iceCard = document.getElementById('ice-card');
+        
         iceBtn.disabled = true; iceBtn.innerText = "Melting...";
         iceImg.classList.remove('animate-float'); iceImg.classList.add('melting');
         iceAura.style.display = "block";
+
         let timeLeft = 10;
         iceMsg.innerText = "Applying cold... heat dropping.";
+
+        // Drip particles
         const dripInterval = setInterval(() => {
-            const rect = iceImg.getBoundingClientRect(); 
-            if (!document.getElementById('ice-card')) { clearInterval(dripInterval); return; }
-            const cardRect = document.getElementById('ice-card').getBoundingClientRect();
+            const rect = iceImg.getBoundingClientRect(); const cardRect = iceCard.getBoundingClientRect();
             const drop = document.createElement('div');
             drop.classList.add('particle', 'water-drop');
             drop.style.left = (rect.left + rect.width/2 - cardRect.left) + (Math.random()*20-10) + 'px';
             drop.style.top = (rect.top + rect.height/2 - cardRect.top) + 'px';
-            document.getElementById('ice-card').appendChild(drop);
+            iceCard.appendChild(drop);
             setTimeout(() => drop.remove(), 1000);
         }, 300);
+
         const meltTimer = setInterval(() => {
             timeLeft--;
             if(timeLeft > 7) iceMsg.innerText = "Applying cold...";
@@ -280,10 +264,23 @@
         const speakImg = document.getElementById('speak-img');
         const speakBox = document.getElementById('speak-box');
         const speakCard = document.getElementById('speak-card');
+
         speakBtn.disabled = true; speakBtn.innerText = "ROARING!!!";
         speakImg.classList.remove('animate-float');
-        speakImg.classList.add('roaring'); 
+        speakImg.classList.add('roaring'); // Roar animation
+        
         speakBox.style.transform = "scale(1.1)"; speakBox.style.borderColor = "#E53E3E";
+
+        // Sound blast waves
+        for(let i=0; i<3; i++) {
+            setTimeout(() => {
+                const wave = document.createElement('div');
+                wave.classList.add('sound-wave');
+                speakCard.appendChild(wave);
+                setTimeout(() => wave.remove(), 1000);
+            }, i * 300);
+        }
+
         setTimeout(() => {
             speakImg.classList.remove('roaring'); speakImg.classList.add('animate-float');
             speakBtn.innerText = "SHOUT IT OUT!"; speakBtn.disabled = false;
