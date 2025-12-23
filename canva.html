@@ -139,7 +139,7 @@
         container.innerHTML = `<button onclick="showHome()" class="btn-back">← Back</button><h1 class="title red-title">When Anger Explodes! 💥</h1><div class="grid-2" style="margin-top: 30px;"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div></div><div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;"><p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p><button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button></div>`;
     }
 
-    // --- SOLUTIONS VIEW (MUSIC STARTS HERE) ---
+    // --- SOLUTIONS VIEW ---
     function showSolutions() {
       playCalmMusic(true); // START MUSIC
       container.innerHTML = `
@@ -195,4 +195,118 @@
              <div class="card-title" style="text-align: center; color: #4A5568;">Tactical Retreat</div>
              <p class="card-desc" style="text-align: center;">Walk away to recharge. Come back when you are in control.</p>
              <div style="text-align: center;">
-                <div id="timeout-timer" style="font-size: 30px; font-weight: bold; color: #
+                <div id="timeout-timer" style="font-size: 30px; font-weight: bold; color: #4A5568; margin: 10px 0;">5:00</div>
+                <button onclick="startTimeOut()" class="btn btn-gray">Start 5-Min Timer</button>
+             </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    // --- TOOL LOGIC ---
+    let breathInterval;
+    function toggleBreath() {
+       const circle = document.getElementById('breath-circle');
+       if(circle.style.transform.includes("scale(1.5)")) {
+          circle.style.transform = "scale(1)"; circle.innerText = "Breathe"; clearInterval(breathInterval);
+       } else {
+          circle.innerText = "In..."; circle.style.transform = "scale(1.5)"; 
+          breathInterval = setInterval(() => {
+             if(circle.innerText === "In...") { circle.innerText = "Out..."; circle.style.transform = "scale(1)"; } 
+             else { circle.innerText = "In..."; circle.style.transform = "scale(1.5)"; }
+          }, 4000);
+       }
+    }
+
+    function startMove() {
+       let t = 10; const timer = document.getElementById('move-timer'); timer.innerText = t;
+       const i = setInterval(() => { t--; timer.innerText = t; 
+       if(t<=0) { clearInterval(i); timer.innerText = "Great Job! 🎉"; } }, 1000);
+    }
+
+    function startIceMelt() {
+        const iceBtn = document.getElementById('ice-btn');
+        const iceImg = document.getElementById('ice-img');
+        const iceMsg = document.getElementById('ice-msg');
+        const iceAura = document.getElementById('ice-aura');
+        
+        iceBtn.disabled = true; iceBtn.innerText = "Melting...";
+        iceImg.classList.remove('animate-float'); iceImg.classList.add('melting');
+        iceAura.style.display = "block";
+
+        let timeLeft = 10;
+        iceMsg.innerText = "Applying cold... heat dropping.";
+
+        // Drip particles
+        const dripInterval = setInterval(() => {
+            const rect = iceImg.getBoundingClientRect(); 
+            // Safety check in case user switches page quickly
+            if (!document.getElementById('ice-card')) { clearInterval(dripInterval); return; }
+            const cardRect = document.getElementById('ice-card').getBoundingClientRect();
+            const drop = document.createElement('div');
+            drop.classList.add('particle', 'water-drop');
+            drop.style.left = (rect.left + rect.width/2 - cardRect.left) + (Math.random()*20-10) + 'px';
+            drop.style.top = (rect.top + rect.height/2 - cardRect.top) + 'px';
+            document.getElementById('ice-card').appendChild(drop);
+            setTimeout(() => drop.remove(), 1000);
+        }, 300);
+
+        const meltTimer = setInterval(() => {
+            timeLeft--;
+            if(timeLeft > 7) iceMsg.innerText = "Applying cold...";
+            else if(timeLeft > 3) iceMsg.innerText = "🥶 Breathing slower...";
+            else if(timeLeft > 0) iceMsg.innerText = "💧 Almost melted...";
+            else {
+                clearInterval(meltTimer); clearInterval(dripInterval);
+                iceMsg.innerText = "✨ Relief achieved.";
+                iceAura.style.display = "none"; iceBtn.innerText = "Melt Again"; iceBtn.disabled = false;
+                iceImg.classList.remove('melting');
+                setTimeout(() => iceImg.classList.add('animate-float'), 1000);
+            }
+        }, 1000);
+    }
+
+    function startShout() {
+        const speakBtn = document.getElementById('speak-btn');
+        const speakImg = document.getElementById('speak-img');
+        const speakBox = document.getElementById('speak-box');
+        const speakCard = document.getElementById('speak-card');
+
+        speakBtn.disabled = true; speakBtn.innerText = "ROARING!!!";
+        speakImg.classList.remove('animate-float');
+        speakImg.classList.add('roaring'); 
+        
+        speakBox.style.transform = "scale(1.1)"; speakBox.style.borderColor = "#E53E3E";
+
+        // Sound blast waves
+        for(let i=0; i<3; i++) {
+            setTimeout(() => {
+                const wave = document.createElement('div');
+                wave.classList.add('sound-wave');
+                speakCard.appendChild(wave);
+                setTimeout(() => wave.remove(), 1000);
+            }, i * 300);
+        }
+
+        setTimeout(() => {
+            speakImg.classList.remove('roaring'); speakImg.classList.add('animate-float');
+            speakBtn.innerText = "SHOUT IT OUT!"; speakBtn.disabled = false;
+            speakBox.style.transform = "scale(1)"; speakBox.style.borderColor = "#ECC94B";
+        }, 2000);
+    }
+
+    function startTimeOut() {
+        let t = 300; const timer = document.getElementById('timeout-timer');
+        const i = setInterval(() => {
+            t--; const m = Math.floor(t / 60); const s = t % 60;
+            timer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if(t<=0) { clearInterval(i); timer.innerText = "Done!"; }
+        }, 1000);
+    }
+
+    // Initialize
+    showHome();
+  </script>
+</body>
+</html>
