@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Frustration</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #FFF8F0; /* Soft Cream */
+            --card-bg: #FFFFFF;
+            --text-color: #4A4A4A;
+            --primary-orange: #FF8C42; /* Frustration Color */
+            --primary-green: #6BCB77; /* Solution Color */
+            --soft-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --border-radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevent text selection for app-like feel */
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- CONTAINER & VIEWS --- */
+        #app-container {
+            width: 100%;
+            max-width: 480px; /* Mobile app width */
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .view {
+            width: 100%;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease-out;
+            padding-bottom: 40px;
+        }
+
+        .view.active {
+            display: flex;
+        }
+
+        /* --- TYPOGRAPHY & IMAGES --- */
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #555;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 18px;
+            text-align: center;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        img.emoji-3d {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin: 10px 0;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+        }
+
+        img.icon-small {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        /* --- CARDS & GRIDS --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--soft-shadow);
+            padding: 25px;
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .mini-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .mini-card:active {
+            transform: scale(0.95);
+        }
+
+        .mini-card p {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, filter 0.2s;
+            margin-top: 10px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary { background-color: var(--primary-orange); }
+        .btn-success { background-color: var(--primary-green); }
+        .btn-outline { 
+            background-color: transparent; 
+            border: 2px solid var(--primary-green); 
+            color: var(--primary-green);
+            margin-top: 15px;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating { animation: float 3s ease-in-out infinite; }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .shake-screen { animation: shake 0.5s; }
+
+        /* --- TOOL SPECIFICS --- */
+        
+        /* 1. Breathing */
+        .breath-circle {
+            width: 100px;
+            height: 100px;
+            background-color: #A0E7E5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-weight: bold;
+            transition: all 4s ease-in-out;
+            margin: 0 auto;
+        }
+        .breathing-active {
+            transform: scale(1.5);
+            background-color: #4DB6AC;
+        }
+
+        /* 2. Help Bubble */
+        .help-bubble {
+            background: #E1F5FE;
+            color: #0277BD;
+            padding: 10px 20px;
+            border-radius: 20px 20px 20px 0;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            font-weight: 600;
+        }
+        .help-visible { opacity: 1; }
+
+        /* 3. Timer Bar */
+        .timer-container {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .timer-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-green);
+            transition: width 0.1s linear;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <section id="view-home" class="view active">
+        <h1>Understanding Frustration</h1>
+        <div class="card floating" style="margin-top: 20px;">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/Activities/Yarn/3D/yarn_3d.png" alt="Tangled Knot" class="emoji-3d">
+            <p style="margin-top: 15px;">Frustration feels like being stuck in a knot.</p>
+        </div>
+        
+        <button class="btn btn-primary" onclick="goToView('view-behaviors')">See The Mess</button>
+        <button class="btn btn-outline" onclick="goToView('view-solutions')">Cool Down Tools</button>
+    </section>
+
+    <section id="view-behaviors" class="view">
+        <h2>What Does Frustration Look Like?</h2>
+        
+        <div class="grid-2">
+            <div class="mini-card">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/People/Person%20shrugging/Default/3D/person_shrugging_3d_default.png" alt="Giving Up" class="icon-small">
+                <p>Giving Up</p>
+            </div>
+            <div class="mini-card">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/Smilies/Loudly%20crying%20face/3D/loudly_crying_face_3d.png" alt="Crying" class="icon-small">
+                <p>Crying</p>
+            </div>
+            <div class="mini-card">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/Objects/Wastebasket/3D/wastebasket_3d.png" alt="Destroying" class="icon-small">
+                <p>Destroying</p>
+            </div>
+            <div class="mini-card">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/Smilies/Face%20with%20symbols%20on%20mouth/3D/face_with_symbols_on_mouth_3d.png" alt="Negative Talk" class="icon-small">
+                <p>Bad Words</p>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="goToView('view-consequences')">See The Consequence</button>
+    </section>
+
+    <section id="view-consequences" class="view">
+        <h1>Getting Stuck</h1>
+        
+        <div class="card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/Smilies/Face%20in%20clouds/3D/face_in_clouds_3d.png" alt="Brain Fog" class="emoji-3d">
+            <h2>Brain Fog</h2>
+            <p>When you are frustrated, you stop thinking clearly.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/Objects/Hourglass%20not%20done/3D/hourglass_not_done_3d.png" alt="Hourglass" class="emoji-3d">
+            <h2>Time Wasted</h2>
+            <p>Crying or giving up doesn't fix the knot. The problem is still there.</p>
+        </div>
+
+        <button class="btn btn-success" onclick="goToView('view-solutions')">Find a Way Out!</button>
+    </section>
+
+    <section id="view-solutions" class="view">
+        <h1>Un-Tangle Your Brain 🧠</h1>
+        
+        <div class="grid-2">
+            <div class="mini-card" onclick="toggleBreathing(this)">
+                <div class="breath-circle" id="breathCircle">Inhale</div>
+                <p style="margin-top:10px; font-weight:600;">Deep Breath</p>
+            </div>
+
+            <div class="mini-card" onclick="askForHelp(this)">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/People/Person%20raising%20hand/Default/3D/person_raising_hand_3d_default.png" alt="Help" class="icon-small">
+                <p>Ask Help</p>
+                <div class="help-bubble">Can you help me?</div>
+            </div>
+
+            <div class="mini-card" onclick="startBreak(this)">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/Objects/Battery/3D/battery_3d.png" alt="Battery" class="icon-small">
+                <p>Recharge</p>
+                <div class="timer-container"><div class="timer-bar" id="breakBar"></div></div>
+            </div>
+
+            <div class="mini-card" onclick="shakeItOff()">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-3D-Fluent-Emojis/main/Emojis/People/Person%20running/Default/3D/person_running_3d_default.png" alt="Run" class="icon-small">
+                <p>Shake It Off!</p>
+            </div>
+        </div>
+
+        <button class="btn btn-outline" onclick="goToView('view-home')">Start Over</button>
+    </section>
+
+</div>
+
+<script>
+    // --- NAVIGATION ---
+    function goToView(viewId) {
+        // Hide all views
+        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+        // Show target view
+        document.getElementById(viewId).classList.add('active');
+        // Reset animations if returning to solutions
+        if(viewId !== 'view-solutions') resetTools();
+    }
+
+    // --- TOOL FUNCTIONS ---
+
+    // 1. Breathing Tool
+    function toggleBreathing(card) {
+        const circle = card.querySelector('.breath-circle');
+        if (circle.classList.contains('breathing-active')) {
+            circle.classList.remove('breathing-active');
+            circle.innerText = "Inhale";
+        } else {
+            circle.innerText = "Exhale";
+            circle.classList.add('breathing-active');
+            setTimeout(() => {
+                // If the user hasn't clicked it off yet, change text back
+                if(circle.classList.contains('breathing-active')) circle.innerText = "Inhale";
+                // Loop animation logically in CSS, but here we just toggle state
+                circle.classList.remove('breathing-active');
+            }, 4000);
+        }
+    }
+
+    // 2. Ask For Help
+    function askForHelp(card) {
+        const bubble = card.querySelector('.help-bubble');
+        bubble.classList.add('help-visible');
+        setTimeout(() => {
+            bubble.classList.remove('help-visible');
+        }, 3000);
+    }
+
+    // 3. Recharge Timer
+    let breakTimer = null;
+    function startBreak(card) {
+        const bar = card.querySelector('#breakBar');
+        if(breakTimer) clearInterval(breakTimer);
+        
+        let width = 0;
+        bar.style.width = '0%';
+        
+        // 10 seconds total (10000ms). Update every 100ms.
+        // Step size = 1% every 100ms.
+        breakTimer = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(breakTimer);
+                bar.style.backgroundColor = '#4CAF50'; // Done color
+            } else {
+                width++; 
+                bar.style.width = width + '%';
+            }
+        }, 100);
+    }
+
+    // 4. Shake It Off
+    function shakeItOff() {
+        const container = document.getElementById('app-container');
+        container.classList.add('shake-screen');
+        
+        // Remove class after animation plays so it can be played again
+        setTimeout(() => {
+            container.classList.remove('shake-screen');
+        }, 500);
+    }
+
+    function resetTools() {
+        // Simple reset for visual states
+        document.getElementById('breakBar').style.width = '0%';
+        clearInterval(breakTimer);
+    }
+</script>
+
+</body>
+</html>
