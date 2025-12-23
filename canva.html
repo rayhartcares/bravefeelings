@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brave Feelings Lab - Anger</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', sans-serif; background-color: #E6FFFA; }
+    .card { transition: transform 0.2s; }
+    .card:hover { transform: scale(1.02); }
+    .btn { transition: background-color 0.2s; }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-4">
+
+  <div id="app" class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden p-8" style="min-height: 600px;">
+    </div>
+
+  <script>
+    const app = document.getElementById('app');
+
+    // --- 1. THE MAIN MENU (The "New" Design) ---
+    function showIntro() {
+      app.innerHTML = `
+        <div class="text-center h-full flex flex-col justify-center">
+          <h1 class="text-5xl font-bold text-gray-800 mb-4">Understanding Anger 😠</h1>
+          <p class="text-xl text-gray-600 mb-12">Anger is normal, but let's learn how to handle it!</p>
+          
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="card bg-orange-50 p-8 rounded-2xl border-2 border-orange-100 cursor-pointer" onclick="showNegative()">
+              <div class="text-6xl mb-4">🌋</div>
+              <h2 class="text-2xl font-bold text-orange-600 mb-2">The Anger Volcano</h2>
+              <p class="text-gray-500">What happens when we explode?</p>
+            </div>
+
+            <div class="card bg-green-50 p-8 rounded-2xl border-2 border-green-100 cursor-pointer" onclick="showSolutions()">
+              <div class="text-6xl mb-4">🧊</div>
+              <h2 class="text-2xl font-bold text-green-600 mb-2">Cool Down Tools</h2>
+              <p class="text-gray-500">Smart ways to chill out.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- 2. THE NEGATIVE CONSEQUENCES ---
+    function showNegative() {
+      app.innerHTML = `
+        <div class="h-full">
+          <button onclick="showIntro()" class="mb-6 text-gray-500 hover:text-gray-800 font-bold">← Back</button>
+          <h2 class="text-3xl font-bold text-red-500 text-center mb-8">When We Lose Control...</h2>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="p-4 bg-red-50 rounded-xl text-center"><div class="text-4xl mb-2">🧠</div><h3 class="font-bold">Brain Stops Thinking</h3></div>
+            <div class="p-4 bg-red-50 rounded-xl text-center"><div class="text-4xl mb-2">💔</div><h3 class="font-bold">Feelings Get Hurt</h3></div>
+            <div class="p-4 bg-red-50 rounded-xl text-center"><div class="text-4xl mb-2">💢</div><h3 class="font-bold">Muscles Get Tight</h3></div>
+            <div class="p-4 bg-red-50 rounded-xl text-center"><div class="text-4xl mb-2">😢</div><h3 class="font-bold">We Feel Guilty</h3></div>
+          </div>
+          <div class="mt-8 text-center">
+            <button onclick="showSolutions()" class="bg-green-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-600 text-lg shadow-lg btn">Learn to Cool Down ➔</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- 3. THE SOLUTIONS (Interactive Tools) ---
+    function showSolutions() {
+      app.innerHTML = `
+        <div class="h-full">
+          <button onclick="showIntro()" class="mb-6 text-gray-500 hover:text-gray-800 font-bold">← Back</button>
+          <h2 class="text-3xl font-bold text-green-600 text-center mb-8">Choose a Cool Down Tool</h2>
+          <div class="grid gap-4">
+            <button onclick="startBreathing()" class="w-full p-4 bg-blue-50 hover:bg-blue-100 rounded-xl text-left flex items-center transition">
+              <span class="text-3xl mr-4">🫁</span> <span class="text-xl font-bold text-blue-800">Deep Breathing</span>
+            </button>
+            <button onclick="startMovement()" class="w-full p-4 bg-yellow-50 hover:bg-yellow-100 rounded-xl text-left flex items-center transition">
+              <span class="text-3xl mr-4">🏃</span> <span class="text-xl font-bold text-yellow-800">Move Your Body</span>
+            </button>
+            <button onclick="startIce()" class="w-full p-4 bg-cyan-50 hover:bg-cyan-100 rounded-xl text-left flex items-center transition">
+              <span class="text-3xl mr-4">🧊</span> <span class="text-xl font-bold text-cyan-800">The Ice Cube Trick</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- TOOL: BREATHING ---
+    function startBreathing() {
+      app.innerHTML = `
+        <div class="text-center h-full flex flex-col items-center justify-center">
+          <div id="breathCircle" class="w-48 h-48 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl transition-all duration-[4000ms] mb-8">Breathe In</div>
+          <button onclick="showSolutions()" class="text-gray-500">Stop</button>
+        </div>
+      `;
+      setTimeout(() => { document.getElementById('breathCircle').style.transform = "scale(1.5)"; }, 100);
+      setInterval(() => {
+        const c = document.getElementById('breathCircle');
+        if(c) {
+           c.style.transform = c.style.transform === "scale(1.5)" ? "scale(1)" : "scale(1.5)";
+           c.innerText = c.innerText === "Breathe In" ? "Breathe Out" : "Breathe In";
+        }
+      }, 4000);
+    }
+
+    // --- TOOL: MOVEMENT ---
+    function startMovement() {
+      app.innerHTML = `
+        <div class="text-center h-full pt-10">
+          <div class="text-6xl mb-4 animate-bounce">🏃</div>
+          <h2 class="text-2xl font-bold mb-4">Jump for 10 seconds!</h2>
+          <div id="timer" class="text-5xl font-bold text-orange-500 mb-8">10</div>
+          <button onclick="showSolutions()" class="text-gray-500">Done</button>
+        </div>
+      `;
+      let t = 10;
+      const i = setInterval(() => {
+        t--;
+        const el = document.getElementById('timer');
+        if(el) el.innerText = t;
+        if(t <= 0) { clearInterval(i); if(el) el.innerText = "Great Job!"; }
+      }, 1000);
+    }
+
+    // --- TOOL: ICE CUBE ---
+    function startIce() {
+      app.innerHTML = `
+        <div class="text-center h-full pt-10">
+          <div id="ice" class="text-9xl mb-4 cursor-pointer transition-all duration-1000 hover:scale-95" onclick="this.style.opacity='0.5'; document.getElementById('msg').innerText='Feeling the cold...';">🧊</div>
+          <p id="msg" class="text-xl text-cyan-700 font-bold mb-8">Click the ice cube to hold it!</p>
+          <button onclick="showSolutions()" class="text-gray-500">Back</button>
+        </div>
+      `;
+    }
+
+    // Start App
+    showIntro();
+  </script>
+</body>
+</html>
