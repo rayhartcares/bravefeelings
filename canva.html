@@ -22,8 +22,6 @@
     /* Active Tool Animations */
     @keyframes melt-drip { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(60px) scale(0.5); opacity: 0; } }
     @keyframes cool-pulse { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
-    
-    /* Roar Animation */
     @keyframes roar-shake { 
         0% { transform: scale(1) rotate(0deg); } 
         10%, 90% { transform: scale(1.2) rotate(-5deg); } 
@@ -59,32 +57,101 @@
     .btn-orange { background: linear-gradient(135deg, #ED8936, #C05621); }
     .btn-yellow { background: linear-gradient(135deg, #ECC94B, #D69E2E); color: #FFF; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
     .btn-gray { background: linear-gradient(135deg, #A0AEC0, #718096); }
-    
     .btn-back { background: white; border: 2px solid #CBD5E0; color: #4A5568; padding: 8px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
     
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; } 
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* Mute Button */
+    #sound-toggle { position: absolute; top: 10px; right: 20px; background: white; border: 2px solid #CBD5E0; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; }
   </style>
 </head>
 <body>
+  
   <div id="app-container"></div>
+  <button id="sound-toggle" onclick="toggleMute()">🔊</button>
+
+  <audio id="bg-calm" loop>
+      <source src="assets/calm.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="sfx-pop">
+      <source src="assets/pop.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
     const container = document.getElementById('app-container');
+    let isMuted = false;
+    let calmMusic = document.getElementById('bg-calm');
+
+    // --- SOUND MANAGER ---
+    function toggleMute() {
+        isMuted = !isMuted;
+        const btn = document.getElementById('sound-toggle');
+        if (isMuted) {
+            btn.innerText = "🔇";
+            calmMusic.pause();
+        } else {
+            btn.innerText = "🔊";
+            if (document.getElementById('solution-view')) calmMusic.play().catch(e => console.log("Audio waiting for interaction"));
+        }
+    }
+
+    function playSound(type) {
+        if (isMuted) return;
+        // Simple synthetic sounds so it works without files immediately
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'click') {
+            osc.frequency.value = 600;
+            gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.1);
+            osc.start(); osc.stop(ctx.currentTime + 0.1);
+        } else if (type === 'success') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5);
+            osc.start(); osc.stop(ctx.currentTime + 0.5);
+        } else if (type === 'rumble') {
+            osc.type = 'sawtooth';
+            osc.frequency.value = 80;
+            gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
+            osc.start(); osc.stop(ctx.currentTime + 0.3);
+        }
+    }
+
+    function playCalmMusic(play) {
+        if (isMuted) return;
+        if (play) {
+            calmMusic.volume = 0.3;
+            calmMusic.play().catch(e => console.log("User must interact first"));
+        } else {
+            calmMusic.pause();
+            calmMusic.currentTime = 0;
+        }
+    }
 
     // --- HOME & NEGATIVE VIEWS ---
     function showHome() { 
-        container.innerHTML = `<h1 class="title">Understanding Anger</h1><p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p><div class="grid-2"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float"><div class="card-title">The Anger Volcano</div><p class="card-desc">Ready to explode?</p><button onclick="showNegative()" class="btn btn-red">See Explosion</button></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float"><div class="card-title">Cool Down Tools</div><p class="card-desc">Smart ways to chill.</p><button onclick="showSolutions()" class="btn btn-green">Show Solutions</button></div></div><div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>`;
+        playCalmMusic(false); // Stop music on home
+        container.innerHTML = `<h1 class="title">Understanding Anger</h1><p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p><div class="grid-2"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float"><div class="card-title">The Anger Volcano</div><p class="card-desc">Ready to explode?</p><button onclick="playSound('rumble'); showNegative()" class="btn btn-red">See Explosion</button></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float"><div class="card-title">Cool Down Tools</div><p class="card-desc">Smart ways to chill.</p><button onclick="playSound('click'); showSolutions()" class="btn btn-green">Show Solutions</button></div></div><div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>`;
     }
 
     function showNegative() { 
-        // FIXED: Replaced broken "Brain.png" with "Exploding Head.png" which works reliably
-        container.innerHTML = `<button onclick="showHome()" class="btn-back">← Back</button><h1 class="title red-title">When Anger Explodes! 💥</h1><div class="grid-2" style="margin-top: 30px;"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div></div><div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;"><p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p><button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button></div>`;
+        container.innerHTML = `<button onclick="playSound('click'); showHome()" class="btn-back">← Back</button><h1 class="title red-title">When Anger Explodes! 💥</h1><div class="grid-2" style="margin-top: 30px;"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div></div><div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;"><p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p><button onclick="playSound('click'); showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button></div>`;
     }
 
-    // --- SOLUTIONS VIEW (ALL 5 RESTORED) ---
+    // --- SOLUTIONS VIEW (MUSIC STARTS HERE) ---
     function showSolutions() {
+      playCalmMusic(true); // START MUSIC
       container.innerHTML = `
-        <button onclick="showHome()" class="btn-back">← Back</button>
+        <div id="solution-view"></div>
+        <button onclick="playSound('click'); showHome()" class="btn-back">← Back</button>
         <h1 class="title green-title">Your Cool Down Powers 🛡️</h1>
         <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
 
@@ -94,7 +161,7 @@
              </div>
              <div class="card-title" style="text-align: center; color: #48BB78; margin-top: 10px;">Deep Breathing</div>
              <p class="card-desc" style="text-align: center;">Slows down your heart rate. Breathe in... Breathe out...</p>
-             <button onclick="toggleBreath()" class="btn btn-green">Start Breathing</button>
+             <button onclick="playSound('click'); toggleBreath()" class="btn btn-green">Start Breathing</button>
           </div>
 
           <div class="white-card" style="text-align: left; border-bottom-color: #ED8936;">
@@ -102,7 +169,7 @@
              <div class="card-title" style="text-align: center; color: #ED8936;">Move Your Body</div>
              <p class="card-desc" style="text-align: center;">Shake off the angry energy! Jump or run for 10 seconds.</p>
              <div style="text-align: center; font-size: 40px; font-weight: bold; color: #ED8936; height: 50px;" id="move-timer"></div>
-             <button onclick="startMove()" class="btn btn-orange">Start 10s Burst</button>
+             <button onclick="playSound('click'); startMove()" class="btn btn-orange">Start 10s Burst</button>
           </div>
 
           <div class="white-card" id="ice-card" style="text-align: left; border-bottom-color: #4299E1; min-height: 380px;">
@@ -114,7 +181,7 @@
              <p class="card-desc" style="text-align: center;">Hold the ice. Feel the cold slowly spread and melt away the anger.</p>
              <div style="text-align: center;">
                 <p id="ice-msg" style="color: #3182CE; font-weight: bold; height: 25px; font-size: 16px; margin-bottom: 5px;"></p>
-                <button id="ice-btn" onclick="startIceMelt()" class="btn btn-blue">Start Melting (10s)</button>
+                <button id="ice-btn" onclick="playSound('click'); startIceMelt()" class="btn btn-blue">Start Melting (10s)</button>
              </div>
           </div>
 
@@ -127,7 +194,7 @@
              <div id="speak-box" style="background-color: #FFFFF0; padding: 15px; border-radius: 16px; border: 3px dashed #ECC94B; text-align: center; transition: all 0.3s; margin: 10px 0;">
                 <p id="speak-text" style="font-weight: bold; color: #D69E2E; font-size: 18px; margin:0;">"I feel ANGRY when..."</p>
              </div>
-             <button id="speak-btn" onclick="startShout()" class="btn btn-yellow">SHOUT IT OUT!</button>
+             <button id="speak-btn" onclick="playSound('rumble'); startShout()" class="btn btn-yellow">SHOUT IT OUT!</button>
           </div>
 
           <div class="white-card" style="text-align: left; border-bottom-color: #A0AEC0;">
@@ -136,7 +203,7 @@
              <p class="card-desc" style="text-align: center;">Walk away to recharge. Come back when you are in control.</p>
              <div style="text-align: center;">
                 <div id="timeout-timer" style="font-size: 30px; font-weight: bold; color: #4A5568; margin: 10px 0;">5:00</div>
-                <button onclick="startTimeOut()" class="btn btn-gray">Start 5-Min Timer</button>
+                <button onclick="playSound('click'); startTimeOut()" class="btn btn-gray">Start 5-Min Timer</button>
              </div>
           </div>
 
@@ -145,8 +212,6 @@
     }
 
     // --- TOOL LOGIC ---
-
-    // 1. BREATHING
     let breathInterval;
     function toggleBreath() {
        const circle = document.getElementById('breath-circle');
@@ -161,19 +226,17 @@
        }
     }
 
-    // 2. MOVEMENT
     function startMove() {
        let t = 10; const timer = document.getElementById('move-timer'); timer.innerText = t;
-       const i = setInterval(() => { t--; timer.innerText = t; if(t<=0) { clearInterval(i); timer.innerText = "Great Job! 🎉"; } }, 1000);
+       const i = setInterval(() => { t--; timer.innerText = t; 
+       if(t<=0) { clearInterval(i); timer.innerText = "Great Job! 🎉"; playSound('success'); } }, 1000);
     }
 
-    // 3. ICE MELT
     function startIceMelt() {
         const iceBtn = document.getElementById('ice-btn');
         const iceImg = document.getElementById('ice-img');
         const iceMsg = document.getElementById('ice-msg');
         const iceAura = document.getElementById('ice-aura');
-        const iceCard = document.getElementById('ice-card');
         
         iceBtn.disabled = true; iceBtn.innerText = "Melting...";
         iceImg.classList.remove('animate-float'); iceImg.classList.add('melting');
@@ -182,33 +245,22 @@
         let timeLeft = 10;
         iceMsg.innerText = "Applying cold... heat dropping.";
 
-        // Drip particles
-        const dripInterval = setInterval(() => {
-            const rect = iceImg.getBoundingClientRect(); const cardRect = iceCard.getBoundingClientRect();
-            const drop = document.createElement('div');
-            drop.classList.add('particle', 'water-drop');
-            drop.style.left = (rect.left + rect.width/2 - cardRect.left) + (Math.random()*20-10) + 'px';
-            drop.style.top = (rect.top + rect.height/2 - cardRect.top) + 'px';
-            iceCard.appendChild(drop);
-            setTimeout(() => drop.remove(), 1000);
-        }, 300);
-
         const meltTimer = setInterval(() => {
             timeLeft--;
             if(timeLeft > 7) iceMsg.innerText = "Applying cold...";
             else if(timeLeft > 3) iceMsg.innerText = "🥶 Breathing slower...";
             else if(timeLeft > 0) iceMsg.innerText = "💧 Almost melted...";
             else {
-                clearInterval(meltTimer); clearInterval(dripInterval);
+                clearInterval(meltTimer); 
                 iceMsg.innerText = "✨ Relief achieved.";
                 iceAura.style.display = "none"; iceBtn.innerText = "Melt Again"; iceBtn.disabled = false;
                 iceImg.classList.remove('melting');
+                playSound('success');
                 setTimeout(() => iceImg.classList.add('animate-float'), 1000);
             }
         }, 1000);
     }
 
-    // 4. SPEAK SHOUT
     function startShout() {
         const speakBtn = document.getElementById('speak-btn');
         const speakImg = document.getElementById('speak-img');
@@ -217,11 +269,10 @@
 
         speakBtn.disabled = true; speakBtn.innerText = "ROARING!!!";
         speakImg.classList.remove('animate-float');
-        speakImg.classList.add('roaring'); // Roar animation
+        speakImg.classList.add('roaring'); 
         
         speakBox.style.transform = "scale(1.1)"; speakBox.style.borderColor = "#E53E3E";
 
-        // Sound blast waves
         for(let i=0; i<3; i++) {
             setTimeout(() => {
                 const wave = document.createElement('div');
@@ -235,16 +286,16 @@
             speakImg.classList.remove('roaring'); speakImg.classList.add('animate-float');
             speakBtn.innerText = "SHOUT IT OUT!"; speakBtn.disabled = false;
             speakBox.style.transform = "scale(1)"; speakBox.style.borderColor = "#ECC94B";
+            playSound('success');
         }, 2000);
     }
 
-    // 5. TIME OUT
     function startTimeOut() {
         let t = 300; const timer = document.getElementById('timeout-timer');
         const i = setInterval(() => {
             t--; const m = Math.floor(t / 60); const s = t % 60;
             timer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if(t<=0) { clearInterval(i); timer.innerText = "Done!"; }
+            if(t<=0) { clearInterval(i); timer.innerText = "Done!"; playSound('success'); }
         }, 1000);
     }
 
