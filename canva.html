@@ -77,7 +77,8 @@
     }
 
     function showNegative() { 
-        container.innerHTML = `<button onclick="showHome()" class="btn-back">← Back</button><h1 class="title red-title">When Anger Explodes! 💥</h1><div class="grid-2" style="margin-top: 30px;"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Brain.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div></div><div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;"><p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p><button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button></div>`;
+        // FIXED: Replaced broken "Brain.png" with "Exploding Head.png" which works reliably
+        container.innerHTML = `<button onclick="showHome()" class="btn-back">← Back</button><h1 class="title red-title">When Anger Explodes! 💥</h1><div class="grid-2" style="margin-top: 30px;"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div></div><div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;"><p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p><button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button></div>`;
     }
 
     // --- SOLUTIONS VIEW (ALL 5 RESTORED) ---
@@ -207,7 +208,7 @@
         }, 1000);
     }
 
-    // 4. SPEAK SHOUT (NEW)
+    // 4. SPEAK SHOUT
     function startShout() {
         const speakBtn = document.getElementById('speak-btn');
         const speakImg = document.getElementById('speak-img');
