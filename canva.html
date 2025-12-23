@@ -6,12 +6,12 @@
   <title>Understanding Anger</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* 1. THE "CREAM & COMIC" THEME */
+    /* --- 1. THE CREAM THEME --- */
     body {
       margin: 0;
       padding: 0;
-      background-color: #FFF8F0; /* The Cream Background */
-      font-family: 'Fredoka', 'Comic Sans MS', sans-serif; /* The Playful Font */
+      background-color: #FFF8F0; /* The Beige Background */
+      font-family: 'Fredoka', cursive, sans-serif;
       color: #2D3748;
       display: flex;
       justify-content: center;
@@ -20,51 +20,60 @@
 
     #app-container {
       width: 100%;
-      max-width: 900px;
+      max-width: 800px;
       padding: 40px 20px;
     }
 
-    /* 2. CARD STYLES */
+    /* --- 2. COMPONENTS --- */
     .white-card {
       background: white;
       border-radius: 24px;
       padding: 30px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
       text-align: center;
-      transition: transform 0.2s;
+      margin-bottom: 24px;
     }
-    .white-card:hover { transform: translateY(-5px); }
 
-    /* 3. BUTTON STYLES */
     .btn {
-      padding: 16px 32px;
+      padding: 12px 24px;
       border-radius: 12px;
       font-weight: bold;
       font-size: 18px;
       border: none;
       cursor: pointer;
-      width: 100%;
       color: white;
       transition: opacity 0.2s;
+      display: inline-block;
+      margin-top: 10px;
     }
     .btn:hover { opacity: 0.9; }
-    .btn-red { background-color: #E53E3E; }   /* The "Show Problems" Red */
-    .btn-green { background-color: #48BB78; } /* The "Show Solutions" Green */
-    .btn-back { 
-      background: white; 
-      border: 2px solid #2D3748; 
-      color: #2D3748; 
-      width: auto; 
-      padding: 10px 20px;
+    .btn-red { background-color: #E53E3E; width: 100%; }
+    .btn-green { background-color: #48BB78; width: 100%; }
+    
+    .btn-back {
+      background: white;
+      border: 2px solid #2D3748;
+      color: #2D3748;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
       margin-bottom: 20px;
+      font-family: 'Fredoka', sans-serif;
     }
 
-    /* 4. UTILITIES */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .title { font-size: 36px; font-weight: bold; text-align: center; margin-bottom: 10px; }
-    .subtitle { font-size: 18px; text-align: center; color: #4A5568; margin-bottom: 40px; }
+    .title { font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #2D3748; }
+    .green-title { color: #48BB78; }
+    .red-title { color: #E53E3E; }
     
-    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* Tool Icons */
+    .icon { font-size: 48px; margin-bottom: 10px; display: block; }
+    .card-title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+    .card-desc { font-size: 16px; color: #4A5568; line-height: 1.5; margin-bottom: 15px; }
+
   </style>
 </head>
 <body>
@@ -75,82 +84,80 @@
   <script>
     const container = document.getElementById('app-container');
 
-    // --- VIEW 1: HOME (The Cream Intro) ---
+    // --- VIEW 1: HOME ---
     function showHome() {
       container.innerHTML = `
-        <h1 class="title" style="color: #2D3748;">Understanding Anger 😠</h1>
-        <p class="subtitle">Anger is a normal feeling, but it's important to handle it the right way!</p>
+        <h1 class="title">Understanding Anger 😠</h1>
+        <p style="text-align: center; color: #4A5568; margin-bottom: 40px;">Anger is a normal feeling, but it's important to handle it the right way!</p>
         
         <div class="grid-2">
           <div class="white-card">
-            <div style="font-size: 60px; margin-bottom: 10px;">😠</div>
-            <h2 style="font-size: 24px; margin-bottom: 10px;">The Anger Volcano</h2>
-            <p style="margin-bottom: 20px;">See what happens when anger explodes</p>
+            <span class="icon">😠</span>
+            <div class="card-title">The Anger Volcano</div>
+            <p class="card-desc">See what happens when anger explodes</p>
             <button onclick="showNegative()" class="btn btn-red">Show Me The Problems</button>
           </div>
-
           <div class="white-card">
-            <div style="font-size: 60px; margin-bottom: 10px;">😌</div>
-            <h2 style="font-size: 24px; margin-bottom: 10px;">Cool Down Tools</h2>
-            <p style="margin-bottom: 20px;">Learn smart ways to calm down</p>
+            <span class="icon">😌</span>
+            <div class="card-title">Cool Down Tools</div>
+            <p class="card-desc">Learn smart ways to calm down</p>
             <button onclick="showSolutions()" class="btn btn-green">Show Me Solutions</button>
           </div>
         </div>
-        
-        <div style="text-align: center; margin-top: 40px;">
-             <a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Main Menu</a>
+        <div style="text-align: center; margin-top: 30px;">
+           <a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Main Menu</a>
         </div>
       `;
     }
 
-    // --- VIEW 2: NEGATIVE (The Red Title View) ---
+    // --- VIEW 2: NEGATIVE ---
     function showNegative() {
       container.innerHTML = `
-        <button onclick="showHome()" class="btn btn-back">← Back to Home</button>
-        <h1 class="title" style="color: #E53E3E;">What Happens When We Don't Control Anger?</h1>
+        <button onclick="showHome()" class="btn-back">← Back to Home</button>
+        <h1 class="title red-title">What Happens When We Don't Control Anger?</h1>
         
         <div class="grid-2" style="margin-top: 30px;">
           <div class="white-card" style="text-align: left;">
-            <div style="font-size: 40px;">🧠</div>
-            <h3>Your Brain Gets Stuck</h3>
-            <p>The thinking part of your brain shuts down. You can't solve problems.</p>
+            <span class="icon">🧠</span>
+            <div class="card-title">Your Brain Gets Stuck</div>
+            <p class="card-desc">The thinking part of your brain shuts down. You can't solve problems.</p>
           </div>
           <div class="white-card" style="text-align: left;">
-            <div style="font-size: 40px;">💔</div>
-            <h3>Friendships Get Hurt</h3>
-            <p>Saying mean things can push friends away.</p>
+            <span class="icon">💔</span>
+            <div class="card-title">Friendships Get Hurt</div>
+            <p class="card-desc">Saying mean things can push friends away.</p>
           </div>
           <div class="white-card" style="text-align: left;">
-            <div style="font-size: 40px;">💢</div>
-            <h3>Your Body Feels Bad</h3>
-            <p>Your heart beats fast and muscles get tight.</p>
+            <span class="icon">💢</span>
+            <div class="card-title">Your Body Feels Bad</div>
+            <p class="card-desc">Your heart beats fast, muscles get tight, and you might get headaches.</p>
           </div>
           <div class="white-card" style="text-align: left;">
-            <div style="font-size: 40px;">😢</div>
-            <h3>You Feel Worse Later</h3>
-            <p>After an explosion, you often feel guilty or sad.</p>
+            <span class="icon">😢</span>
+            <div class="card-title">You Feel Worse Later</div>
+            <p class="card-desc">After an explosion, you often feel guilty or sad.</p>
           </div>
         </div>
-
-        <div class="white-card" style="margin-top: 30px; background-color: #F0FFF4; border: 2px solid #C6F6D5;">
-           <h3 style="margin-bottom: 15px;">Good news! There are better ways to handle anger! 🌟</h3>
+        
+        <div style="text-align: center; margin-top: 20px;">
+           <p style="font-weight: bold; margin-bottom: 10px;">Good news! There are better ways to handle anger! 🌟</p>
            <button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Show Me Solutions</button>
         </div>
       `;
     }
 
-    // --- VIEW 3: SOLUTIONS (The Green Title View) ---
+    // --- VIEW 3: SOLUTIONS (ALL 5 TOOLS) ---
     function showSolutions() {
       container.innerHTML = `
-        <button onclick="showHome()" class="btn btn-back">← Back to Home</button>
-        <h1 class="title" style="color: #48BB78;">Science-Backed Ways to Cool Down</h1>
+        <button onclick="showHome()" class="btn-back">← Back to Home</button>
+        <h1 class="title green-title">Science-Backed Ways to Cool Down</h1>
 
         <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 30px;">
           
           <div class="white-card" style="text-align: left;">
-            <div style="font-size: 40px;">🫁</div>
-            <h3>Deep Breathing (Proven by Science!)</h3>
-            <p style="margin-bottom: 20px;">Slow breathing activates your "calm down" nervous system.</p>
+            <span class="icon">🫁</span>
+            <div class="card-title">Deep Breathing (Proven by Science!)</div>
+            <p class="card-desc">Slow breathing activates your "calm down" nervous system. Try it: breathe in for 4, hold for 4, out for 4.</p>
             <div style="text-align: center;">
                <div id="breath-circle" style="width: 100px; height: 100px; background: linear-gradient(135deg, #48BB78, #E53E3E); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 0 auto 20px auto; transition: transform 4s;">Breathe</div>
                <button onclick="toggleBreath()" class="btn btn-green" style="width: auto;">Start Breathing Exercise</button>
@@ -158,37 +165,47 @@
           </div>
 
           <div class="white-card" style="text-align: left;">
-            <div style="font-size: 40px;">🏃</div>
-            <h3>Move Your Body</h3>
-            <p>Shake off the extra energy!</p>
+            <span class="icon">🏃</span>
+            <div class="card-title">Move Your Body</div>
+            <p class="card-desc">Exercise releases chemicals that make you feel better. Jump, dance, or run!</p>
             <div style="text-align: center;">
                <div id="move-timer" style="font-size: 40px; font-weight: bold; color: #ED8936; height: 50px;"></div>
-               <button onclick="startMove()" class="btn btn-green" style="width: auto;">Start 10s Jump Timer</button>
+               <button onclick="startMove()" class="btn btn-green" style="width: auto;">Start Movement Timer</button>
             </div>
           </div>
 
           <div class="white-card" style="text-align: left;">
-             <div style="font-size: 40px;">🧊</div>
-             <h3>The Ice Trick</h3>
-             <p>Cool your hands to calm your mind.</p>
+             <span class="icon">🧊</span>
+             <div class="card-title">The Ice Trick</div>
+             <p class="card-desc">Hold an ice cube or splash cold water. This activates your body's "dive reflex" and instantly calms you.</p>
              <div style="text-align: center;">
                 <div id="ice-cube" onclick="clickIce()" style="font-size: 80px; cursor: pointer; transition: transform 0.5s;">🧊</div>
                 <p id="ice-msg" style="color: #3182CE; font-weight: bold; height: 20px;"></p>
+                <button onclick="clickIce()" class="btn btn-green" style="width: auto;">Hold the Ice Cube</button>
              </div>
           </div>
 
-           <div class="white-card" style="text-align: left;">
-             <div style="font-size: 40px;">🎨</div>
-             <h3>Draw It Out</h3>
-             <canvas id="draw-canvas" width="300" height="200" style="border: 2px dashed #CBD5E0; border-radius: 10px; cursor: crosshair; width: 100%; touch-action: none;"></canvas>
-             <div style="text-align: center; margin-top: 10px;">
-                <button onclick="clearDraw()" style="background: #E53E3E; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">Clear</button>
+          <div class="white-card" style="text-align: left;">
+             <span class="icon">🗣️</span>
+             <div class="card-title">Use "I Feel" Statements</div>
+             <p class="card-desc">Instead of yelling, say "I feel angry when..." This helps you express feelings without hurting others.</p>
+             <div style="background-color: #FFF8F0; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <p style="font-style: italic; color: #555;">Example: "I feel angry when you take my toy without asking."</p>
+             </div>
+          </div>
+
+          <div class="white-card" style="text-align: left;">
+             <span class="icon">⏱️</span>
+             <div class="card-title">Take a Time-Out</div>
+             <p class="card-desc">It's okay to walk away! Go to a quiet space for a few minutes until you feel calmer.</p>
+             <div style="text-align: center;">
+                <div id="timeout-timer" style="font-size: 40px; font-weight: bold; color: #E53E3E; border: 4px solid #E53E3E; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">5:00</div>
+                <button onclick="startTimeOut()" class="btn btn-green" style="width: auto;">Start 5-Minute Time-Out</button>
              </div>
           </div>
 
         </div>
       `;
-      setupCanvas();
     }
 
     // --- INTERACTION LOGIC ---
@@ -196,76 +213,37 @@
     function toggleBreath() {
        const circle = document.getElementById('breath-circle');
        if(circle.style.transform === "scale(1.5)") {
-          circle.style.transform = "scale(1)";
-          circle.innerText = "Breathe";
-          clearInterval(breathInterval);
+          circle.style.transform = "scale(1)"; circle.innerText = "Breathe"; clearInterval(breathInterval);
        } else {
-          circle.innerText = "In...";
-          circle.style.transform = "scale(1.5)";
+          circle.innerText = "In..."; circle.style.transform = "scale(1.5)";
           breathInterval = setInterval(() => {
-             if(circle.innerText === "In...") {
-                circle.innerText = "Out...";
-                circle.style.transform = "scale(1)";
-             } else {
-                circle.innerText = "In...";
-                circle.style.transform = "scale(1.5)";
-             }
+             if(circle.innerText === "In...") { circle.innerText = "Out..."; circle.style.transform = "scale(1)"; } 
+             else { circle.innerText = "In..."; circle.style.transform = "scale(1.5)"; }
           }, 4000);
        }
     }
 
     function startMove() {
-       let t = 10;
-       const timer = document.getElementById('move-timer');
-       timer.innerText = t;
-       const i = setInterval(() => {
-          t--;
-          timer.innerText = t;
-          if(t<=0) { clearInterval(i); timer.innerText = "Great Job! 🎉"; }
-       }, 1000);
+       let t = 10; const timer = document.getElementById('move-timer'); timer.innerText = t;
+       const i = setInterval(() => { t--; timer.innerText = t; if(t<=0) { clearInterval(i); timer.innerText = "Great Job! 🎉"; } }, 1000);
     }
 
     function clickIce() {
-       const ice = document.getElementById('ice-cube');
-       const msg = document.getElementById('ice-msg');
-       ice.style.transform = "scale(0.8) rotate(20deg)";
-       msg.innerText = "Brrr! Feeling calmer...";
-       setTimeout(() => {
-          ice.style.transform = "scale(1)";
-          msg.innerText = "";
-       }, 2000);
+       const ice = document.getElementById('ice-cube'); const msg = document.getElementById('ice-msg');
+       ice.style.transform = "scale(0.8) rotate(20deg)"; msg.innerText = "Brrr! Feeling calmer...";
+       setTimeout(() => { ice.style.transform = "scale(1)"; msg.innerText = ""; }, 2000);
     }
 
-    function setupCanvas() {
-       setTimeout(() => {
-         const cvs = document.getElementById('draw-canvas');
-         if(!cvs) return;
-         const ctx = cvs.getContext('2d');
-         ctx.lineWidth = 4; ctx.strokeStyle = "#4299E1"; ctx.lineCap = "round";
-         let drawing = false;
-         
-         // Resize to fit width
-         const rect = cvs.getBoundingClientRect();
-         cvs.width = rect.width; cvs.height = 200;
-
-         function getPos(e) {
-            const r = cvs.getBoundingClientRect();
-            const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-            const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
-            return {x, y};
-         }
-         function start(e) { drawing=true; const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
-         function move(e) { if(!drawing) return; e.preventDefault(); const p=getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
-         function end() { drawing=false; }
-
-         cvs.addEventListener('mousedown', start); cvs.addEventListener('mousemove', move); cvs.addEventListener('mouseup', end);
-         cvs.addEventListener('touchstart', start, {passive:false}); cvs.addEventListener('touchmove', move, {passive:false}); cvs.addEventListener('touchend', end);
-       }, 100);
-    }
-    function clearDraw() {
-       const cvs = document.getElementById('draw-canvas');
-       const ctx = cvs.getContext('2d');
-       ctx.clearRect(0,0,cvs.width,cvs.height);
+    function startTimeOut() {
+        let t = 300; // 5 minutes
+        const timer = document.getElementById('timeout-timer');
+        const i = setInterval(() => {
+            t--;
+            const m = Math.floor(t / 60);
+            const s = t % 60;
+            timer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if(t<=0) { clearInterval(i); timer.innerText = "Done!"; }
+        }, 1000);
     }
 
     // Initialize
