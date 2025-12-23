@@ -7,170 +7,150 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      margin: 0; padding: 0;
-      background-color: #FFF8F0;
-      font-family: 'Fredoka', sans-serif;
-      color: #2D3748;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-      overflow-x: hidden;
+    body{
+      margin:0; padding:0;
+      background:#FFF8F0;
+      font-family:'Fredoka',sans-serif;
+      color:#2D3748;
+      display:flex; justify-content:center;
+      min-height:100vh; overflow-x:hidden;
     }
-    #app-container { width: 100%; max-width: 880px; padding: 40px 18px; }
+    #app-container{ width:100%; max-width:880px; padding:40px 18px; }
 
-    .white-card {
-      background: white;
-      border-radius: 24px;
-      padding: 28px 22px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-      text-align: center;
-      margin-bottom: 24px;
-      border-bottom: 6px solid #EDF2F7;
-      position: relative;
-      overflow: visible;
-      transition: transform 0.2s;
+    .white-card{
+      background:#fff;
+      border-radius:24px;
+      padding:28px 22px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.05);
+      text-align:center;
+      margin-bottom:24px;
+      border-bottom:6px solid #EDF2F7;
+      position:relative;
+      overflow:visible;
+      transition:transform .2s;
     }
-    .white-card:hover { transform: translateY(-5px); }
+    .white-card:hover{ transform:translateY(-5px); }
 
-    .title { font-size: 36px; font-weight: bold; text-align: center; margin-bottom: 10px; }
-    .orange-title { color: #ED8936; }
-    .green-title { color: #48BB78; }
-    .card-title { font-size: 22px; font-weight: bold; margin-bottom: 8px; color: #2D3748; }
-    .card-desc { font-size: 16px; color: #718096; line-height: 1.5; margin: 0; }
+    .title{ font-size:36px; font-weight:800; text-align:center; margin:0 0 10px; }
+    .orange-title{ color:#ED8936; }
+    .green-title{ color:#48BB78; }
+    .card-title{ font-size:22px; font-weight:800; margin:10px 0 6px; }
+    .card-desc{ font-size:16px; color:#718096; line-height:1.5; margin:0; }
 
-    .btn {
-      padding: 14px 28px;
-      border-radius: 16px;
-      font-weight: bold;
-      font-size: 18px;
-      border: none;
-      cursor: pointer;
-      color: white;
-      transition: all 0.2s;
-      width: 100%;
-      margin-top: 15px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    .btn{
+      padding:14px 28px;
+      border-radius:16px;
+      font-weight:800;
+      font-size:18px;
+      border:none;
+      cursor:pointer;
+      color:white;
+      transition:all .2s;
+      width:100%;
+      margin-top:15px;
+      box-shadow:0 4px 6px rgba(0,0,0,0.1);
     }
-    .btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+    .btn:hover{ transform:scale(1.02); filter:brightness(1.1); }
 
-    .btn-orange { background: linear-gradient(135deg, #ED8936, #DD6B20); }
-    .btn-green  { background: linear-gradient(135deg, #48BB78, #38A169); }
-    .btn-blue   { background: linear-gradient(135deg, #4299E1, #3182CE); }
-    .btn-purple { background: linear-gradient(135deg, #9F7AEA, #805AD5); }
+    .btn-orange{ background:linear-gradient(135deg,#ED8936,#DD6B20); }
+    .btn-green{ background:linear-gradient(135deg,#48BB78,#38A169); }
+    .btn-blue{ background:linear-gradient(135deg,#4299E1,#3182CE); }
+    .btn-purple{ background:linear-gradient(135deg,#9F7AEA,#805AD5); }
 
-    .btn-back {
-      background: white;
-      border: 2px solid #CBD5E0;
-      color: #4A5568;
-      padding: 8px 16px;
-      border-radius: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-bottom: 20px;
+    .btn-back{
+      background:#fff;
+      border:2px solid #CBD5E0;
+      color:#4A5568;
+      padding:8px 16px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+      margin-bottom:20px;
     }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:25px; }
+    @media(max-width:600px){ .grid-2{ grid-template-columns:1fr; } }
 
-    /* Keep for the other PNG emoji cards (these are working) */
-    .sticker-img {
-      width: 120px; height: 120px;
-      object-fit: contain;
-      margin-bottom: 15px;
-      filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
-      position: relative;
+    .sticker-img{
+      width:120px; height:120px;
+      object-fit:contain;
+      margin:0 auto 10px;
+      filter:drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+      display:block;
     }
 
-    /* Bigger inline SVG stickers (no broken links) */
-    .sticker-wrap {
-      width: clamp(150px, 34vw, 210px);
-      height: clamp(150px, 34vw, 210px);
-      margin: 0 auto 10px auto;
-      filter: drop-shadow(0 10px 12px rgba(0,0,0,0.12));
-    }
-    .sticker-wrap svg { width: 100%; height: 100%; display: block; }
+    .view.hidden{ display:none !important; }
 
-    .hidden { display: none !important; }
-
-    /* Animations */
-    @keyframes super-float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-18px) scale(1.08); } }
-    @keyframes super-shake {
-      0% { transform: translate(2px, 2px) rotate(0deg); }
-      10% { transform: translate(-2px, -4px) rotate(-16deg); }
-      30% { transform: translate(6px, 4px) rotate(0deg); }
-      50% { transform: translate(-2px, 4px) rotate(-12deg); }
-      70% { transform: translate(6px, 2px) rotate(-16deg); }
-      90% { transform: translate(2px, 4px) rotate(0deg); }
+    /* Big inline sticker wrapper */
+    .sticker-wrap{
+      width:clamp(150px,34vw,210px);
+      height:clamp(150px,34vw,210px);
+      margin:0 auto 10px;
+      filter:drop-shadow(0 10px 12px rgba(0,0,0,0.12));
     }
-    .animate-float { animation: super-float 2.5s infinite ease-in-out; }
-    .animate-shake { animation: super-shake 0.4s infinite linear; }
-    .shaking { animation: super-shake 0.5s infinite; }
+    .sticker-wrap svg{ width:100%; height:100%; display:block; }
+
+    /* Core animations */
+    @keyframes super-float{ 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-18px) scale(1.08)} }
+    @keyframes super-shake{
+      0%{transform:translate(2px,2px) rotate(0deg)}
+      10%{transform:translate(-2px,-4px) rotate(-16deg)}
+      30%{transform:translate(6px,4px) rotate(0deg)}
+      50%{transform:translate(-2px,4px) rotate(-12deg)}
+      70%{transform:translate(6px,2px) rotate(-16deg)}
+      90%{transform:translate(2px,4px) rotate(0deg)}
+    }
+    .animate-float{ animation:super-float 2.5s infinite ease-in-out; }
+    .animate-shake{ animation:super-shake .4s infinite linear; }
+    .shaking{ animation:super-shake .5s infinite; }
+
+    /* TANGLE sticker spin */
+    @keyframes tangleSpin{
+      0%{transform:rotate(0) scale(1)}
+      50%{transform:rotate(180deg) scale(1.05)}
+      100%{transform:rotate(360deg) scale(1)}
+    }
+    .tangleSpin{ transform-origin:center; transform-box:fill-box; animation:tangleSpin 2.2s linear infinite; }
+
+    /* SHAKE sticker wobble */
+    @keyframes shakeWobble{
+      0%{transform:rotate(0) translate(0,0) scale(1)}
+      25%{transform:rotate(-10deg) translate(-2px,2px) scale(1.03)}
+      50%{transform:rotate(10deg) translate(2px,-2px) scale(1.06)}
+      75%{transform:rotate(-8deg) translate(-2px,-1px) scale(1.03)}
+      100%{transform:rotate(0) translate(0,0) scale(1)}
+    }
+    .shakeWobble{ transform-origin:center; transform-box:fill-box; animation:shakeWobble .25s ease-in-out infinite; }
 
     /* ASK sticker */
-    @keyframes waveArm {
-      0%, 100% { transform: rotate(0deg); }
-      20% { transform: rotate(-25deg); }
-      40% { transform: rotate(20deg); }
-      60% { transform: rotate(-20deg); }
-      80% { transform: rotate(18deg); }
+    @keyframes waveArm{
+      0%,100%{transform:rotate(0)}
+      20%{transform:rotate(-25deg)}
+      40%{transform:rotate(20deg)}
+      60%{transform:rotate(-20deg)}
+      80%{transform:rotate(18deg)}
     }
-    @keyframes popBubble {
-      0%   { opacity: 0; transform: scale(0.6) translateY(10px); }
-      20%  { opacity: 1; transform: scale(1.08) translateY(0); }
-      60%  { opacity: 1; transform: scale(1.0) translateY(0); }
-      100% { opacity: 0; transform: scale(0.75) translateY(10px); }
+    @keyframes popBubble{
+      0%{opacity:0; transform:scale(.6) translateY(10px)}
+      20%{opacity:1; transform:scale(1.08) translateY(0)}
+      60%{opacity:1; transform:scale(1) translateY(0)}
+      100%{opacity:0; transform:scale(.75) translateY(10px)}
     }
-    .ask-anim .arm { transform-origin: 118px 124px; animation: waveArm 0.7s ease-in-out infinite; }
-    .ask-anim .bubble { transform-origin: 160px 76px; animation: popBubble 1.2s ease-in-out infinite; }
+    .ask-anim .arm{ transform-origin:118px 124px; animation:waveArm .7s ease-in-out infinite; }
+    .ask-anim .bubble{ transform-origin:160px 76px; animation:popBubble 1.2s ease-in-out infinite; }
 
-    /* BULB sticker controlled by CSS variable --p (0..1) */
-    .bulb-sticker { --p: 0; }
-    .bulb-sticker .bulbFill { opacity: calc(0.15 + (var(--p) * 0.85)); }
-    .bulb-sticker .bulbGlow { opacity: calc(0.05 + (var(--p) * 0.65)); filter: blur(1.2px); }
-    .bulb-sticker .bulbOutline { opacity: calc(0.75 + (var(--p) * 0.25)); }
+    /* BULB progress via CSS var */
+    .bulb-sticker{ --p:0; }
+    .bulb-sticker .bulbFill{ opacity:calc(.15 + (var(--p) * .85)); }
+    .bulb-sticker .bulbGlow{ opacity:calc(.05 + (var(--p) * .65)); filter:blur(1.2px); }
+    .bulb-sticker .bulbOutline{ opacity:calc(.75 + (var(--p) * .25)); }
 
-    /* CLOCK sticker */
-    .clock-sticker { --spin: 0.35s; }
-    @keyframes spinHand { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
-    .clock-running .clockHand { transform-origin: 110px 110px; animation: spinHand var(--spin) linear infinite; }
+    /* CLOCK */
+    .clock-sticker{ --spin:.35s; }
+    @keyframes spinHand{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+    .clock-running .clockHand{ transform-origin:110px 110px; animation:spinHand var(--spin) linear infinite; }
 
-    /* FIX: TANGLE + SHAKE inline stickers */
-    @keyframes tangleSpin {
-      0%   { transform: rotate(0deg) scale(1); }
-      50%  { transform: rotate(180deg) scale(1.05); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-    .tangleSpin {
-      transform-origin: center;
-      transform-box: fill-box;
-      animation: tangleSpin 2.2s linear infinite;
-    }
-
-    @keyframes shakeWobble {
-      0%   { transform: rotate(0deg) translate(0,0) scale(1); }
-      25%  { transform: rotate(-10deg) translate(-2px, 2px) scale(1.03); }
-      50%  { transform: rotate(10deg) translate(2px, -2px) scale(1.06); }
-      75%  { transform: rotate(-8deg) translate(-2px, -1px) scale(1.03); }
-      100% { transform: rotate(0deg) translate(0,0) scale(1); }
-    }
-    .shakeWobble {
-      transform-origin: center;
-      transform-box: fill-box;
-      animation: shakeWobble 0.25s ease-in-out infinite;
-    }
-
-    .pill {
-      display: inline-block;
-      background: #EDF2F7;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: bold;
-      color: #4A5568;
-      margin-top: 10px;
-    }
-
-    .hint-box {
+    .hint-box{
       background:#EBF8FF;
       color:#2B6CB0;
       padding:15px;
@@ -178,318 +158,451 @@
       text-align:center;
       display:none;
       margin-top:10px;
-      font-weight:bold;
+      font-weight:800;
+    }
+    .pill{
+      display:inline-block;
+      background:#EDF2F7;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:800;
+      color:#4A5568;
+      margin-top:10px;
     }
   </style>
 </head>
 
 <body>
-  <div id="app-container"></div>
+  <div id="app-container">
+
+    <!-- VIEW: HOME -->
+    <section id="view-home" class="view">
+      <h1 class="title">Understanding Frustration</h1>
+      <p style="text-align:center; color:#718096; margin:0 0 38px;">Feeling stuck is tough. Let's untangle it.</p>
+
+      <div class="grid-2">
+        <div class="white-card">
+          <!-- INLINE TANGLE (NO BROKEN LINK) -->
+          <div class="sticker-wrap" aria-label="Big Tangle Sticker">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#FFF7ED"/>
+              <g class="tangleSpin">
+                <circle cx="110" cy="112" r="60" fill="#FFFFFF" opacity="0.92"/>
+                <circle cx="110" cy="112" r="60" fill="none" stroke="#ED8936" stroke-width="10" opacity="0.55"/>
+                <path d="M70 108 C86 70, 134 70, 150 108
+                         C162 136, 138 160, 110 150
+                         C82 140, 58 136, 70 108 Z"
+                      fill="none" stroke="#DD6B20" stroke-width="10" stroke-linecap="round" opacity="0.9"/>
+                <path d="M76 132 C88 156, 132 156, 144 132
+                         C156 108, 140 86, 110 92
+                         C80 98, 64 108, 76 132 Z"
+                      fill="none" stroke="#F6AD55" stroke-width="10" stroke-linecap="round" opacity="0.95"/>
+                <circle cx="92" cy="112" r="6" fill="#1A202C"/>
+                <circle cx="128" cy="112" r="6" fill="#1A202C"/>
+                <path d="M96 132 Q110 142 124 132" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="card-title">The Big Tangle</div>
+          <p class="card-desc">"I can't do it! It's messy!"</p>
+          <button id="btn-see-mess" class="btn btn-orange">See The Mess</button>
+        </div>
+
+        <div class="white-card">
+          <img
+            src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Sunglasses.png"
+            class="sticker-img animate-float" alt="">
+          <div class="card-title">Untangle Tools</div>
+          <p class="card-desc">Smart ways to solve it.</p>
+          <button id="btn-show-solutions" class="btn btn-green">Show Solutions</button>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:28px;">
+        <a href="index.html" style="color:#A0AEC0; text-decoration:none; font-weight:800;">← Back to Menu</a>
+      </div>
+    </section>
+
+    <!-- VIEW: REACTIONS -->
+    <section id="view-reactions" class="view hidden">
+      <button class="btn-back" id="btn-back-home-1">← Back</button>
+      <h1 class="title orange-title">How Do We Act?</h1>
+      <p style="text-align:center; color:#ED8936; margin:0 0 28px; font-weight:800;">Frustration makes us want to quit.</p>
+
+      <div class="grid-2">
+        <div class="white-card">
+          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Shrugging.png"
+               class="sticker-img animate-shake" alt="">
+          <div class="card-title">Giving Up</div>
+        </div>
+        <div class="white-card">
+          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Wastebasket.png"
+               class="sticker-img animate-shake" alt="">
+          <div class="card-title">Destroying Work</div>
+        </div>
+        <div class="white-card">
+          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Face%20with%20Symbols%20on%20Mouth.png"
+               class="sticker-img animate-shake" alt="">
+          <div class="card-title">Mean Words</div>
+        </div>
+        <div class="white-card">
+          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Pleading%20Face.png"
+               class="sticker-img animate-float" alt="">
+          <div class="card-title">Whining</div>
+        </div>
+      </div>
+
+      <div class="white-card" style="margin-top:28px; border-bottom-color:#ED8936;">
+        <p style="font-weight:800; font-size:20px; color:#C05621; margin:0 0 10px;">Does this help?</p>
+        <button id="btn-to-consequences" class="btn btn-orange" style="width:auto;">See The Result ➔</button>
+      </div>
+    </section>
+
+    <!-- VIEW: CONSEQUENCES -->
+    <section id="view-consequences" class="view hidden">
+      <button class="btn-back" id="btn-back-reactions">← Back</button>
+      <h1 class="title orange-title">Still Stuck...</h1>
+      <p style="text-align:center; color:#718096; margin:0 0 28px;">Panic makes it worse.</p>
+
+      <div class="grid-2">
+        <div class="white-card">
+          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Cloud%20with%20Lightning.png"
+               class="sticker-img" alt="">
+          <div class="card-title">Brain Fog</div>
+        </div>
+        <div class="white-card">
+          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Hourglass%20Not%20Done.png"
+               class="sticker-img" alt="">
+          <div class="card-title">Time Wasted</div>
+        </div>
+      </div>
+
+      <div class="white-card" style="margin-top:28px; border-bottom-color:#48BB78;">
+        <p style="font-weight:800; font-size:20px; color:#2F855A; margin:0 0 10px;">Use your superpowers!</p>
+        <button id="btn-to-solutions-2" class="btn btn-green" style="width:auto;">Un-Tangle Brain ➔</button>
+      </div>
+    </section>
+
+    <!-- VIEW: SOLUTIONS -->
+    <section id="view-solutions" class="view hidden">
+      <button class="btn-back" id="btn-back-home-2">← Back to Start</button>
+      <h1 class="title green-title">Un-Tangle Your Brain</h1>
+
+      <!-- ASK -->
+      <div class="white-card" id="askCard" style="text-align:left; border-bottom-color:#4299E1;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap" id="askSticker">
+            <svg viewBox="0 0 220 220" aria-label="Practice Asking Sticker">
+              <path d="M48 86 C30 40 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 48 86 Z" fill="#EBF8FF"/>
+              <g class="bubble" opacity="0">
+                <path d="M132 44 C162 38 192 52 192 78 C192 104 166 122 134 116
+                         L118 128 L122 108 C106 96 108 52 132 44 Z" fill="#FFFFFF"/>
+                <circle cx="142" cy="80" r="6" fill="#4299E1"/>
+                <circle cx="160" cy="80" r="6" fill="#4299E1"/>
+                <circle cx="178" cy="80" r="6" fill="#4299E1"/>
+              </g>
+              <rect x="62" y="88" width="92" height="92" rx="30" fill="#4299E1"/>
+              <rect x="74" y="100" width="68" height="68" rx="24" fill="#63B3ED" opacity="0.9"/>
+              <circle cx="96" cy="134" r="6" fill="#1A202C"/>
+              <circle cx="120" cy="134" r="6" fill="#1A202C"/>
+              <path d="M98 150 Q108 162 118 150" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
+              <g class="arm">
+                <path d="M138 124 C156 116 162 96 150 86" fill="none"
+                      stroke="#2D3748" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="150" cy="86" r="7" fill="#2D3748"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#4299E1;">Ask for a Clue</div>
+        <p class="card-desc" style="text-align:center;">Ask an adult for one tiny hint — not the whole answer.</p>
+        <div id="help-bubble" class="hint-box">“Excuse me... can you help me start?”</div>
+        <button id="btn-ask-help" class="btn btn-blue">Practice Asking</button>
+      </div>
+
+      <!-- RECHARGE BULB -->
+      <div class="white-card" id="chargeCard" style="text-align:left; border-bottom-color:#48BB78;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap bulb-sticker" id="bulbSticker" style="--p:0;">
+            <svg viewBox="0 0 220 220" aria-label="Recharge Bulb Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#F0FFF4"/>
+              <g class="bulbGlow">
+                <circle cx="110" cy="88" r="56" fill="#FFE066"/>
+                <circle cx="110" cy="88" r="42" fill="#FFF3B0"/>
+              </g>
+              <g class="bulbOutline">
+                <path d="M110 36 C78 36 52 62 52 94
+                         C52 118 66 138 84 150
+                         C90 154 92 160 92 166
+                         L92 174 C92 184 100 192 110 192
+                         C120 192 128 184 128 174
+                         L128 166 C128 160 130 154 136 150
+                         C154 138 168 118 168 94
+                         C168 62 142 36 110 36 Z" fill="#FFFFFF" opacity="0.92"/>
+                <path d="M110 36 C78 36 52 62 52 94
+                         C52 118 66 138 84 150
+                         C90 154 92 160 92 166
+                         L92 174 C92 184 100 192 110 192
+                         C120 192 128 184 128 174
+                         L128 166 C128 160 130 154 136 150
+                         C154 138 168 118 168 94
+                         C168 62 142 36 110 36 Z"
+                      fill="none" stroke="#2F855A" stroke-width="7" opacity="0.65"/>
+                <rect x="92" y="170" width="36" height="18" rx="9" fill="#2F855A" opacity="0.9"/>
+              </g>
+              <clipPath id="bulbClip">
+                <path d="M110 44 C84 44 62 66 62 94
+                         C62 114 74 130 90 140
+                         C96 144 98 150 98 156
+                         L98 164 C98 172 104 178 110 178
+                         C116 178 122 172 122 164
+                         L122 156 C122 150 124 144 130 140
+                         C146 130 158 114 158 94
+                         C158 66 136 44 110 44 Z"/>
+              </clipPath>
+              <g clip-path="url(#bulbClip)" class="bulbFill">
+                <rect id="bulbFillRect" x="52" y="176" width="116" height="2" fill="#FFE066"/>
+              </g>
+              <circle cx="96" cy="100" r="6" fill="#1A202C"/>
+              <circle cx="124" cy="100" r="6" fill="#1A202C"/>
+              <path d="M100 116 Q110 128 120 116" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#48BB78;">Recharge Power</div>
+        <p class="card-desc" style="text-align:center;">Step away for 10 seconds. Come back stronger.</p>
+        <div id="charge-timer" style="text-align:center; font-size:30px; font-weight:900; color:#48BB78; margin-top:10px;"></div>
+        <button id="btn-charge" class="btn btn-green">Start Recharge (10s)</button>
+      </div>
+
+      <!-- CLOCK COOLDOWN -->
+      <div class="white-card" id="clockCard" style="text-align:left; border-bottom-color:#F56565;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap clock-sticker" id="clockSticker" style="--spin:.35s;">
+            <svg viewBox="0 0 220 220" aria-label="Cooldown Clock Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#FFF5F5"/>
+              <circle cx="110" cy="110" r="66" fill="#FFFFFF" opacity="0.95"/>
+              <circle cx="110" cy="110" r="66" fill="none" stroke="#C53030" stroke-width="8" opacity="0.55"/>
+              <circle cx="110" cy="110" r="6" fill="#C53030"/>
+              <circle cx="110" cy="54" r="5" fill="#C53030" opacity="0.7"/>
+              <circle cx="166" cy="110" r="5" fill="#C53030" opacity="0.7"/>
+              <circle cx="110" cy="166" r="5" fill="#C53030" opacity="0.7"/>
+              <circle cx="54" cy="110" r="5" fill="#C53030" opacity="0.7"/>
+              <g class="clockHand">
+                <rect x="108" y="62" width="6" height="52" rx="3" fill="#C53030"/>
+                <rect x="109" y="110" width="46" height="5" rx="2.5" fill="#ED8936" opacity="0.9"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#C53030;">Beat the Clock</div>
+        <p class="card-desc" style="text-align:center;">Race your anger: stay still for 15 seconds and win.</p>
+        <div id="clock-timer" style="text-align:center; font-size:30px; font-weight:900; color:#C53030; margin-top:10px;"></div>
+        <div style="text-align:center;"><span class="pill" id="clock-status">Ready</span></div>
+        <button id="btn-clock" class="btn btn-orange">Start Cooldown (15s)</button>
+      </div>
+
+      <!-- BREATHING -->
+      <div class="white-card" style="text-align:left; border-bottom-color:#ED8936;">
+        <div style="text-align:center;">
+          <div id="breath-circle"
+               style="width:110px;height:110px;background:linear-gradient(135deg,#ED8936,#F6AD55);
+                      border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;
+                      font-weight:900;margin:0 auto 18px;transition:transform 4s;
+                      box-shadow:0 10px 20px rgba(237,137,54,.3);">
+            In
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#ED8936;">Clear the Fog</div>
+        <p class="card-desc" style="text-align:center;">Slow breathing helps your body calm down.</p>
+        <button id="btn-breath" class="btn btn-orange">Start Breathing</button>
+      </div>
+
+      <!-- SHAKE (INLINE, NO BROKEN LINK) -->
+      <div class="white-card" id="shake-card" style="text-align:left; border-bottom-color:#9F7AEA;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap" id="dance-wrap" aria-label="Shake It Off Sticker">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#F3E8FF"/>
+              <g class="shakeWobble">
+                <rect x="64" y="76" width="92" height="92" rx="28" fill="#9F7AEA"/>
+                <rect x="76" y="88" width="68" height="68" rx="24" fill="#B794F4" opacity="0.95"/>
+                <circle cx="96" cy="120" r="6" fill="#1A202C"/>
+                <circle cx="124" cy="120" r="6" fill="#1A202C"/>
+                <path d="M96 138 Q110 152 124 138" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
+                <path d="M64 120 C48 110 44 92 54 84" fill="none" stroke="#805AD5" stroke-width="10" stroke-linecap="round"/>
+                <path d="M156 120 C172 110 176 92 166 84" fill="none" stroke="#805AD5" stroke-width="10" stroke-linecap="round"/>
+                <path d="M44 150 L60 142" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.35"/>
+                <path d="M176 150 L160 142" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.35"/>
+                <path d="M46 98 L62 104" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.28"/>
+                <path d="M174 98 L158 104" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.28"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#805AD5;">Shake It Off</div>
+        <p class="card-desc" style="text-align:center;">Frustration feels tight. Wiggle your body!</p>
+        <button id="btn-shake" class="btn btn-purple">Wiggle & Shake!</button>
+      </div>
+
+    </section>
+
+  </div>
 
   <script>
-    const container = document.getElementById('app-container');
+    // If anything errors, show it (no more black mystery screen)
+    window.addEventListener('error', (e) => {
+      const box = document.createElement('div');
+      box.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;background:#fff;border:3px solid #e53e3e;border-radius:14px;padding:12px;z-index:99999;font-family:system-ui;font-weight:700;';
+      box.textContent = 'FRUSTRATED.html error: ' + (e.message || 'Unknown') + ' (check console)';
+      document.body.appendChild(box);
+    });
 
-    /* ---------- INLINE STICKERS (NO BROKEN LINKS) ---------- */
-
-    function stickerTangle() {
-      return `
-        <div class="sticker-wrap" aria-label="Big Tangle Sticker">
-          <svg viewBox="0 0 220 220">
-            <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
-                     C200 110 202 160 160 190 C118 218 62 204 44 172
-                     C28 144 58 126 46 86 Z"
-                  fill="#FFF7ED"/>
-
-            <g class="tangleSpin">
-              <circle cx="110" cy="112" r="60" fill="#FFFFFF" opacity="0.92"/>
-              <circle cx="110" cy="112" r="60" fill="none" stroke="#ED8936" stroke-width="10" opacity="0.55"/>
-
-              <path d="M70 108 C86 70, 134 70, 150 108
-                       C162 136, 138 160, 110 150
-                       C82 140, 58 136, 70 108 Z"
-                    fill="none" stroke="#DD6B20" stroke-width="10" stroke-linecap="round" opacity="0.9"/>
-              <path d="M76 132 C88 156, 132 156, 144 132
-                       C156 108, 140 86, 110 92
-                       C80 98, 64 108, 76 132 Z"
-                    fill="none" stroke="#F6AD55" stroke-width="10" stroke-linecap="round" opacity="0.95"/>
-
-              <circle cx="92" cy="112" r="6" fill="#1A202C"/>
-              <circle cx="128" cy="112" r="6" fill="#1A202C"/>
-              <path d="M96 132 Q110 142 124 132" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-            </g>
-
-            <g opacity="0.95">
-              <rect x="26" y="148" width="44" height="44" rx="10" fill="#4299E1"/>
-              <circle cx="182" cy="170" r="22" fill="#48BB78"/>
-              <rect x="34" y="156" width="28" height="28" rx="6" fill="#63B3ED"/>
-              <path d="M70 170 L160 170" stroke="#A0AEC0" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
-              <path d="M150 162 L160 170 L150 178" fill="none" stroke="#A0AEC0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-            </g>
-          </svg>
-        </div>
-      `;
+    function showView(id){
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    function stickerShake() {
-      return `
-        <div class="sticker-wrap" id="dance-wrap" aria-label="Shake It Off Sticker">
-          <svg viewBox="0 0 220 220">
-            <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
-                     C200 110 202 160 160 190 C118 218 62 204 44 172
-                     C28 144 58 126 46 86 Z"
-                  fill="#F3E8FF"/>
+    // Navigation
+    document.getElementById('btn-see-mess').addEventListener('click', () => showView('view-reactions'));
+    document.getElementById('btn-show-solutions').addEventListener('click', () => showView('view-solutions'));
+    document.getElementById('btn-back-home-1').addEventListener('click', () => showView('view-home'));
+    document.getElementById('btn-back-home-2').addEventListener('click', () => showView('view-home'));
+    document.getElementById('btn-to-consequences').addEventListener('click', () => showView('view-consequences'));
+    document.getElementById('btn-back-reactions').addEventListener('click', () => showView('view-reactions'));
+    document.getElementById('btn-to-solutions-2').addEventListener('click', () => showView('view-solutions'));
 
-            <g class="shakeWobble">
-              <rect x="64" y="76" width="92" height="92" rx="28" fill="#9F7AEA"/>
-              <rect x="76" y="88" width="68" height="68" rx="24" fill="#B794F4" opacity="0.95"/>
+    // Ask tool
+    document.getElementById('btn-ask-help').addEventListener('click', () => {
+      const bubble = document.getElementById('help-bubble');
+      bubble.style.display = 'block';
+      const card = document.getElementById('askCard');
+      card.classList.add('ask-anim');
+      setTimeout(() => card.classList.remove('ask-anim'), 1400);
+    });
 
-              <circle cx="96" cy="120" r="6" fill="#1A202C"/>
-              <circle cx="124" cy="120" r="6" fill="#1A202C"/>
-              <path d="M96 138 Q110 152 124 138" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
+    // Bulb progress
+    let chargeInterval = null;
+    function setBulbProgress(p){
+      const sticker = document.getElementById('bulbSticker');
+      const fillRect = document.getElementById('bulbFillRect');
+      if(!sticker || !fillRect) return;
 
-              <path d="M64 120 C48 110 44 92 54 84" fill="none" stroke="#805AD5" stroke-width="10" stroke-linecap="round"/>
-              <path d="M156 120 C172 110 176 92 166 84" fill="none" stroke="#805AD5" stroke-width="10" stroke-linecap="round"/>
+      p = Math.max(0, Math.min(1, p));
+      sticker.style.setProperty('--p', p.toFixed(3));
 
-              <path d="M44 150 L60 142" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.35"/>
-              <path d="M176 150 L160 142" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.35"/>
-              <path d="M46 98 L62 104" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.28"/>
-              <path d="M174 98 L158 104" stroke="#805AD5" stroke-width="8" stroke-linecap="round" opacity="0.28"/>
-            </g>
-          </svg>
-        </div>
-      `;
+      const yEmpty = 176, yFull = 70;
+      const y = yEmpty - (yEmpty - yFull) * p;
+      const h = 180 - y;
+      fillRect.setAttribute('y', y.toFixed(1));
+      fillRect.setAttribute('height', h.toFixed(1));
     }
 
-    function stickerAsk() {
-      return `
-        <div class="sticker-wrap" id="askSticker">
-          <svg viewBox="0 0 220 220" aria-label="Practice Asking Sticker">
-            <path d="M48 86 C30 40 74 18 112 26 C150 34 192 30 196 70
-                     C200 110 202 160 160 190 C118 218 62 204 44 172
-                     C28 144 58 126 48 86 Z"
-                  fill="#EBF8FF"/>
-            <g class="bubble" opacity="0">
-              <path d="M132 44 C162 38 192 52 192 78 C192 104 166 122 134 116
-                       L118 128 L122 108 C106 96 108 52 132 44 Z"
-                    fill="#FFFFFF"/>
-              <circle cx="142" cy="80" r="6" fill="#4299E1"/>
-              <circle cx="160" cy="80" r="6" fill="#4299E1"/>
-              <circle cx="178" cy="80" r="6" fill="#4299E1"/>
-            </g>
-            <rect x="62" y="88" width="92" height="92" rx="30" fill="#4299E1"/>
-            <rect x="74" y="100" width="68" height="68" rx="24" fill="#63B3ED" opacity="0.9"/>
-            <circle cx="96" cy="134" r="6" fill="#1A202C"/>
-            <circle cx="120" cy="134" r="6" fill="#1A202C"/>
-            <path d="M98 150 Q108 162 118 150" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-            <g class="arm">
-              <path d="M138 124 C156 116 162 96 150 86" fill="none"
-                    stroke="#2D3748" stroke-width="8" stroke-linecap="round"/>
-              <circle cx="150" cy="86" r="7" fill="#2D3748"/>
-            </g>
-          </svg>
-        </div>
-      `;
-    }
+    document.getElementById('btn-charge').addEventListener('click', () => {
+      const timer = document.getElementById('charge-timer');
+      if(chargeInterval) clearInterval(chargeInterval);
+      let t = 10;
+      timer.textContent = 'Recharging...';
+      setBulbProgress(0);
 
-    function stickerBulb() {
-      return `
-        <div class="sticker-wrap bulb-sticker" id="bulbSticker" style="--p:0;">
-          <svg viewBox="0 0 220 220" aria-label="Recharge Bulb Sticker">
-            <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
-                     C200 110 202 160 160 190 C118 218 62 204 44 172
-                     C28 144 58 126 46 86 Z"
-                  fill="#F0FFF4"/>
+      chargeInterval = setInterval(() => {
+        t--;
+        const progress = (10 - t) / 10;
+        setBulbProgress(progress);
 
-            <g class="bulbGlow">
-              <circle cx="110" cy="88" r="56" fill="#FFE066"/>
-              <circle cx="110" cy="88" r="42" fill="#FFF3B0"/>
-            </g>
+        if(t > 0) timer.textContent = t + 's';
+        else {
+          clearInterval(chargeInterval);
+          chargeInterval = null;
+          setBulbProgress(1);
+          timer.textContent = 'Fully Charged!';
+        }
+      }, 1000);
+    });
 
-            <g class="bulbOutline">
-              <path d="M110 36 C78 36 52 62 52 94
-                       C52 118 66 138 84 150
-                       C90 154 92 160 92 166
-                       L92 174 C92 184 100 192 110 192
-                       C120 192 128 184 128 174
-                       L128 166 C128 160 130 154 136 150
-                       C154 138 168 118 168 94
-                       C168 62 142 36 110 36 Z"
-                    fill="#FFFFFF" opacity="0.92"/>
-              <path d="M110 36 C78 36 52 62 52 94
-                       C52 118 66 138 84 150
-                       C90 154 92 160 92 166
-                       L92 174 C92 184 100 192 110 192
-                       C120 192 128 184 128 174
-                       L128 166 C128 160 130 154 136 150
-                       C154 138 168 118 168 94
-                       C168 62 142 36 110 36 Z"
-                    fill="none" stroke="#2F855A" stroke-width="7" opacity="0.65"/>
-              <rect x="92" y="170" width="36" height="18" rx="9" fill="#2F855A" opacity="0.9"/>
-            </g>
+    // Clock cooldown
+    let clockInterval = null;
+    document.getElementById('btn-clock').addEventListener('click', () => {
+      const timer = document.getElementById('clock-timer');
+      const status = document.getElementById('clock-status');
+      const sticker = document.getElementById('clockSticker');
+      const card = document.getElementById('clockCard');
+      if(clockInterval) clearInterval(clockInterval);
 
-            <clipPath id="bulbClip">
-              <path d="M110 44 C84 44 62 66 62 94
-                       C62 114 74 130 90 140
-                       C96 144 98 150 98 156
-                       L98 164 C98 172 104 178 110 178
-                       C116 178 122 172 122 164
-                       L122 156 C122 150 124 144 130 140
-                       C146 130 158 114 158 94
-                       C158 66 136 44 110 44 Z"/>
-            </clipPath>
+      let t = 15;
+      timer.textContent = t + 's';
+      status.textContent = 'Go!';
+      card.classList.add('clock-running');
 
-            <g clip-path="url(#bulbClip)" class="bulbFill">
-              <rect id="bulbFillRect" x="52" y="176" width="116" height="2" fill="#FFE066"/>
-              <rect x="52" y="176" width="116" height="2" fill="#FFF3B0" opacity="0.55"/>
-            </g>
+      clockInterval = setInterval(() => {
+        t--;
+        timer.textContent = t > 0 ? (t + 's') : 'You Win!';
 
-            <circle cx="96" cy="100" r="6" fill="#1A202C"/>
-            <circle cx="124" cy="100" r="6" fill="#1A202C"/>
-            <path d="M100 116 Q110 128 120 116" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-          </svg>
-        </div>
-      `;
-    }
+        let spin = (t >= 11) ? '0.25s' : (t >= 7) ? '0.45s' : (t >= 4) ? '0.75s' : '1.2s';
+        sticker.style.setProperty('--spin', spin);
 
-    function stickerClock() {
-      return `
-        <div class="sticker-wrap clock-sticker" id="clockSticker" style="--spin:0.35s;">
-          <svg viewBox="0 0 220 220" aria-label="Cooldown Clock Sticker">
-            <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
-                     C200 110 202 160 160 190 C118 218 62 204 44 172
-                     C28 144 58 126 46 86 Z"
-                  fill="#FFF5F5"/>
+        if(t <= 0){
+          clearInterval(clockInterval);
+          clockInterval = null;
+          status.textContent = 'Calm Winner';
+          card.classList.remove('clock-running');
+        }
+      }, 1000);
+    });
 
-            <circle cx="110" cy="110" r="66" fill="#FFFFFF" opacity="0.95"/>
-            <circle cx="110" cy="110" r="66" fill="none" stroke="#C53030" stroke-width="8" opacity="0.55"/>
-            <circle cx="110" cy="110" r="6" fill="#C53030"/>
+    // Breathing
+    let breathInterval = null;
+    document.getElementById('btn-breath').addEventListener('click', () => {
+      const circle = document.getElementById('breath-circle');
+      if(!circle) return;
 
-            <circle cx="110" cy="54" r="5" fill="#C53030" opacity="0.7"/>
-            <circle cx="166" cy="110" r="5" fill="#C53030" opacity="0.7"/>
-            <circle cx="110" cy="166" r="5" fill="#C53030" opacity="0.7"/>
-            <circle cx="54"  cy="110" r="5" fill="#C53030" opacity="0.7"/>
+      const running = circle.dataset.running === '1';
+      if(running){
+        circle.dataset.running = '0';
+        circle.style.transform = 'scale(1)';
+        circle.textContent = 'In';
+        clearInterval(breathInterval);
+        return;
+      }
 
-            <g class="clockHand">
-              <rect x="108" y="62" width="6" height="52" rx="3" fill="#C53030"/>
-              <rect x="109" y="110" width="46" height="5" rx="2.5" fill="#ED8936" opacity="0.9"/>
-            </g>
+      circle.dataset.running = '1';
+      circle.textContent = 'In';
+      circle.style.transform = 'scale(1.5)';
+      breathInterval = setInterval(() => {
+        if(circle.textContent === 'In'){
+          circle.textContent = 'Out';
+          circle.style.transform = 'scale(1)';
+        } else {
+          circle.textContent = 'In';
+          circle.style.transform = 'scale(1.5)';
+        }
+      }, 4000);
+    });
 
-            <path d="M38 118 L56 110" stroke="#C53030" stroke-width="7" stroke-linecap="round" opacity="0.35"/>
-            <path d="M182 118 L164 110" stroke="#C53030" stroke-width="7" stroke-linecap="round" opacity="0.35"/>
-          </svg>
-        </div>
-      `;
-    }
-
-    /* ---------- VIEWS ---------- */
-
-    function showHome() {
-      container.innerHTML = `
-        <h1 class="title">Understanding Frustration</h1>
-        <p style="text-align:center; color:#718096; margin-bottom: 38px;">
-          Feeling stuck is tough. Let's untangle it.
-        </p>
-
-        <div class="grid-2">
-          <div class="white-card">
-            ${stickerTangle()}
-            <div class="card-title">The Big Tangle</div>
-            <p class="card-desc">"I can't do it! It's messy!"</p>
-            <button onclick="showReactions()" class="btn btn-orange">See The Mess</button>
-          </div>
-
-          <div class="white-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Sunglasses.png"
-                 class="sticker-img animate-float" alt="">
-            <div class="card-title">Untangle Tools</div>
-            <p class="card-desc">Smart ways to solve it.</p>
-            <button onclick="showSolutions()" class="btn btn-green">Show Solutions</button>
-          </div>
-        </div>
-
-        <div style="text-align:center; margin-top: 28px;">
-          <a href="index.html" style="color:#A0AEC0; text-decoration:none; font-weight:bold;">← Back to Menu</a>
-        </div>
-      `;
-    }
-
-    function showReactions() {
-      container.innerHTML = `
-        <button onclick="showHome()" class="btn-back">← Back</button>
-        <h1 class="title orange-title">How Do We Act?</h1>
-        <p style="text-align:center; color:#ED8936; margin-bottom: 28px; font-weight:bold;">
-          Frustration makes us want to quit.
-        </p>
-
-        <div class="grid-2">
-          <div class="white-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Shrugging.png"
-                 class="sticker-img animate-shake" alt="">
-            <div class="card-title">Giving Up</div>
-          </div>
-
-          <div class="white-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Wastebasket.png"
-                 class="sticker-img animate-shake" alt="">
-            <div class="card-title">Destroying Work</div>
-          </div>
-
-          <div class="white-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Face%20with%20Symbols%20on%20Mouth.png"
-                 class="sticker-img animate-shake" alt="">
-            <div class="card-title">Mean Words</div>
-          </div>
-
-          <div class="white-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Pleading%20Face.png"
-                 class="sticker-img animate-float" alt="">
-            <div class="card-title">Whining</div>
-          </div>
-        </div>
-
-        <div class="white-card" style="margin-top: 28px; border-bottom-color:#ED8936;">
-          <p style="font-weight:bold; font-size: 20px; color:#C05621; margin: 0 0 10px;">Does this help?</p>
-          <button onclick="showConsequences()" class="btn btn-orange" style="width:auto;">See The Result ➔</button>
-        </div>
-      `;
-    }
-
-    function showConsequences() {
-      container.innerHTML = `
-        <button onclick="showReactions()" class="btn-back">← Back</button>
-        <h1 class="title orange-title">Still Stuck...</h1>
-        <p style="text-align:center; color:#718096; margin-bottom: 28px;">Panic makes it worse.</p>
-
-        <div class="grid-2">
-          <div class="white-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Cloud%20with%20Lightning.png"
-                 class="sticker-img" alt="">
-            <div class="card-title">Brain Fog</div>
-          </div>
-
-          <div class="white-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Hourglass%20Not%20Done.png"
-                 class="sticker-img" alt="">
-            <div class="card-title">Time Wasted</div>
-          </div>
-        </div>
-
-        <div class="white-card" style="margin-top: 28px; border-bottom-color:#48BB78;">
-          <p style="font-weight:bold; font-size: 20px; color:#2F855A; margin: 0 0 10px;">Use your superpowers!</p>
-          <button onclick="showSolutions()" class="btn btn-green" style="width:auto;">Un-Tangle Brain ➔</button>
-        </div>
-      `;
-    }
-
-    function showSolutions() {
-      container.innerHTML = `
-        <button onclick="showHome()" class="btn-back">← Back to Start</button>
-        <h1 class="title green-title">Un-Tangle Your Brain</h1>
-
-        <div style="display:flex; flex-direction:column; gap: 26px; margin-top: 22px;">
-
-          <div class="white-card" id="askCard" style="text-align:left; border-bottom-color:#4299E1;">
-            <div style="text-align:center;">${stickerAsk()}</div>
-            <div class="card-title" style="text-align:center; color:#4299E1;">Ask for a Clue</div>
-            <p class="card-desc" style="text-align:center;">Ask an adult for one tiny hint — not the whole answer.</p>
-            <div id="help-bubble" class="hint-box">“Exc
+    // Shake
+    document.getElementById('btn-shake').addEventListener('click', () => {
+      const card = document.getElementById('shake-card');
+      const wrap = document.getElementById('dance-wrap');
+      card.classList.add('shaking');
+      if(wrap) wrap.style.transform = 'scale(1.12)';
+      setTimeout(() => {
+        card.classList.remove('shaking');
+        if(wrap) wrap.style.transform = 'scale(1)';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
