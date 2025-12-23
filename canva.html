@@ -18,30 +18,13 @@
     /* --- ANIMATIONS --- */
     @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
     .animate-float { animation: float 3s infinite ease-in-out; }
-
-    /* Active Tool Animations */
-    @keyframes melt-drip { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(60px) scale(0.5); opacity: 0; } }
-    @keyframes cool-pulse { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
-    @keyframes roar-shake { 
-        0% { transform: scale(1) rotate(0deg); } 
-        10%, 90% { transform: scale(1.2) rotate(-5deg); } 
-        20%, 80% { transform: scale(1.2) rotate(5deg); } 
-        30%, 50%, 70% { transform: scale(1.2) rotate(-5deg); } 
-        40%, 60% { transform: scale(1.2) rotate(5deg); } 
-        100% { transform: scale(1) rotate(0deg); } 
-    }
-    @keyframes sound-blast { 0% { transform: scale(0.8); opacity: 1; border-width: 10px; } 100% { transform: scale(2.5); opacity: 0; border-width: 0px; } }
-
-    .roaring { animation: roar-shake 0.8s ease-in-out; }
-    .melting { transition: transform 10s linear; transform: scale(0.4) translateY(50px); }
-
-    /* --- PARTICLES --- */
+    
+    /* PARTICLES */
     .particle { position: absolute; border-radius: 50%; pointer-events: none; z-index: 1; }
     .water-drop { width: 10px; height: 15px; background: #90CDF4; border-radius: 50% 50% 30% 30%; animation: melt-drip 1s linear forwards; }
-    .cool-aura { width: 100px; height: 100px; background: radial-gradient(circle, #4299E1 0%, transparent 70%); opacity: 0.5; animation: cool-pulse 2s infinite ease-out; position: absolute; top: 50%; left: 50%; margin-top: -50px; margin-left: -50px; z-index: 0;}
-    .sound-wave { position: absolute; border: 4px solid #ECC94B; border-radius: 50%; width: 140px; height: 140px; top: 50%; left: 50%; margin-top: -70px; margin-left: -70px; opacity: 0; animation: sound-blast 1s ease-out forwards; pointer-events: none;}
+    @keyframes melt-drip { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(60px) scale(0.5); opacity: 0; } }
 
-    /* --- UI ELEMENTS --- */
+    /* UI ELEMENTS */
     .title { font-size: 36px; font-weight: bold; text-align: center; margin-bottom: 10px; }
     .green-title { color: #48BB78; } .red-title { color: #E53E3E; }
     .card-title { font-size: 22px; font-weight: bold; margin-bottom: 8px; color: #2D3748; }
@@ -62,86 +45,111 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; } 
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
 
-    /* Mute Button & Debugger */
+    /* Sound Controls */
     #sound-toggle { position: absolute; top: 10px; right: 20px; background: white; border: 2px solid #CBD5E0; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; }
-    #debug-msg { position: absolute; top: 15px; right: 70px; font-size: 12px; color: red; font-weight: bold; background: rgba(255,255,255,0.9); padding: 5px; border-radius: 5px; display: none; }
+    #music-status { position: absolute; top: 15px; right: 70px; font-size: 14px; font-weight: bold; color: #48BB78; display: none; }
   </style>
 </head>
 <body>
   
   <div id="app-container"></div>
   <button id="sound-toggle" onclick="toggleMute()">🔊</button>
-  <div id="debug-msg"></div>
+  <div id="music-status">🎵 Playing</div>
 
   <audio id="bg-calm" loop>
-      <source src="calm.mp3" type="audio/mpeg">
+      <source src="calm.mp3?v=999" type="audio/mpeg">
   </audio>
 
   <script>
     const container = document.getElementById('app-container');
     let isMuted = false;
     let calmMusic = document.getElementById('bg-calm');
-    let musicAttempted = false;
-
-    // --- SOUND MANAGER ---
-    // This function tries to find the music if it failed the first time
-    calmMusic.onerror = function() {
-        if (!musicAttempted) {
-            console.log("Root file not found, checking assets/ folder...");
-            calmMusic.src = "assets/calm.mp3";
-            musicAttempted = true;
-            calmMusic.load();
-        } else {
-            document.getElementById('debug-msg').style.display = 'block';
-            document.getElementById('debug-msg').innerText = "❌ Music file missing! Check filename.";
-        }
-    };
 
     function toggleMute() {
         isMuted = !isMuted;
         const btn = document.getElementById('sound-toggle');
+        const status = document.getElementById('music-status');
+        
         if (isMuted) {
             btn.innerText = "🔇";
+            status.style.display = "none";
             calmMusic.pause();
         } else {
             btn.innerText = "🔊";
-            if (document.getElementById('solution-view')) {
-                calmMusic.play().catch(e => console.log("Browser blocked autoplay"));
-            }
+            // Attempt to play immediately
+            calmMusic.volume = 0.5;
+            calmMusic.play().then(() => {
+                status.style.display = "block";
+                status.innerText = "🎵 Playing";
+            }).catch(e => {
+                status.style.display = "block";
+                status.style.color = "orange";
+                status.innerText = "⚠️ Click page first";
+            });
         }
     }
 
-    function playCalmMusic(play) {
-        if (isMuted) return;
-        if (play) {
-            calmMusic.volume = 0.3;
-            var promise = calmMusic.play();
-            if (promise !== undefined) {
-                promise.then(_ => {
-                    document.getElementById('debug-msg').style.display = 'none'; // Success
-                }).catch(error => {
-                    console.log("Autoplay prevented.");
-                });
-            }
-        } else {
-            calmMusic.pause();
-            calmMusic.currentTime = 0;
-        }
-    }
-
-    // --- HOME & NEGATIVE VIEWS ---
+    // --- HOME VIEW ---
     function showHome() { 
-        playCalmMusic(false); // Stop music on home
-        container.innerHTML = `<h1 class="title">Understanding Anger</h1><p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p><div class="grid-2"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float"><div class="card-title">The Anger Volcano</div><p class="card-desc">Ready to explode?</p><button onclick="showNegative()" class="btn btn-red">See Explosion</button></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float"><div class="card-title">Cool Down Tools</div><p class="card-desc">Smart ways to chill.</p><button onclick="showSolutions()" class="btn btn-green">Show Solutions</button></div></div><div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>`;
+        // Stop music on home
+        calmMusic.pause();
+        document.getElementById('music-status').style.display = "none";
+
+        container.innerHTML = `
+            <h1 class="title">Understanding Anger</h1>
+            <p style="text-align: center; color: #718096; margin-bottom: 40px;">Anger is big energy. Let's learn to control it!</p>
+            
+            <div style="text-align:center; margin-bottom:20px;">
+                <button onclick="toggleMute()" style="background:#CBD5E0; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Test Sound 🎵</button>
+            </div>
+
+            <div class="grid-2">
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Volcano.png" class="sticker-img animate-float">
+                    <div class="card-title">The Anger Volcano</div>
+                    <button onclick="showNegative()" class="btn btn-red">See Explosion</button>
+                </div>
+                <div class="white-card">
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Relieved%20Face.png" class="sticker-img animate-float">
+                    <div class="card-title">Cool Down Tools</div>
+                    <button onclick="showSolutions()" class="btn btn-green">Show Solutions</button>
+                </div>
+            </div>
+             <div style="text-align: center; margin-top: 30px;"><a href="index.html" style="color: #A0AEC0; text-decoration: none; font-weight: bold;">← Back to Menu</a></div>
+        `;
     }
 
+    // --- NEGATIVE VIEW ---
     function showNegative() { 
-        container.innerHTML = `<button onclick="showHome()" class="btn-back">← Back</button><h1 class="title red-title">When Anger Explodes! 💥</h1><div class="grid-2" style="margin-top: 30px;"><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div><div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div></div><div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;"><p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p><button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button></div>`;
+        container.innerHTML = `
+            <button onclick="showHome()" class="btn-back">← Back</button>
+            <h1 class="title red-title">When Anger Explodes! 💥</h1>
+            <div class="grid-2" style="margin-top: 30px;">
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Exploding%20Head.png" class="sticker-img"><div class="card-title">Brain Freeze</div></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Broken%20Heart.png" class="sticker-img"><div class="card-title">Feelings Hurt</div></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" class="sticker-img"><div class="card-title">Body Overheat</div></div>
+                <div class="white-card"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Crying%20Face.png" class="sticker-img"><div class="card-title">The Aftermath</div></div>
+            </div>
+            <div class="white-card" style="margin-top: 30px; border-bottom-color: #48BB78;">
+                <p style="font-weight: bold; font-size: 20px; color: #2F855A;">💡 You can control it!</p>
+                <button onclick="showSolutions()" class="btn btn-green" style="width: auto;">Learn Cool Down Powers</button>
+            </div>
+        `;
     }
 
     // --- SOLUTIONS VIEW ---
     function showSolutions() {
-      playCalmMusic(true); // START MUSIC
+      // START MUSIC LOGIC
+      if (!isMuted) {
+          calmMusic.volume = 0.5;
+          calmMusic.play().then(() => {
+              document.getElementById('music-status').style.display = "block";
+              document.getElementById('music-status').innerText = "🎵 Playing";
+          }).catch(error => {
+              console.log("Autoplay blocked, waiting for click");
+          });
+      }
+
       container.innerHTML = `
         <div id="solution-view"></div>
         <button onclick="showHome()" class="btn-back">← Back</button>
@@ -241,7 +249,6 @@
         // Drip particles
         const dripInterval = setInterval(() => {
             const rect = iceImg.getBoundingClientRect(); 
-            // Safety check in case user switches page quickly
             if (!document.getElementById('ice-card')) { clearInterval(dripInterval); return; }
             const cardRect = document.getElementById('ice-card').getBoundingClientRect();
             const drop = document.createElement('div');
@@ -278,16 +285,6 @@
         speakImg.classList.add('roaring'); 
         
         speakBox.style.transform = "scale(1.1)"; speakBox.style.borderColor = "#E53E3E";
-
-        // Sound blast waves
-        for(let i=0; i<3; i++) {
-            setTimeout(() => {
-                const wave = document.createElement('div');
-                wave.classList.add('sound-wave');
-                speakCard.appendChild(wave);
-                setTimeout(() => wave.remove(), 1000);
-            }, i * 300);
-        }
 
         setTimeout(() => {
             speakImg.classList.remove('roaring'); speakImg.classList.add('animate-float');
