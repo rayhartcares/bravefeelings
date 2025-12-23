@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Understanding Frustration</title>
 
-  <!-- Optional (looks nicer). If offline, the fallback font still works. -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -19,8 +18,9 @@
       --green1:#48BB78;  --green2:#38A169;
       --blue1:#4299E1;   --blue2:#3182CE;
       --purple1:#9F7AEA; --purple2:#805AD5;
+      --teal1:#38B2AC;   --teal2:#2C7A7B;
+      --red1:#F56565;    --red2:#C53030;
 
-      /* Makes the “illustrations” big and responsive */
       --sticker-size: clamp(150px, 30vw, 210px);
     }
 
@@ -114,6 +114,8 @@
     .btn-green { background: linear-gradient(135deg, var(--green1),  var(--green2)); }
     .btn-blue  { background: linear-gradient(135deg, var(--blue1),   var(--blue2)); }
     .btn-purple{ background: linear-gradient(135deg, var(--purple1), var(--purple2)); }
+    .btn-teal  { background: linear-gradient(135deg, var(--teal1), var(--teal2)); }
+    .btn-red   { background: linear-gradient(135deg, var(--red1), var(--red2)); }
 
     .btn-back{
       background:#fff;
@@ -126,7 +128,6 @@
       margin-bottom: 18px;
     }
 
-    /* ---------- Sticker system (big, clean, animated) ---------- */
     .sticker-wrap{
       display:flex;
       justify-content:center;
@@ -139,12 +140,11 @@
       height: var(--sticker-size);
       display:block;
     }
-    .hidden{ display:none !important; }
 
-    /* Shared transform origin helper */
+    .hidden{ display:none !important; }
     .tb { transform-box: fill-box; transform-origin: center; }
 
-    /* --- Animations: exaggerated & happy --- */
+    /* ---------- Fun, exaggerated animations ---------- */
     @keyframes floaty{
       0%,100%{ transform: translateY(0) scale(1); }
       50%{ transform: translateY(-12px) scale(1.04); }
@@ -162,23 +162,23 @@
       40%{ transform: scale(1.08); }
       60%{ transform: scale(0.98); }
     }
-    @keyframes angryShake{
+    @keyframes shakeHard{
       0%{ transform: translate(0,0) rotate(0deg); }
-      20%{ transform: translate(-4px,2px) rotate(-4deg); }
-      40%{ transform: translate(5px,-2px) rotate(4deg); }
-      60%{ transform: translate(-5px,-1px) rotate(-5deg); }
-      80%{ transform: translate(4px,2px) rotate(5deg); }
+      20%{ transform: translate(-5px,2px) rotate(-5deg); }
+      40%{ transform: translate(6px,-2px) rotate(5deg); }
+      60%{ transform: translate(-6px,-1px) rotate(-6deg); }
+      80%{ transform: translate(5px,2px) rotate(6deg); }
       100%{ transform: translate(0,0) rotate(0deg); }
     }
 
-    /* Square-peg “try-fit” animation */
+    /* Peg try-fit (home) */
     @keyframes pegTryFit{
       0%   { transform: translate(-52px, 0px) rotate(-10deg) scale(1); }
       18%  { transform: translate(-10px, 0px)  rotate(7deg)  scale(1.03); }
-      28%  { transform: translate(-2px, 0px)   rotate(-12deg) scale(1.06); } /* bump */
-      38%  { transform: translate(-9px, -2px)  rotate(10deg)  scale(1.05); }  /* wobble */
-      52%  { transform: translate(6px, 10px)   rotate(0deg)   scale(0.98); }  /* drop */
-      62%  { transform: translate(6px, 7px)    rotate(0deg)   scale(1.03); }  /* bounce */
+      28%  { transform: translate(-2px, 0px)   rotate(-12deg) scale(1.06); }
+      38%  { transform: translate(-9px, -2px)  rotate(10deg)  scale(1.05); }
+      52%  { transform: translate(6px, 10px)   rotate(0deg)   scale(0.98); }
+      62%  { transform: translate(6px, 7px)    rotate(0deg)   scale(1.03); }
       78%  { transform: translate(6px, 10px)   rotate(0deg)   scale(1); }
       100% { transform: translate(6px, 10px)   rotate(0deg)   scale(1); }
     }
@@ -203,7 +203,45 @@
       100%     { opacity: 0; transform: scale(0.7); }
     }
 
-    /* Apply sticker-specific animations */
+    /* Ask for clue: magnifier swoops + spark */
+    @keyframes magnifierSwoop{
+      0%   { transform: translate(50px,-30px) rotate(25deg) scale(0.9); opacity:0.2; }
+      35%  { transform: translate(10px,-8px) rotate(0deg) scale(1); opacity:1; }
+      70%  { transform: translate(6px,-4px) rotate(-8deg) scale(1.05); opacity:1; }
+      100% { transform: translate(50px,-30px) rotate(25deg) scale(0.9); opacity:0.2; }
+    }
+    @keyframes clueSpark{
+      0%, 30% { opacity:0; transform: scale(0.5); }
+      40%     { opacity:1; transform: scale(1.2); }
+      55%     { opacity:0.9; transform: scale(1); }
+      100%    { opacity:0; transform: scale(0.7); }
+    }
+
+    /* Recharge: plug pops in/out */
+    @keyframes plugIn{
+      0%   { transform: translate(-40px, 10px) rotate(-10deg); }
+      35%  { transform: translate(-10px, 0px) rotate(6deg); }
+      55%  { transform: translate(0px, 0px) rotate(0deg); }
+      100% { transform: translate(-40px, 10px) rotate(-10deg); }
+    }
+    @keyframes boltPop{
+      0%, 40% { opacity:0; transform: scale(0.6); }
+      55%     { opacity:1; transform: scale(1.25); }
+      70%     { opacity:0.95; transform: scale(1); }
+      100%    { opacity:0; transform: scale(0.7); }
+    }
+
+    /* Shake It Off: sticker wiggle when triggered */
+    @keyframes wiggleBig{
+      0%{ transform: rotate(0deg) scale(1); }
+      15%{ transform: rotate(-10deg) scale(1.03); }
+      35%{ transform: rotate(12deg) scale(1.05); }
+      55%{ transform: rotate(-12deg) scale(1.05); }
+      75%{ transform: rotate(9deg) scale(1.03); }
+      100%{ transform: rotate(0deg) scale(1); }
+    }
+
+    /* Apply animations */
     .st-peg .peg     { animation: pegTryFit 2.2s infinite ease-in-out; }
     .st-peg .armL    { animation: armFlailL 2.2s infinite ease-in-out; }
     .st-peg .armR    { animation: armFlailR 2.2s infinite ease-in-out; }
@@ -212,21 +250,21 @@
     .st-tools .buddy { animation: floaty 2.6s infinite ease-in-out; }
     .st-tools .bulb  { animation: bop 1.4s infinite ease-in-out; }
 
-    .st-giveup .buddy{ animation: floaty 3s infinite ease-in-out; }
-    .st-destroy .buddy{ animation: angryShake 0.65s infinite linear; }
-    .st-mean .bubble { animation: wiggle 1.2s infinite ease-in-out; }
-    .st-whine .tear  { animation: floaty 1.8s infinite ease-in-out; }
+    .st-ask .magnifier { animation: magnifierSwoop 2.4s infinite ease-in-out; }
+    .st-ask .spark { animation: clueSpark 2.4s infinite ease-in-out; }
+    .st-ask .buddy { animation: floaty 2.4s infinite ease-in-out; }
 
-    .st-fog .cloud   { animation: floaty 2.4s infinite ease-in-out; }
-    .st-time .glass  { animation: wiggle 1.4s infinite ease-in-out; }
+    /* Only animate plug when charging class is on */
+    .st-batt .plug { opacity: 0.85; }
+    .charging .st-batt .plug { animation: plugIn 1.3s infinite ease-in-out; }
+    .charging .st-batt .bolt { animation: boltPop 1.3s infinite ease-in-out; }
 
-    .st-help .hand   { animation: floaty 2.2s infinite ease-in-out; }
-    .st-battery .cap { animation: bop 1.4s infinite ease-in-out; }
+    /* Shake trigger */
+    .wiggling .st-shake .buddy { animation: wiggleBig 0.35s infinite ease-in-out; }
 
-    /* “Shake It Off” card extra shaking (triggered by JS) */
-    .shakingCard{ animation: angryShake 0.35s infinite linear; }
+    /* Card shaking (triggered by JS) */
+    .shakingCard{ animation: shakeHard 0.35s infinite linear; }
 
-    /* Small “bubble” */
     .practice-bubble{
       background:#EBF8FF;
       color:#2B6CB0;
@@ -238,11 +276,48 @@
       font-weight: 600;
     }
 
-    /* Back to menu link */
     .menu-link{
       color:#A0AEC0;
       text-decoration:none;
       font-weight:600;
+    }
+
+    .tiny-box{
+      background:#F7FAFC;
+      border: 2px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 10px;
+      text-align: left;
+      color: #4A5568;
+      font-weight: 500;
+    }
+
+    .input{
+      width: 100%;
+      border: 2px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+    }
+    .input:focus{ border-color: #90CDF4; }
+
+    .mini-row{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .pill{
+      background:#EDF2F7;
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight: 600;
+      color:#4A5568;
+      user-select:none;
     }
   </style>
 </head>
@@ -258,7 +333,7 @@
     }
 
     /* =========================
-       BIG, MOVING “KID STICKERS”
+       BIG, MOVING “SHAPE SORTER” STICKERS
        ========================= */
 
     function stickerSquarePeg(){
@@ -271,13 +346,11 @@
             </filter>
           </defs>
 
-          <!-- friendly background blob -->
           <path d="M40,85 C28,40 75,14 113,26 C150,38 192,20 196,68
                    C200,115 202,165 158,190 C114,214 60,206 40,170
                    C25,138 52,125 40,85 Z"
                 fill="#FFE8D2"/>
 
-          <!-- the board + square hole -->
           <g filter="url(#softShadow)">
             <rect x="122" y="92" width="74" height="74" rx="18" fill="#FFFFFF"/>
             <rect x="138" y="108" width="42" height="42" rx="10"
@@ -285,16 +358,13 @@
             <rect x="144" y="114" width="30" height="30" rx="8" fill="#F7FAFC"/>
           </g>
 
-          <!-- sparkles when it fits -->
           <g class="spark tb">
             <path d="M188 80 l7 12 l-14 -5 l14 -5 l-7 12z" fill="#FFD166"/>
             <circle cx="199" cy="108" r="4" fill="#FFD166"/>
             <circle cx="182" cy="178" r="4" fill="#FFD166"/>
           </g>
 
-          <!-- peg group -->
           <g class="peg tb">
-            <!-- arms -->
             <g class="armL tb">
               <path d="M74 130 C56 122, 53 98, 66 92" fill="none"
                     stroke="#2D3748" stroke-width="7" stroke-linecap="round"/>
@@ -306,17 +376,14 @@
               <circle cx="128" cy="90" r="6" fill="#2D3748"/>
             </g>
 
-            <!-- square peg body -->
             <rect x="74" y="110" width="54" height="54" rx="15" fill="#48BB78" filter="url(#softShadow)"/>
             <rect x="80" y="116" width="42" height="42" rx="13" fill="#68D391" opacity="0.85"/>
 
-            <!-- face -->
             <circle cx="92" cy="136" r="5.6" fill="#1A202C"/>
             <circle cx="110" cy="136" r="5.6" fill="#1A202C"/>
             <path d="M94 150 Q101 158 108 150" fill="none" stroke="#1A202C"
                   stroke-width="5" stroke-linecap="round"/>
 
-            <!-- sweat drop -->
             <path d="M124 122 C131 131, 131 140, 124 144 C117 140, 117 131, 124 122 Z"
                   fill="#63B3ED" opacity="0.9"/>
           </g>
@@ -339,24 +406,20 @@
                    C22,138 55,125 42,88 Z"
                 fill="#E6FFFA"/>
 
-          <!-- lightbulb -->
           <g class="bulb tb" filter="url(#softShadow2)">
             <circle cx="170" cy="70" r="18" fill="#FFD166"/>
             <rect x="163" y="86" width="14" height="10" rx="4" fill="#718096"/>
             <path d="M158 66 Q170 50 182 66" fill="none" stroke="#FFD166" stroke-width="6" stroke-linecap="round"/>
           </g>
 
-          <!-- buddy square -->
           <g class="buddy tb" filter="url(#softShadow2)">
             <rect x="68" y="90" width="84" height="84" rx="26" fill="#4299E1"/>
             <rect x="78" y="100" width="64" height="64" rx="22" fill="#63B3ED" opacity="0.85"/>
 
-            <!-- face -->
             <circle cx="95" cy="132" r="6" fill="#1A202C"/>
             <circle cx="125" cy="132" r="6" fill="#1A202C"/>
             <path d="M98 148 Q110 160 122 148" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
 
-            <!-- tiny wrench -->
             <path d="M150 118
                      c6 -6 16 -4 18 4
                      c-6 4 -10 8 -14 14
@@ -367,33 +430,170 @@
       </div>`;
     }
 
-    function stickerGiveUp(){
+    /* NEW: Ask for a clue (shape sorter + magnifier) */
+    function stickerAskClue(){
       return `
       <div class="sticker-wrap">
-        <svg class="sticker-svg st-giveup" viewBox="0 0 220 220" aria-label="Giving up buddy">
+        <svg class="sticker-svg st-ask" viewBox="0 0 220 220" aria-label="Ask for a clue">
           <defs>
-            <filter id="softShadow3" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="softShadowA" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
             </filter>
           </defs>
 
+          <path d="M44,86 C30,48 74,18 112,26 C150,34 192,30 194,70
+                   C196,110 198,160 156,188 C114,216 62,204 44,172
+                   C28,144 58,126 44,86 Z"
+                fill="#EBF8FF"/>
+
+          <!-- hole board -->
+          <g filter="url(#softShadowA)">
+            <rect x="128" y="104" width="70" height="70" rx="18" fill="#FFFFFF"/>
+            <rect x="144" y="120" width="38" height="38" rx="10"
+                  fill="none" stroke="#4299E1" stroke-width="8"/>
+          </g>
+
+          <!-- buddy peg -->
+          <g class="buddy tb" filter="url(#softShadowA)">
+            <rect x="58" y="104" width="70" height="70" rx="22" fill="#4299E1"/>
+            <rect x="66" y="112" width="54" height="54" rx="20" fill="#63B3ED" opacity="0.9"/>
+            <circle cx="82" cy="142" r="6" fill="#1A202C"/>
+            <circle cx="104" cy="142" r="6" fill="#1A202C"/>
+            <path d="M84 156 Q93 166 102 156" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
+          </g>
+
+          <!-- magnifier swoops in -->
+          <g class="magnifier tb" filter="url(#softShadowA)">
+            <circle cx="156" cy="86" r="18" fill="#FFD166"/>
+            <circle cx="156" cy="86" r="10" fill="#FFF8F0" opacity="0.85"/>
+            <rect x="170" y="96" width="30" height="10" rx="5" fill="#DD6B20" transform="rotate(35 170 96)"/>
+          </g>
+
+          <!-- spark “clue found!” -->
+          <g class="spark tb">
+            <path d="M166 66 l6 10 l-12 -4 l12 -4 l-6 10z" fill="#FFD166"/>
+            <circle cx="188" cy="80" r="4" fill="#FFD166"/>
+          </g>
+        </svg>
+      </div>`;
+    }
+
+    /* NEW: Recharge Power (square plug + battery fill) */
+    function stickerRecharge(){
+      return `
+      <div class="sticker-wrap">
+        <svg class="sticker-svg st-batt" viewBox="0 0 220 220" aria-label="Recharge power">
+          <defs>
+            <filter id="softShadowB" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
+            </filter>
+          </defs>
+
+          <path d="M44,86 C30,48 74,18 112,26 C150,34 192,30 194,70
+                   C196,110 198,160 156,188 C114,216 62,204 44,172
+                   C28,144 58,126 44,86 Z"
+                fill="#F0FFF4"/>
+
+          <!-- socket / “hole” -->
+          <g filter="url(#softShadowB)">
+            <rect x="140" y="96" width="62" height="86" rx="20" fill="#FFFFFF"/>
+            <rect x="154" y="114" width="34" height="50" rx="12" fill="#E6FFFA"/>
+            <rect x="160" y="126" width="8" height="18" rx="4" fill="#2F855A"/>
+            <rect x="174" y="126" width="8" height="18" rx="4" fill="#2F855A"/>
+          </g>
+
+          <!-- battery body -->
+          <g filter="url(#softShadowB)">
+            <rect x="54" y="104" width="96" height="72" rx="24" fill="#2F855A" opacity="0.92"/>
+            <rect x="136" y="128" width="12" height="24" rx="6" fill="#2F855A"/>
+            <rect x="64" y="114" width="76" height="52" rx="18" fill="#22543D" opacity="0.5"/>
+
+            <!-- fill controlled by JS -->
+            <rect id="batteryFill" x="64" y="114" width="10" height="52" rx="18" fill="#68D391"/>
+          </g>
+
+          <!-- bolt pops during charging -->
+          <g class="bolt tb">
+            <path d="M108 78 L94 104 H112 L102 128 L128 98 H110 Z" fill="#FFD166"/>
+          </g>
+
+          <!-- plug (moves during charging) -->
+          <g class="plug tb" filter="url(#softShadowB)">
+            <rect x="92" y="152" width="34" height="26" rx="10" fill="#68D391"/>
+            <rect x="120" y="158" width="24" height="14" rx="7" fill="#48BB78"/>
+            <rect x="142" y="156" width="10" height="6" rx="3" fill="#2F855A"/>
+            <rect x="142" y="168" width="10" height="6" rx="3" fill="#2F855A"/>
+          </g>
+
+          <!-- cable -->
+          <path d="M120 165 C142 170, 132 188, 152 188 C170 188, 174 176, 174 168"
+                fill="none" stroke="#2F855A" stroke-width="6" stroke-linecap="round" opacity="0.65"/>
+        </svg>
+      </div>`;
+    }
+
+    /* NEW: Shake It Off (square buddy stuck + wiggle) */
+    function stickerShake(){
+      return `
+      <div class="sticker-wrap">
+        <svg class="sticker-svg st-shake" viewBox="0 0 220 220" aria-label="Shake it off">
+          <defs>
+            <filter id="softShadowC" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
+            </filter>
+          </defs>
+
+          <path d="M44,88 C32,50 76,18 114,26 C152,34 192,30 194,70
+                   C196,110 198,160 156,188 C114,216 62,204 44,172
+                   C28,144 58,126 44,88 Z"
+                fill="#FAF5FF"/>
+
+          <!-- hole board -->
+          <g filter="url(#softShadowC)">
+            <rect x="132" y="106" width="68" height="68" rx="18" fill="#FFFFFF"/>
+            <rect x="146" y="120" width="40" height="40" rx="10" fill="none" stroke="#9F7AEA" stroke-width="8"/>
+          </g>
+
+          <!-- buddy tries to wiggle out -->
+          <g class="buddy tb" filter="url(#softShadowC)">
+            <rect x="62" y="104" width="86" height="86" rx="28" fill="#9F7AEA"/>
+            <rect x="72" y="114" width="66" height="66" rx="24" fill="#D6BCFA" opacity="0.9"/>
+
+            <circle cx="92" cy="148" r="6" fill="#1A202C"/>
+            <circle cx="118" cy="148" r="6" fill="#1A202C"/>
+            <path d="M96 164 Q105 176 114 164" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
+
+            <path d="M62 148 C46 146 46 124 62 122" fill="none" stroke="#2D3748" stroke-width="7" stroke-linecap="round"/>
+            <path d="M148 148 C164 146 164 124 148 122" fill="none" stroke="#2D3748" stroke-width="7" stroke-linecap="round"/>
+
+            <!-- motion lines -->
+            <path d="M40 140 L56 130" stroke="#805AD5" stroke-width="6" stroke-linecap="round" opacity="0.55"/>
+            <path d="M180 140 L164 130" stroke="#805AD5" stroke-width="6" stroke-linecap="round" opacity="0.55"/>
+          </g>
+        </svg>
+      </div>`;
+    }
+
+    /* Existing reaction stickers (kept simple + fun) */
+    function stickerGiveUp(){
+      return `
+      <div class="sticker-wrap">
+        <svg class="sticker-svg" viewBox="0 0 220 220" aria-label="Giving up">
+          <defs>
+            <filter id="softShadowG" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
+            </filter>
+          </defs>
           <path d="M45,78 C32,40 78,18 112,26 C146,34 190,32 194,70
                    C198,108 198,162 160,190 C122,218 62,204 44,172
                    C28,144 58,120 45,78 Z"
                 fill="#FFF5F5"/>
-
-          <g class="buddy tb" filter="url(#softShadow3)">
+          <g filter="url(#softShadowG)">
             <rect x="68" y="90" width="84" height="84" rx="26" fill="#A0AEC0"/>
             <rect x="78" y="100" width="64" height="64" rx="22" fill="#CBD5E0"/>
-
-            <!-- droopy eyes -->
             <path d="M92 132 Q98 126 104 132" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
             <path d="M118 132 Q124 126 130 132" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-
-            <!-- flat mouth -->
             <path d="M98 150 L122 150" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-
-            <!-- tiny flag -->
             <path d="M160 116 L160 170" stroke="#718096" stroke-width="7" stroke-linecap="round"/>
             <path d="M160 118 Q188 124 160 138" fill="#FEB2B2" opacity="0.95"/>
           </g>
@@ -404,38 +604,26 @@
     function stickerDestroy(){
       return `
       <div class="sticker-wrap">
-        <svg class="sticker-svg st-destroy" viewBox="0 0 220 220" aria-label="Destroying work buddy">
+        <svg class="sticker-svg" viewBox="0 0 220 220" aria-label="Destroying work">
           <defs>
-            <filter id="softShadow4" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="softShadowD" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
             </filter>
           </defs>
-
           <path d="M40,90 C28,52 70,18 112,26 C154,34 195,34 198,74
                    C201,114 200,162 158,190 C116,218 60,205 40,175
                    C25,146 53,126 40,90 Z"
                 fill="#FFF8E1"/>
-
-          <g class="buddy tb" filter="url(#softShadow4)">
+          <g filter="url(#softShadowD)">
             <rect x="68" y="90" width="84" height="84" rx="26" fill="#ED8936"/>
             <rect x="78" y="100" width="64" height="64" rx="22" fill="#F6AD55"/>
-
-            <!-- angry eyebrows -->
             <path d="M88 128 L104 120" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
             <path d="M132 128 L116 120" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-
             <circle cx="95" cy="134" r="6" fill="#1A202C"/>
             <circle cx="125" cy="134" r="6" fill="#1A202C"/>
             <path d="M98 152 Q110 144 122 152" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-
-            <!-- crumpled paper -->
-            <path d="M168 140
-                     c-6 -10 4 -22 16 -20
-                     c10 2 14 12 9 20
-                     c-4 8 -17 12 -25 0z"
+            <path d="M168 140 c-6 -10 4 -22 16 -20 c10 2 14 12 9 20 c-4 8 -17 12 -25 0z"
                   fill="#F7FAFC" opacity="0.95"/>
-            <path d="M162 138 L178 126" stroke="#CBD5E0" stroke-width="4" stroke-linecap="round"/>
-            <path d="M165 146 L184 132" stroke="#CBD5E0" stroke-width="4" stroke-linecap="round"/>
           </g>
         </svg>
       </div>`;
@@ -444,9 +632,9 @@
     function stickerMeanWords(){
       return `
       <div class="sticker-wrap">
-        <svg class="sticker-svg st-mean" viewBox="0 0 220 220" aria-label="Mean words bubble">
+        <svg class="sticker-svg" viewBox="0 0 220 220" aria-label="Mean words">
           <defs>
-            <filter id="softShadow5" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="softShadowM" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
             </filter>
           </defs>
@@ -456,32 +644,20 @@
                    C26,144 54,126 40,88 Z"
                 fill="#EDF2F7"/>
 
-          <g filter="url(#softShadow5)">
+          <g filter="url(#softShadowM)">
             <rect x="56" y="110" width="78" height="78" rx="26" fill="#805AD5"/>
             <rect x="66" y="120" width="58" height="58" rx="22" fill="#B794F4" opacity="0.85"/>
-
-            <!-- face -->
             <circle cx="84" cy="152" r="6" fill="#1A202C"/>
             <circle cx="110" cy="152" r="6" fill="#1A202C"/>
             <path d="M88 166 Q97 156 106 166" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
           </g>
 
-          <!-- wiggly “mean” bubble (no text) -->
-          <g class="bubble tb" filter="url(#softShadow5)">
-            <path d="M140 62
-                     c26 0 44 16 44 34
-                     c0 18 -18 34 -44 34
-                     c-6 0 -12 -1 -18 -3
-                     l-14 9 4 -16
-                     c-10 -7 -16 -15 -16 -24
-                     c0 -18 18 -34 44 -34z"
+          <g filter="url(#softShadowM)">
+            <path d="M140 62 c26 0 44 16 44 34 c0 18 -18 34 -44 34
+                     c-6 0 -12 -1 -18 -3 l-14 9 4 -16
+                     c-10 -7 -16 -15 -16 -24 c0 -18 18 -34 44 -34z"
                   fill="#FEB2B2"/>
-            <!-- scribble lines -->
-            <path d="M122 86 C132 80, 142 92, 152 86
-                     C162 80, 172 92, 182 86"
-                  fill="none" stroke="#C53030" stroke-width="6" stroke-linecap="round"/>
-            <path d="M126 106 C138 98, 150 112, 162 104
-                     C170 100, 176 110, 184 106"
+            <path d="M122 86 C132 80, 142 92, 152 86 C162 80, 172 92, 182 86"
                   fill="none" stroke="#C53030" stroke-width="6" stroke-linecap="round"/>
           </g>
         </svg>
@@ -491,9 +667,9 @@
     function stickerWhining(){
       return `
       <div class="sticker-wrap">
-        <svg class="sticker-svg st-whine" viewBox="0 0 220 220" aria-label="Whining buddy">
+        <svg class="sticker-svg" viewBox="0 0 220 220" aria-label="Whining">
           <defs>
-            <filter id="softShadow6" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="softShadowW" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
             </filter>
           </defs>
@@ -503,20 +679,13 @@
                    C26,144 54,126 40,90 Z"
                 fill="#E6FFFA"/>
 
-          <g filter="url(#softShadow6)">
+          <g filter="url(#softShadowW)">
             <rect x="68" y="90" width="84" height="84" rx="26" fill="#48BB78"/>
             <rect x="78" y="100" width="64" height="64" rx="22" fill="#9AE6B4" opacity="0.95"/>
-
-            <!-- worried eyes -->
             <circle cx="95" cy="134" r="6" fill="#1A202C"/>
             <circle cx="125" cy="134" r="6" fill="#1A202C"/>
-
-            <!-- wobbly mouth -->
             <path d="M98 154 Q110 146 122 154" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-
-            <!-- tear drop -->
-            <path class="tear tb" d="M140 128 C148 140, 148 154, 140 160
-                                    C132 154, 132 140, 140 128 Z"
+            <path d="M140 128 C148 140, 148 154, 140 160 C132 154, 132 140, 140 128 Z"
                   fill="#63B3ED" opacity="0.95"/>
           </g>
         </svg>
@@ -526,9 +695,9 @@
     function stickerBrainFog(){
       return `
       <div class="sticker-wrap">
-        <svg class="sticker-svg st-fog" viewBox="0 0 220 220" aria-label="Brain fog cloud">
+        <svg class="sticker-svg" viewBox="0 0 220 220" aria-label="Brain fog">
           <defs>
-            <filter id="softShadow7" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="softShadowF" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
             </filter>
           </defs>
@@ -538,14 +707,10 @@
                    C30,144 58,120 46,82 Z"
                 fill="#F7FAFC"/>
 
-          <g class="cloud tb" filter="url(#softShadow7)">
-            <path d="M70 130
-                     c-14 0 -26 -10 -26 -24
-                     c0 -12 8 -22 20 -24
-                     c4 -18 22 -30 40 -24
-                     c10 -10 28 -10 38 2
-                     c14 0 26 12 26 26
-                     c0 16 -12 26 -26 26H70z"
+          <g filter="url(#softShadowF)" class="tb" style="animation: floaty 2.4s infinite ease-in-out;">
+            <path d="M70 130 c-14 0 -26 -10 -26 -24 c0 -12 8 -22 20 -24
+                     c4 -18 22 -30 40 -24 c10 -10 28 -10 38 2
+                     c14 0 26 12 26 26 c0 16 -12 26 -26 26H70z"
                   fill="#CBD5E0"/>
             <circle cx="92" cy="118" r="5.8" fill="#1A202C"/>
             <circle cx="124" cy="118" r="5.8" fill="#1A202C"/>
@@ -558,9 +723,9 @@
     function stickerTimeWasted(){
       return `
       <div class="sticker-wrap">
-        <svg class="sticker-svg st-time" viewBox="0 0 220 220" aria-label="Time wasted hourglass">
+        <svg class="sticker-svg" viewBox="0 0 220 220" aria-label="Time wasted">
           <defs>
-            <filter id="softShadow8" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="softShadowT" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
             </filter>
           </defs>
@@ -570,129 +735,14 @@
                    C28,144 58,120 44,82 Z"
                 fill="#FFF5F5"/>
 
-          <g class="glass tb" filter="url(#softShadow8)">
+          <g filter="url(#softShadowT)" class="tb" style="animation: wiggle 1.4s infinite ease-in-out;">
             <rect x="80" y="54" width="60" height="18" rx="8" fill="#718096"/>
             <rect x="80" y="148" width="60" height="18" rx="8" fill="#718096"/>
-
-            <path d="M92 72
-                     c0 20 18 20 18 38
-                     c0 18 -18 18 -18 38
-                     h56
-                     c0 -20 -18 -20 -18 -38
-                     c0 -18 18 -18 18 -38H92z"
+            <path d="M92 72 c0 20 18 20 18 38 c0 18 -18 18 -18 38
+                     h56 c0 -20 -18 -20 -18 -38 c0 -18 18 -18 18 -38H92z"
                   fill="#FED7D7"/>
-
             <path d="M110 110 L110 122" stroke="#ED8936" stroke-width="8" stroke-linecap="round"/>
             <circle cx="110" cy="128" r="6" fill="#ED8936"/>
-          </g>
-        </svg>
-      </div>`;
-    }
-
-    function stickerAskHelp(){
-      return `
-      <div class="sticker-wrap">
-        <svg class="sticker-svg st-help" viewBox="0 0 220 220" aria-label="Ask for help hand">
-          <defs>
-            <filter id="softShadow9" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
-            </filter>
-          </defs>
-
-          <path d="M44,88 C32,50 76,18 114,26 C152,34 192,30 194,70
-                   C196,110 198,160 156,188 C114,216 62,204 44,172
-                   C28,144 58,126 44,88 Z"
-                fill="#EBF8FF"/>
-
-          <g class="hand tb" filter="url(#softShadow9)">
-            <rect x="78" y="84" width="64" height="88" rx="26" fill="#4299E1"/>
-            <rect x="88" y="94" width="44" height="68" rx="22" fill="#63B3ED" opacity="0.9"/>
-
-            <!-- “raised hand” -->
-            <path d="M150 132
-                     c6 -10 0 -20 -10 -18
-                     c-6 2 -8 8 -8 14
-                     v22
-                     c0 10 -8 18 -18 18
-                     h-18
-                     c-10 0 -18 -8 -18 -18
-                     v-22
-                     c0 -10 8 -18 18 -18
-                     h18"
-                  fill="#FFD166"/>
-
-            <circle cx="102" cy="136" r="6" fill="#1A202C"/>
-            <circle cx="118" cy="136" r="6" fill="#1A202C"/>
-            <path d="M104 152 Q110 160 116 152" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-          </g>
-        </svg>
-      </div>`;
-    }
-
-    function stickerBattery(){
-      return `
-      <div class="sticker-wrap">
-        <svg class="sticker-svg st-battery" viewBox="0 0 220 220" aria-label="Battery recharge">
-          <defs>
-            <filter id="softShadow10" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
-            </filter>
-          </defs>
-
-          <path d="M44,88 C32,50 76,18 114,26 C152,34 192,30 194,70
-                   C196,110 198,160 156,188 C114,216 62,204 44,172
-                   C28,144 58,126 44,88 Z"
-                fill="#F0FFF4"/>
-
-          <g filter="url(#softShadow10)">
-            <rect x="58" y="88" width="120" height="72" rx="22" fill="#2F855A" opacity="0.92"/>
-            <rect x="176" y="108" width="14" height="32" rx="8" fill="#2F855A" class="cap tb"/>
-            <rect x="70" y="100" width="96" height="48" rx="16" fill="#22543D" opacity="0.6"/>
-
-            <!-- fill (JS will set width) -->
-            <rect id="batteryFill" x="70" y="100" width="12" height="48" rx="16" fill="#68D391"/>
-          </g>
-
-          <!-- buddy face -->
-          <g filter="url(#softShadow10)">
-            <circle cx="104" cy="124" r="6" fill="#1A202C"/>
-            <circle cx="130" cy="124" r="6" fill="#1A202C"/>
-            <path d="M108 140 Q117 150 126 140" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-          </g>
-        </svg>
-      </div>`;
-    }
-
-    function stickerShakeBuddy(){
-      return `
-      <div class="sticker-wrap">
-        <svg class="sticker-svg st-shake" viewBox="0 0 220 220" aria-label="Wiggle buddy">
-          <defs>
-            <filter id="softShadow11" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="rgba(0,0,0,0.14)"/>
-            </filter>
-          </defs>
-
-          <path d="M44,88 C32,50 76,18 114,26 C152,34 192,30 194,70
-                   C196,110 198,160 156,188 C114,216 62,204 44,172
-                   C28,144 58,126 44,88 Z"
-                fill="#FAF5FF"/>
-
-          <g id="wiggleBuddy" class="tb" filter="url(#softShadow11)">
-            <rect x="70" y="88" width="84" height="92" rx="26" fill="#9F7AEA"/>
-            <rect x="80" y="98" width="64" height="72" rx="22" fill="#D6BCFA" opacity="0.9"/>
-
-            <circle cx="97" cy="132" r="6" fill="#1A202C"/>
-            <circle cx="127" cy="132" r="6" fill="#1A202C"/>
-            <path d="M102 148 Q112 160 122 148" fill="none" stroke="#1A202C" stroke-width="6" stroke-linecap="round"/>
-
-            <!-- arms -->
-            <path d="M72 130 C54 126 54 100 70 98" fill="none" stroke="#2D3748" stroke-width="7" stroke-linecap="round"/>
-            <path d="M154 130 C172 126 172 100 156 98" fill="none" stroke="#2D3748" stroke-width="7" stroke-linecap="round"/>
-
-            <!-- motion lines -->
-            <path d="M40 120 L54 112" stroke="#805AD5" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
-            <path d="M180 120 L166 112" stroke="#805AD5" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
           </g>
         </svg>
       </div>`;
@@ -705,7 +755,7 @@
     function showHome(){
       render(`
         <h1 class="title">Understanding Frustration</h1>
-        <p class="sub">Feeling stuck is tough. Let’s untangle it with a funny “shape-sorter” brain.</p>
+        <p class="sub">Frustration feels like a “square peg” moment. Let’s untangle it.</p>
 
         <div class="grid-2">
           <div class="white-card">
@@ -718,7 +768,7 @@
           <div class="white-card">
             ${stickerToolsBuddy()}
             <div class="card-title">Untangle Tools</div>
-            <p class="card-desc">Small steps that make the puzzle easier.</p>
+            <p class="card-desc">Small science-backed moves that calm the body and brain.</p>
             <button class="btn btn-green" onclick="showSolutions()">Show Solutions</button>
           </div>
         </div>
@@ -734,7 +784,7 @@
         <button class="btn-back" onclick="showHome()">← Back</button>
 
         <h1 class="title orange-title">How Do We Act?</h1>
-        <p class="sub" style="color: var(--orange1); font-weight:600;">Frustration can make us do silly things.</p>
+        <p class="sub" style="color: var(--orange1); font-weight:600;">When frustration rises, these reactions can pop out.</p>
 
         <div class="grid-2">
           <div class="white-card">
@@ -763,7 +813,7 @@
         </div>
 
         <div class="white-card" style="margin-top: 26px; border-bottom-color: var(--orange1);">
-          <p style="font-weight:600; font-size:20px; color: var(--orange2); margin:0 0 8px;">Do these help us fit the puzzle?</p>
+          <p style="font-weight:600; font-size:20px; color: var(--orange2); margin:0 0 8px;">Do these help the peg fit?</p>
           <button class="btn btn-orange" style="width:auto; padding:12px 18px;" onclick="showConsequences()">See The Result</button>
         </div>
       `);
@@ -791,7 +841,7 @@
         </div>
 
         <div class="white-card" style="margin-top: 26px; border-bottom-color: var(--green1);">
-          <p style="font-weight:600; font-size:20px; color: var(--green2); margin:0 0 8px;">Let’s use the “tools” instead.</p>
+          <p style="font-weight:600; font-size:20px; color: var(--green2); margin:0 0 8px;">Let’s use tools instead.</p>
           <button class="btn btn-green" style="width:auto; padding:12px 18px;" onclick="showSolutions()">Go To Solutions</button>
         </div>
       `);
@@ -801,29 +851,32 @@
       render(`
         <button class="btn-back" onclick="showHome()">← Back to Start</button>
 
-        <h1 class="title green-title">Un-Tangle Tools</h1>
-        <p class="sub">These are small moves that help the “peg” fit the “hole.”</p>
+        <h1 class="title green-title">Cooling-Down Tools</h1>
+        <p class="sub">These help your body calm down first, then your brain can solve the puzzle.</p>
 
         <div style="display:flex; flex-direction:column; gap: 26px; margin-top: 16px;">
 
+          <!-- 1) Ask for a clue -->
           <div class="white-card" style="text-align:left; border-bottom-color: var(--blue1);">
-            <div style="text-align:center;">${stickerAskHelp()}</div>
+            <div style="text-align:center;">${stickerAskClue()}</div>
             <div class="card-title" style="text-align:center; color: var(--blue1);">Ask for a Clue</div>
-            <p class="card-desc" style="text-align:center;">Ask an adult for one tiny hint — not the whole answer.</p>
+            <p class="card-desc" style="text-align:center;">A tiny hint reduces stress and unlocks the next step.</p>
 
-            <div id="helpBubble" class="practice-bubble">“Excuse me… can you help me start?”</div>
+            <div id="helpBubble" class="practice-bubble">“Excuse me… can you give me one small hint?”</div>
             <button class="btn btn-blue" onclick="toggleHelpBubble()">Practice Asking</button>
           </div>
 
-          <div class="white-card" style="text-align:left; border-bottom-color: var(--green1);">
-            <div style="text-align:center;">${stickerBattery()}</div>
+          <!-- 2) Recharge -->
+          <div class="white-card" id="chargeCard" style="text-align:left; border-bottom-color: var(--green1);">
+            <div style="text-align:center;">${stickerRecharge()}</div>
             <div class="card-title" style="text-align:center; color: var(--green1);">Recharge Power</div>
-            <p class="card-desc" style="text-align:center;">Step away for 10 seconds. Come back stronger.</p>
+            <p class="card-desc" style="text-align:center;">Short breaks help the brain reset and try again.</p>
 
             <div id="chargeTimer" style="text-align:center; font-size:30px; font-weight:600; color: var(--green2); margin-top:8px;"></div>
             <button class="btn btn-green" onclick="startCharge()">Start Recharge (10s)</button>
           </div>
 
+          <!-- 3) Breathing -->
           <div class="white-card" style="text-align:left; border-bottom-color: var(--orange1);">
             <div style="text-align:center;">
               <div id="breathCircle"
@@ -834,18 +887,73 @@
               >In</div>
             </div>
 
-            <div class="card-title" style="text-align:center; color: var(--orange1);">Clear the Fog</div>
-            <p class="card-desc" style="text-align:center;">Slow breathing makes your brain “less cloudy.”</p>
+            <div class="card-title" style="text-align:center; color: var(--orange1);">Slow Breathing</div>
+            <p class="card-desc" style="text-align:center;">Slower breathing tells the body “I’m safe.”</p>
 
             <button class="btn btn-orange" onclick="toggleBreath()">Start Breathing</button>
           </div>
 
+          <!-- 4) Shake it off -->
           <div class="white-card" id="shakeCard" style="text-align:left; border-bottom-color: var(--purple1);">
-            <div style="text-align:center;">${stickerShakeBuddy()}</div>
+            <div style="text-align:center;" id="shakeSticker">${stickerShake()}</div>
             <div class="card-title" style="text-align:center; color: var(--purple2);">Shake It Off</div>
-            <p class="card-desc" style="text-align:center;">Frustration feels tight. Wiggle your body for 2 seconds!</p>
+            <p class="card-desc" style="text-align:center;">Quick movement helps the “stuck energy” leave the body.</p>
 
             <button class="btn btn-purple" onclick="shakeIt()">Wiggle & Shake!</button>
+          </div>
+
+          <!-- 5) Name the feeling (affect labeling) -->
+          <div class="white-card" style="text-align:left; border-bottom-color: var(--teal1);">
+            <div style="text-align:center;">${stickerAskClue()}</div>
+            <div class="card-title" style="text-align:center; color: var(--teal2);">Name the Feeling</div>
+            <p class="card-desc" style="text-align:center;">Putting a name on it helps the brain calm and organize.</p>
+
+            <input id="feelInput" class="input" placeholder="I feel frustrated because…" />
+            <div id="feelEcho" class="tiny-box hidden"></div>
+
+            <button class="btn btn-teal" onclick="saveFeeling()">Lock It In</button>
+          </div>
+
+          <!-- 6) Tiny steps (reduce overwhelm) -->
+          <div class="white-card" style="text-align:left; border-bottom-color: var(--blue1);">
+            <div style="text-align:center;">${stickerSquarePeg()}</div>
+            <div class="card-title" style="text-align:center; color: var(--blue1);">Make It Tiny</div>
+            <p class="card-desc" style="text-align:center;">Small steps feel doable and stop the panic spiral.</p>
+
+            <div id="tinySteps" class="tiny-box hidden">
+              <div style="font-weight:700; margin-bottom:6px;">Try this:</div>
+              <div>1) What is the first tiny step?</div>
+              <div>2) What tool do I need?</div>
+              <div>3) What can I do for 60 seconds?</div>
+            </div>
+
+            <button class="btn btn-blue" onclick="toggleTinySteps()">Show Tiny Steps</button>
+          </div>
+
+          <!-- 7) Squeeze & release (muscle relaxation) -->
+          <div class="white-card" style="text-align:left; border-bottom-color: var(--red1);">
+            <div style="text-align:center;">${stickerShake()}</div>
+            <div class="card-title" style="text-align:center; color: var(--red2);">Squeeze & Release</div>
+            <p class="card-desc" style="text-align:center;">Tense muscles for 5 seconds, then relax. Your body “lets go.”</p>
+
+            <div class="mini-row">
+              <div class="pill" id="squeezeText">Ready?</div>
+            </div>
+
+            <button class="btn btn-red" onclick="startSqueeze()">Start (5 + 5)</button>
+          </div>
+
+          <!-- 8) 5 senses grounding -->
+          <div class="white-card" style="text-align:left; border-bottom-color: var(--teal1);">
+            <div style="text-align:center;">${stickerToolsBuddy()}</div>
+            <div class="card-title" style="text-align:center; color: var(--teal2);">5 Senses Reset</div>
+            <p class="card-desc" style="text-align:center;">Grounding pulls your brain out of the “storm.”</p>
+
+            <div id="sensePrompt" class="tiny-box">
+              Press the button to get a quick mission.
+            </div>
+
+            <button class="btn btn-teal" onclick="nextSense()">Give Me a Mission</button>
           </div>
 
         </div>
@@ -867,23 +975,26 @@
     function startCharge(){
       const timer = document.getElementById("chargeTimer");
       const fill  = document.getElementById("batteryFill");
-      if(!timer || !fill) return;
+      const card  = document.getElementById("chargeCard");
+      if(!timer || !fill || !card) return;
 
       if(chargeInterval) clearInterval(chargeInterval);
 
+      card.classList.add("charging");
+
       let t = 10;
       timer.textContent = "Recharging…";
-      // battery fill from 12px to 96px
-      fill.setAttribute("width", "12");
+      fill.setAttribute("width", "10");
 
       chargeInterval = setInterval(() => {
         t--;
         timer.textContent = t > 0 ? `${t}s` : `Fully Charged!`;
-        const w = 12 + ( (10 - t) / 10 ) * 84; // 12 -> 96
-        fill.setAttribute("width", String(Math.max(12, Math.min(96, w))));
+        const w = 10 + ((10 - t) / 10) * 66; // 10 -> 76
+        fill.setAttribute("width", String(Math.max(10, Math.min(76, w))));
         if(t <= 0){
           clearInterval(chargeInterval);
           chargeInterval = null;
+          card.classList.remove("charging");
         }
       }, 1000);
     }
@@ -924,7 +1035,78 @@
       if(!card) return;
 
       card.classList.add("shakingCard");
-      setTimeout(() => card.classList.remove("shakingCard"), 2000);
+      card.classList.add("wiggling");
+
+      setTimeout(() => {
+        card.classList.remove("shakingCard");
+        card.classList.remove("wiggling");
+      }, 2000);
+    }
+
+    function saveFeeling(){
+      const input = document.getElementById("feelInput");
+      const echo  = document.getElementById("feelEcho");
+      if(!input || !echo) return;
+
+      const text = input.value.trim();
+      if(!text){
+        echo.textContent = "Try writing one reason, even small.";
+      } else {
+        echo.textContent = `Good job. You noticed it: “${text}”`;
+      }
+      echo.classList.remove("hidden");
+    }
+
+    function toggleTinySteps(){
+      const box = document.getElementById("tinySteps");
+      if(!box) return;
+      box.classList.toggle("hidden");
+    }
+
+    let squeezeInterval = null;
+    function startSqueeze(){
+      const el = document.getElementById("squeezeText");
+      if(!el) return;
+
+      if(squeezeInterval) clearInterval(squeezeInterval);
+
+      let phase = "SQUEEZE";
+      let t = 5;
+      el.textContent = `SQUEEZE hands (5)…`;
+
+      squeezeInterval = setInterval(() => {
+        t--;
+        if(t > 0){
+          el.textContent = `${phase} (${t})…`;
+          return;
+        }
+
+        if(phase === "SQUEEZE"){
+          phase = "RELEASE";
+          t = 5;
+          el.textContent = `RELEASE (5)…`;
+          return;
+        }
+
+        clearInterval(squeezeInterval);
+        squeezeInterval = null;
+        el.textContent = "Nice! Your body just let go.";
+      }, 1000);
+    }
+
+    const senseMissions = [
+      "Look for 5 things you can see.",
+      "Touch 4 things (shirt, chair, hair, desk).",
+      "Listen for 3 sounds (fan, birds, voices).",
+      "Find 2 smells (soap, food, air).",
+      "Taste 1 thing (water counts)."
+    ];
+    let senseIndex = 0;
+    function nextSense(){
+      const box = document.getElementById("sensePrompt");
+      if(!box) return;
+      box.textContent = senseMissions[senseIndex % senseMissions.length];
+      senseIndex++;
     }
 
     showHome();
