@@ -218,7 +218,8 @@
             if(t<=0) { 
                 clearInterval(i); 
                 timer.innerText = "🔋 Fully Charged!"; 
-                img.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/High%20Voltage.png";
+                // FIXED: Using "Gem" instead of "High Voltage" because of filename spaces
+                img.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Gem%20Stone.png";
                 img.classList.remove('animate-pulse');
                 img.classList.add('animate-float');
             }
