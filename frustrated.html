@@ -16,12 +16,10 @@
     .sticker-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); z-index: 2; position: relative; }
     
     /* --- EXTREME ANIMATIONS --- */
-    /* Higher Float */
     @keyframes super-float { 
         0%, 100% { transform: translateY(0) scale(1); } 
-        50% { transform: translateY(-25px) scale(1.1); } /* Increased height */
+        50% { transform: translateY(-25px) scale(1.1); } 
     }
-    /* Violent Shake (Increased from 5deg to 25deg) */
     @keyframes super-shake { 
         0% { transform: translate(2px, 2px) rotate(0deg); }
         10% { transform: translate(-2px, -4px) rotate(-20deg); }
@@ -35,7 +33,6 @@
         90% { transform: translate(2px, 4px) rotate(0deg); }
         100% { transform: translate(2px, -4px) rotate(-20deg); }
     }
-    /* Big Pulse */
     @keyframes super-pulse { 
         0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(237, 137, 54, 0.7); } 
         50% { transform: scale(1.3); box-shadow: 0 0 0 40px rgba(237, 137, 54, 0); } 
@@ -43,7 +40,7 @@
     }
     
     .animate-float { animation: super-float 2.5s infinite ease-in-out; }
-    .animate-shake { animation: super-shake 0.4s infinite linear; } /* Faster shake */
+    .animate-shake { animation: super-shake 0.4s infinite linear; }
     .animate-pulse { animation: super-pulse 1s infinite; }
 
     /* --- UI ELEMENTS --- */
@@ -82,7 +79,7 @@
                 <div class="white-card">
                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Cyclone.png" class="sticker-img animate-float">
                     <div class="card-title">The Big Tangle</div>
-                    <p class="card-desc">"I can't do it! It's a mess!"</p>
+                    <p class="card-desc">"I can't do it! It's messy!"</p>
                     <button onclick="showReactions()" class="btn btn-orange">See The Mess</button>
                 </div>
                 <div class="white-card">
@@ -167,7 +164,7 @@
 
           <div class="white-card" style="text-align: left; border-bottom-color: #48BB78;">
              <div style="text-align: center;">
-                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Light%20Bulb.png" class="sticker-img animate-float" id="battery-img">
+                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Battery.png" class="sticker-img animate-float" id="battery-img">
              </div>
              <div class="card-title" style="text-align: center; color: #48BB78;">Recharge Power</div>
              <p class="card-desc" style="text-align: center;">Walk away for 10 seconds to recharge.</p>
@@ -186,7 +183,7 @@
 
           <div class="white-card" id="shake-card" style="text-align: left; border-bottom-color: #9F7AEA;">
              <div style="text-align: center;">
-                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Dizzy.png" class="sticker-img animate-shake" id="dance-img">
+                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Collision.png" class="sticker-img animate-shake" id="dance-img">
              </div>
              <div class="card-title" style="text-align: center; color: #805AD5;">Shake It Off</div>
              <p class="card-desc" style="text-align: center;">Frustration feels tight. Wiggle your body!</p>
@@ -218,8 +215,8 @@
             if(t<=0) { 
                 clearInterval(i); 
                 timer.innerText = "🔋 Fully Charged!"; 
-                // FIXED: Using "Gem" instead of "High Voltage" because of filename spaces
-                img.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Gem%20Stone.png";
+                // FIXED: Use "Check Mark Button" for success. It is a Safe filename.
+                img.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Check%20Mark%20Button.png";
                 img.classList.remove('animate-pulse');
                 img.classList.add('animate-float');
             }
@@ -244,7 +241,7 @@
         const card = document.getElementById('shake-card');
         const img = document.getElementById('dance-img');
         
-        // EXTREME SHAKE
+        // EXTREME SHAKE (300ms)
         card.style.animation = "super-shake 0.3s infinite"; 
         img.style.transform = "scale(1.5)"; 
         
