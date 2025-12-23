@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -15,11 +15,14 @@
     
     .sticker-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); z-index: 2; position: relative; }
     
+    /* UTILITY: Used to instantly swap images without loading delay */
+    .hidden { display: none !important; }
+    
     /* --- ANIMATIONS --- */
     @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
     @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
     @keyframes super-shake { 
-        0%, 100% { transform: translateX(0); }
+        0% { transform: translateX(0); }
         10%, 30%, 50%, 70%, 90% { transform: translateX(-10px) rotate(-10deg); }
         20%, 40%, 60%, 80% { transform: translateX(10px) rotate(10deg); }
     }
@@ -130,7 +133,7 @@
         `;
     }
 
-    // --- VIEW 4: SOLUTIONS (3D + FIXED BROKEN ICONS) ---
+    // --- VIEW 4: SOLUTIONS (PRE-LOADED IMAGES) ---
     function showSolutions() {
       container.innerHTML = `
         <button onclick="showHome()" class="btn-back">← Back to Start</button>
@@ -149,7 +152,8 @@
 
           <div class="white-card" style="text-align: left; border-bottom-color: #48BB78;">
              <div style="text-align: center;">
-                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Battery.png" class="sticker-img animate-float" id="battery-img">
+                 <img id="battery-start" src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Battery.png" class="sticker-img animate-float">
+                 <img id="battery-done" src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Star.png" class="sticker-img animate-float hidden">
              </div>
              <div class="card-title" style="text-align: center; color: #48BB78;">Recharge Power</div>
              <p class="card-desc" style="text-align: center;">Walk away for 10 seconds to recharge.</p>
@@ -188,7 +192,8 @@
     function startCharge() {
         let t = 10;
         const timer = document.getElementById('charge-timer');
-        const img = document.getElementById('battery-img');
+        const imgStart = document.getElementById('battery-start');
+        const imgDone = document.getElementById('battery-done');
         
         timer.innerText = "⚡ Recharging...";
         
@@ -198,9 +203,10 @@
             if(t<=0) { 
                 clearInterval(i); 
                 timer.innerText = "🌟 Fully Charged!"; 
-                // Using "Star.png" - this is verified to have no spaces in the name
-                img.src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Star.png";
-                img.classList.add('animate-float');
+                
+                // INSTANT SWAP (Un-hiding the pre-loaded image)
+                imgStart.classList.add('hidden');
+                imgDone.classList.remove('hidden');
             }
         }, 1000);
     }
