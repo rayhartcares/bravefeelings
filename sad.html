@@ -778,29 +778,46 @@
             <button class="btn btn-indigo" onclick="toggleBright()">Turn On Bright Spot</button>
           </div>
 
-          <!-- TOOL 6 (BOX BREATH: NOW A BALLOON THAT INFLATES/DEFLATES) -->
-          <div class="white-card" style="border-bottom-color:#0EA5E9;">
-            <div class="illus3d">
-              <div class="balloonWrap" id="balloonWrap">
-                <div class="balloon" id="balloon">
-                  <div class="knot"></div>
-                </div>
-                <div class="string"></div>
-                <div class="puff p1"></div>
-                <div class="puff p2"></div>
-                <div class="puff p3"></div>
-              </div>
-            </div>
+         <!-- TOOL 6 (BOX BREATH: NEW 3D LUNGS) -->
+<div class="white-card" style="border-bottom-color:#0EA5E9;">
+  <div class="illus3d">
+    <div class="lungsWrap" id="lungsWrap">
+      <div class="airTube"></div>
 
-            <div class="card-title" style="color:#0EA5E9;">Box Breath</div>
-            <p class="card-desc">Slow breathing helps your nervous system downshift.</p>
-            <div class="mini-panel">
-              <div class="pill" id="box-phase">In</div>
-              <div style="font-weight:900; font-size:22px; margin-top:10px;" id="box-count">4</div>
-              <div style="color:#64748B; margin-top:6px;" id="box-help">Breathe in slowly.</div>
-            </div>
-            <button class="btn btn-sky" id="box-btn" onclick="toggleBoxBreath()">Start Box Breath</button>
-          </div>
+      <div class="lungs">
+        <div class="lung left">
+          <div class="ribs"></div>
+        </div>
+        <div class="lung right">
+          <div class="ribs"></div>
+        </div>
+      </div>
+
+      <div class="airFlow airIn">
+        <div class="puff p1"></div>
+        <div class="puff p2"></div>
+        <div class="puff p3"></div>
+      </div>
+
+      <div class="airFlow airOut">
+        <div class="puff p1"></div>
+        <div class="puff p2"></div>
+        <div class="puff p3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-title" style="color:#0EA5E9;">Box Breath</div>
+  <p class="card-desc">Slow breathing helps your nervous system downshift.</p>
+
+  <div class="mini-panel">
+    <div class="pill" id="box-phase">In</div>
+    <div style="font-weight:900; font-size:22px; margin-top:10px;" id="box-count">4</div>
+    <div style="color:#64748B; margin-top:6px;" id="box-help">Breathe in slowly.</div>
+  </div>
+
+  <button class="btn btn-sky" id="box-btn" onclick="toggleBoxBreath()">Start Box Breath</button>
+</div>
 
         </div>
 
