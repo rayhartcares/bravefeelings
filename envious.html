@@ -1,81 +1,924 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brave Feelings Lab</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Fredoka', sans-serif; background-color: #F0F9FF; }
-        .hero-bg { background-image: radial-gradient(#bae6fd 2px, transparent 2px); background-size: 30px 30px; }
-        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding Envy — Brave Feelings Lab</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bgA:#F2FAFF;
+      --bgB:#FFF7FB;
+      --ink:#0F172A;
+      --muted:#64748B;
+
+      --card:#ffffff;
+      --shadow: 0 10px 26px rgba(0,0,0,0.07);
+      --radius:26px;
+
+      --blue:#2563EB;
+      --sky:#0EA5E9;
+      --teal:#0D9488;
+      --amber:#D97706;
+      --rose:#E11D48;
+      --indigo:#4338CA;
+      --green:#16A34A;
+
+      --emoji-font: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; padding:0;
+      font-family:'Fredoka', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      overflow-x:hidden;
+      background:
+        radial-gradient(circle at 2px 2px, rgba(2,132,199,.12) 1.5px, transparent 1.7px) 0 0 / 24px 24px,
+        radial-gradient(circle at 12px 12px, rgba(99,102,241,.08) 1.2px, transparent 1.4px) 0 0 / 24px 24px,
+        linear-gradient(135deg, var(--bgA), var(--bgB));
+    }
+
+    #app{
+      width:100%;
+      max-width:860px;
+      padding:44px 18px 54px;
+      position:relative;
+    }
+
+    .title{
+      font-size:40px;
+      font-weight:800;
+      text-align:center;
+      margin:0 0 8px 0;
+      letter-spacing:.2px;
+      color:#0F172A;
+    }
+    .subtitle{
+      text-align:center;
+      color:var(--muted);
+      margin:0 0 34px 0;
+      font-size:18px;
+      line-height:1.45;
+    }
+
+    .white-card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:30px;
+      box-shadow:var(--shadow);
+      text-align:center;
+      margin-bottom:24px;
+      border-bottom:7px solid #E5E7EB;
+      position:relative;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .white-card:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+    }
+
+    .card-title{
+      font-size:22px;
+      font-weight:900;
+      margin:10px 0 6px 0;
+      color:#0F172A;
+    }
+    .card-desc{
+      font-size:16px;
+      color:var(--muted);
+      line-height:1.55;
+      margin:0;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:22px;
+    }
+    @media (max-width:650px){
+      .grid-2{ grid-template-columns:1fr; }
+      #app{ padding:34px 14px 48px; }
+    }
+
+    .btn{
+      padding:14px 22px;
+      border-radius:16px;
+      font-weight:900;
+      font-size:18px;
+      border:none;
+      cursor:pointer;
+      color:white;
+      transition: transform .2s ease, filter .2s ease;
+      width:100%;
+      margin-top:16px;
+      box-shadow: 0 7px 16px rgba(0,0,0,0.12);
+      font-family:inherit;
+    }
+    .btn:hover{ transform: scale(1.02); filter: brightness(1.06); }
+    .btn:disabled{ opacity:.75; cursor:not-allowed; transform:none; }
+
+    .btn-blue   { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+    .btn-sky    { background: linear-gradient(135deg, #38BDF8, #0EA5E9); }
+    .btn-teal   { background: linear-gradient(135deg, #2DD4BF, #0D9488); }
+    .btn-amber  { background: linear-gradient(135deg, #FBBF24, #D97706); }
+    .btn-rose   { background: linear-gradient(135deg, #FB7185, #E11D48); }
+    .btn-indigo { background: linear-gradient(135deg, #6366F1, #4338CA); }
+    .btn-green  { background: linear-gradient(135deg, #34D399, #16A34A); }
+
+    .btn-back{
+      background:white;
+      border:2px solid #CBD5E1;
+      color:#334155;
+      padding:9px 16px;
+      border-radius:14px;
+      font-weight:900;
+      cursor:pointer;
+      margin-bottom:18px;
+      font-family:inherit;
+    }
+
+    .pillRow{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:center;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:13px;
+      background:#E0F2FE;
+      color:#075985;
+      border:1px solid #BAE6FD;
+    }
+    .pill small{
+      font-weight:900;
+      opacity:.9;
+      color:#0369A1;
+    }
+
+    /* Emoji Scenes (BIGGER for kids) */
+    .scene{
+      width:100%;
+      height:190px;
+      border-radius:22px;
+      position:relative;
+      margin:0 auto 10px auto;
+      overflow:hidden;
+      border:2px dashed rgba(148,163,184,.65);
+      background:
+        radial-gradient(circle at 18% 25%, rgba(56,189,248,.26), transparent 55%),
+        radial-gradient(circle at 82% 70%, rgba(99,102,241,.18), transparent 60%),
+        radial-gradient(circle at 55% 18%, rgba(251,113,133,.16), transparent 58%),
+        linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.14));
+    }
+    .scene.altA{
+      background:
+        radial-gradient(circle at 20% 28%, rgba(34,211,238,.25), transparent 55%),
+        radial-gradient(circle at 80% 72%, rgba(59,130,246,.18), transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.12));
+    }
+    .scene.altB{
+      background:
+        radial-gradient(circle at 18% 26%, rgba(251,191,36,.22), transparent 55%),
+        radial-gradient(circle at 82% 70%, rgba(236,72,153,.18), transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.12));
+    }
+    .scene.altC{
+      background:
+        radial-gradient(circle at 18% 26%, rgba(45,212,191,.22), transparent 55%),
+        radial-gradient(circle at 82% 70%, rgba(34,197,94,.18), transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.12));
+    }
+    .scene.altD{
+      background:
+        radial-gradient(circle at 18% 26%, rgba(99,102,241,.22), transparent 55%),
+        radial-gradient(circle at 82% 70%, rgba(14,165,233,.18), transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.12));
+    }
+
+    .mainEmoji{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      font-size: 124px;
+      font-family: var(--emoji-font);
+      filter: drop-shadow(0 18px 18px rgba(0,0,0,0.16));
+      user-select:none;
+      animation: floaty 2.35s infinite ease-in-out;
+    }
+    .miniEmoji{
+      position:absolute;
+      font-family: var(--emoji-font);
+      font-size: 48px;
+      filter: drop-shadow(0 12px 14px rgba(0,0,0,0.12));
+      user-select:none;
+      opacity:.98;
+      animation: wobble 1.25s infinite ease-in-out;
+    }
+    .m1{ left:16px; top:16px; transform: rotate(-10deg); animation-delay:.05s; }
+    .m2{ right:18px; top:14px; transform: rotate(10deg);  animation-delay:.18s; }
+    .m3{ right:22px; bottom:16px; transform: rotate(-8deg); animation-delay:.28s; }
+    .m4{ left:18px; bottom:16px; transform: rotate(8deg);  animation-delay:.35s; display:none; }
+
+    @keyframes pop{
+      0%{ transform: translate(-50%,-50%) scale(1); }
+      45%{ transform: translate(-50%,-50%) scale(1.18); }
+      100%{ transform: translate(-50%,-50%) scale(1); }
+    }
+    @keyframes shake{
+      0%,100%{ transform: translate(-50%,-50%) rotate(0deg); }
+      20%{ transform: translate(-50%,-50%) rotate(-4deg); }
+      40%{ transform: translate(-50%,-50%) rotate(4deg); }
+      60%{ transform: translate(-50%,-50%) rotate(-3deg); }
+      80%{ transform: translate(-50%,-50%) rotate(3deg); }
+    }
+    .scene.pop .mainEmoji{ animation: pop .55s ease-in-out 1; }
+    .scene.shake .mainEmoji{ animation: shake .55s ease-in-out 1; }
+
+    @keyframes floaty{
+      0%,100%{ transform: translate(-50%,-50%) translateY(0px); }
+      50%{ transform: translate(-50%,-50%) translateY(-14px); }
+    }
+    @keyframes wobble{
+      0%{ transform: rotate(-6deg) translateY(0px); }
+      50%{ transform: rotate(6deg) translateY(-3px); }
+      100%{ transform: rotate(-6deg) translateY(0px); }
+    }
+
+    .mini-panel{
+      background:#F8FAFC;
+      border:2px dashed #CBD5E1;
+      border-radius:18px;
+      padding:14px;
+      margin-top:12px;
+      text-align:center;
+      color:#334155;
+      font-weight:900;
+    }
+
+    .bubble{
+      display:none;
+      background:#EFF6FF;
+      border:2px solid #BFDBFE;
+      color:#1E40AF;
+      padding:14px 14px;
+      border-radius:18px;
+      font-weight:900;
+      margin-top:12px;
+    }
+
+    .timer{
+      font-size:34px;
+      font-weight:900;
+      margin-top:10px;
+      color:#0F172A;
+      min-height:44px;
+    }
+
+    .bar{
+      height:14px;
+      width:100%;
+      background: rgba(15,23,42,.10);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(148,163,184,.6);
+      margin-top:10px;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(34,197,94,.88), rgba(14,165,233,.78));
+      transition: width .18s ease;
+    }
+
+    .choiceGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    @media (max-width:650px){
+      .choiceGrid{ grid-template-columns:1fr; }
+    }
+    .choiceBtn{
+      border:2px solid rgba(203,213,225,.9);
+      background: rgba(34,197,94,.10);
+      border-radius:18px;
+      padding:12px 12px;
+      cursor:pointer;
+      font-family:inherit;
+      font-weight:900;
+      color:#0b3b23;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.08);
+      transition: transform .12s ease, filter .12s ease;
+      text-align:left;
+      user-select:none;
+    }
+    .choiceBtn:hover{ transform: translateY(-2px); filter:saturate(1.06); }
+    .choiceBtn:active{ transform: translateY(0px) scale(.99); }
+
+    .resultBox{
+      margin-top:12px;
+      padding:14px 14px;
+      border-radius:18px;
+      border:2px solid rgba(203,213,225,.9);
+      background: rgba(14,165,233,.08);
+      color:#0c2f3d;
+      font-weight:900;
+      line-height:1.35;
+      display:none;
+      text-align:left;
+    }
+    .resultBox small{
+      display:block;
+      margin-top:10px;
+      color: rgba(12,47,61,.72);
+      font-weight:900;
+    }
+
+    .inputRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .inputRow input, .inputRow textarea{
+      flex:1;
+      min-width:220px;
+      font-family:inherit;
+      padding:12px 12px;
+      border-radius:18px;
+      border:2px solid rgba(203,213,225,.9);
+      outline:none;
+      background: rgba(255,255,255,.94);
+      font-size:15px;
+      font-weight:700;
+      color:#0F172A;
+    }
+    .inputRow textarea{ min-height:48px; resize:vertical; }
+
+    .foot{
+      text-align:center;
+      margin-top:26px;
+    }
+    .menuLink{
+      color:#94A3B8;
+      text-decoration:none;
+      font-weight:900;
+    }
+  </style>
 </head>
-<body class="min-h-screen hero-bg flex flex-col items-center justify-center p-6">
 
-    <div class="text-center max-w-2xl mx-auto mb-12">
-        <div class="w-32 h-32 mx-auto mb-6 bg-white rounded-full p-1 shadow-xl">
-            <img src="assets/benne-hart-avatar.png" alt="Benne Hart" class="w-full h-full object-cover rounded-full" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Benne'">
+<body>
+  <div id="app"></div>
+
+  <script>
+    const app = document.getElementById('app');
+
+    // ===== Robust helpers =====
+    const _intervals = [];
+    const _timeouts  = [];
+
+    function addInterval(id){ _intervals.push(id); return id; }
+    function addTimeout(id){ _timeouts.push(id); return id; }
+
+    function clearAllIntervals(){
+      while(_intervals.length){
+        const id = _intervals.pop();
+        try{ clearInterval(id); }catch(e){}
+      }
+      while(_timeouts.length){
+        const id = _timeouts.pop();
+        try{ clearTimeout(id); }catch(e){}
+      }
+    }
+
+    function animateScene(sceneId, kind){
+      const el = document.getElementById(sceneId);
+      if(!el) return;
+      el.classList.remove('pop','shake');
+      void el.offsetWidth;
+      el.classList.add(kind);
+      addTimeout(setTimeout(()=> el.classList.remove(kind), 650));
+    }
+
+    function sceneHTML(id, main, m1, m2, m3, variant, extraClass){
+      const v = variant ? ` ${variant}` : '';
+      const c = extraClass ? ` ${extraClass}` : '';
+      return `
+        <div class="scene${v}${c}" id="${id}" aria-hidden="true">
+          <div class="mainEmoji">${main}</div>
+          <div class="miniEmoji m1">${m1}</div>
+          <div class="miniEmoji m2">${m2}</div>
+          <div class="miniEmoji m3">${m3}</div>
         </div>
-        <h1 class="text-5xl md:text-6xl font-bold text-slate-800 mb-3">Hi, I'm Benne Hart! 🐻</h1>
-        <p class="text-2xl text-slate-600">How is your heart feeling right now?</p>
-    </div>
+      `;
+    }
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full px-4">
+    // ===== TOOL STATE =====
+    // Tool 1: pause timer
+    let pauseSecs = 60;
+    let pauseRunning = false;
 
-        <a href="canva.html" class="block bg-white rounded-3xl p-8 border-b-8 border-red-400 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
-            <div class="flex justify-between items-start mb-4">
-                <span class="text-6xl group-hover:scale-110 transition-transform">😡</span>
-                <span class="bg-red-500 text-white px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+    // Tool 2: wish->goal
+    const goalSteps = [
+      "Practice for 5 minutes.",
+      "Ask someone to teach you one tip.",
+      "Try again tomorrow.",
+      "Do one small step right now.",
+      "Make a simple plan (3 tiny steps).",
+      "Cheer for them AND build your skills."
+    ];
+
+    // Tool 3: gratitude snapshot
+    const gratitudePicks = [
+      "My family or helpers",
+      "A friend",
+      "My body (legs, hands, eyes)",
+      "Food or a cozy home",
+      "A toy, book, or game",
+      "Something I’m learning",
+      "A kind teacher or coach",
+      "A talent I’m growing"
+    ];
+    const chosenGratitude = new Set();
+
+    // Tool 4: celebrate others spinner
+    const cheers = [
+      "Say: “Nice job!”",
+      "Say: “I like how you tried.”",
+      "Say: “Teach me how you did that.”",
+      "Say: “I’m happy for you.”",
+      "High-five them.",
+      "Smile and nod: “Cool!”"
+    ];
+
+    // Tool 5: my-lane shield
+    const lanes = [
+      { title:"My Practice Lane", text:"I will practice a little every day.", why:"Practice grows skills faster than comparing." },
+      { title:"My Kindness Lane", text:"I will cheer for others and stay kind.", why:"Kindness keeps friendships strong." },
+      { title:"My Goal Lane", text:"I will set a goal and take one step.", why:"Goals turn envy into growth." }
+    ];
+
+    // ===== VIEWS =====
+    function showHome(){
+      clearAllIntervals();
+      app.innerHTML = `
+        <h1 class="title">Understanding Envy</h1>
+        <p class="subtitle">Envy is when your heart says, “I want what THEY have.” Let’s turn that feeling into growth and kindness.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#22C55E;">
+            ${sceneHTML('sc-home', '😒', '👀', '🏆', '🎁', 'altC', '')}
+            <div class="card-title" style="color:#16A34A;">What’s happening?</div>
+            <p class="card-desc">Envy often shows up when someone else gets a prize, attention, or something you wanted.</p>
+
+            <div class="pillRow" aria-label="Body signals and triggers">
+              <span class="pill"><small>Body:</small> tight chest</span>
+              <span class="pill"><small>Body:</small> sour tummy</span>
+              <span class="pill"><small>Body:</small> frowny face</span>
+              <span class="pill"><small>Triggers:</small> someone wins</span>
+              <span class="pill"><small>Triggers:</small> new toy</span>
+              <span class="pill"><small>Triggers:</small> praise</span>
             </div>
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Angry</h2>
-            <p class="text-slate-500 text-lg">I feel like a volcano ready to explode.</p>
-        </a>
 
-        <a href="frustrated.html" class="block bg-white rounded-3xl p-8 border-b-8 border-orange-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
-            <div class="flex justify-between items-start mb-4">
-              <span class="text-6xl">😤</span>
-              <span class="bg-orange-100 text-orange-600 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+            <button class="btn btn-green" onclick="showReactions()">See Behaviors</button>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#0EA5E9;">
+            ${sceneHTML('sc-tools-home', '🧩', '🚦', '🎯', '🛡️', 'altA', '')}
+            <div class="card-title" style="color:#0EA5E9;">Tools</div>
+            <p class="card-desc">
+              Kid-simple, science-backed tools (SEL + CBT ideas) to calm your body, stop comparing,
+              and choose a strong next step.
+            </p>
+            <button class="btn btn-sky" onclick="showSolutions()">Show Comfort Tools</button>
+          </div>
+        </div>
+
+        <div class="foot">
+          <a class="menuLink" href="index.html">← Back to Menu</a>
+        </div>
+      `;
+      window.scrollTo({top:0, behavior:'auto'});
+    }
+
+    function showReactions(){
+      clearAllIntervals();
+      app.innerHTML = `
+        <button class="btn-back" onclick="showHome()">← Back</button>
+        <h1 class="title" style="color:#16A34A;">How Do I Act When I’m Envious?</h1>
+        <p class="subtitle" style="color:#16A34A; font-weight:900;">These behaviors are clues: your heart wants something, and needs a better plan.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#86EFAC;">
+            ${sceneHTML('sc-r1','😒','👀','👎','🙄','altC','')}
+            <div class="card-title">I Get Grumpy</div>
+            <p class="card-desc">My face and voice show “I don’t like this.”</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#86EFAC;">
+            ${sceneHTML('sc-r2','🗯️','🧊','💬','😤','altD','')}
+            <div class="card-title">I Say Mean Stuff</div>
+            <p class="card-desc">I might tease or put them down to feel bigger.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#86EFAC;">
+            ${sceneHTML('sc-r3','🫴','🎁','😠','🧲','altB','')}
+            <div class="card-title">I Grab or Demand</div>
+            <p class="card-desc">I try to take the thing, or insist it should be mine.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#86EFAC;">
+            ${sceneHTML('sc-r4','🚪','😞','🧍','🌧️','altA','')}
+            <div class="card-title">I Quit or Sulk</div>
+            <p class="card-desc">I stop trying because it feels unfair.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#0EA5E9;">
+          <p style="font-weight:900; font-size:20px; color:#0C4A6E; margin:0;">What happens if envy stays in charge?</p>
+          <button class="btn btn-sky" style="width:auto; margin-top:14px;" onclick="showConsequences()">See Consequences ➔</button>
+        </div>
+      `;
+      window.scrollTo({top:0, behavior:'auto'});
+    }
+
+    function showConsequences(){
+      clearAllIntervals();
+      app.innerHTML = `
+        <button class="btn-back" onclick="showReactions()">← Back</button>
+        <h1 class="title" style="color:#0EA5E9;">When Envy Runs the Show…</h1>
+        <p class="subtitle">Envy can shrink joy, block learning, and hurt friendships.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#7DD3FC;">
+            ${sceneHTML('sc-c1','💔','👫','🧊','🙈','altD','')}
+            <div class="card-title">Friendship Cracks</div>
+            <p class="card-desc">People don’t feel safe if I compare or act mean.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#7DD3FC;">
+            ${sceneHTML('sc-c2','🪫','😞','🎈','⬇️','altA','')}
+            <div class="card-title">My Joy Drops</div>
+            <p class="card-desc">Even good things feel less fun when I keep comparing.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#7DD3FC;">
+            ${sceneHTML('sc-c3','🚫','📚','🧠','😵‍💫','altB','')}
+            <div class="card-title">I Grow Slower</div>
+            <p class="card-desc">Comparing steals time I could use to practice and improve.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#7DD3FC;">
+            ${sceneHTML('sc-c4','🌀','😬','🧊','🌧️','altC','')}
+            <div class="card-title">I Feel Stuck</div>
+            <p class="card-desc">Envy can keep my heart tense and unhappy.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#16A34A;">
+          <p style="font-weight:900; font-size:20px; color:#166534; margin:0;">Good news: envy can become a goal.</p>
+          <button class="btn btn-green" style="width:auto; margin-top:14px;" onclick="showSolutions()">Go to Comfort Tools ➔</button>
+        </div>
+      `;
+      window.scrollTo({top:0, behavior:'auto'});
+    }
+
+    function showSolutions(){
+      clearAllIntervals();
+      app.innerHTML = `
+        <button class="btn-back" onclick="showHome()">← Back to Start</button>
+        <h1 class="title" style="color:#0EA5E9;">Comfort Tools</h1>
+        <p class="subtitle">Big, kid-friendly tools to calm your body, stop comparing, and choose a strong next step.</p>
+
+        <div style="display:flex; flex-direction:column; gap:26px; margin-top:18px;">
+
+          <!-- TOOL 1: Green-Light Pause (60s) -->
+          <div class="white-card" style="border-bottom-color:#16A34A;">
+            ${sceneHTML('sc-pause','🚦','⏳','🫁','🧊','altC','')}
+            <div class="card-title" style="color:#16A34A;">Green-Light Pause (60 seconds)</div>
+            <p class="card-desc">One minute of slowing down helps your body exit “grab mode,” so your brain can choose better.</p>
+
+            <div class="timer" id="pauseTimer">01:00</div>
+            <div class="bar" aria-label="timer progress"><div id="pauseBar"></div></div>
+
+            <button class="btn btn-green" id="pauseStartBtn" onclick="startPause()">Start</button>
+            <button class="btn btn-sky" onclick="pausePause()">Pause</button>
+            <button class="btn btn-rose" onclick="resetPause()">Reset</button>
+          </div>
+
+          <!-- TOOL 2: Wish-to-Goal Translator -->
+          <div class="white-card" style="border-bottom-color:#0EA5E9;">
+            ${sceneHTML('sc-goal','🎯','💡','📝','👣','altA','')}
+            <div class="card-title" style="color:#0EA5E9;">Wish-to-Goal Translator</div>
+            <p class="card-desc">Envy often means, “I care about that.” Let’s turn your wish into a goal and one next step.</p>
+
+            <div class="inputRow">
+              <input id="wishInput" type="text" placeholder="What do you wish you had or could do? (example: “draw like them”)" />
             </div>
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Frustrated</h2>
-            <p class="text-slate-500 text-lg">I'm trying hard but it's not working.</p>
-        </a>
 
-        <a href="sad.html" class="block bg-white rounded-3xl p-8 border-b-8 border-blue-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
-            <div class="flex justify-between items-start mb-4">
-              <span class="text-6xl">😢</span>
-              <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+            <button class="btn btn-sky" onclick="makeGoal()">Make My Goal</button>
+            <button class="btn btn-indigo" onclick="clearGoal()">Clear</button>
+
+            <div class="resultBox" id="goalOut"></div>
+          </div>
+
+          <!-- TOOL 3: Gratitude Snapshot -->
+          <div class="white-card" style="border-bottom-color:#D97706;">
+            ${sceneHTML('sc-grat','📸','💛','🌱','🏡','altB','')}
+            <div class="card-title" style="color:#D97706;">Gratitude Snapshot</div>
+            <p class="card-desc">Gratitude doesn’t erase envy— it balances it, so your heart feels steadier.</p>
+
+            <div class="mini-panel" id="gratHint">Tap 3 things you have right now.</div>
+            <div class="choiceGrid" role="group" aria-label="Gratitude choices" id="gratGrid"></div>
+            <button class="btn btn-amber" onclick="finishGratitude()">Save Snapshot</button>
+            <button class="btn btn-teal" onclick="resetGratitude()">Reset</button>
+
+            <div class="resultBox" id="gratOut"></div>
+          </div>
+
+          <!-- TOOL 4: Celebrate Others -->
+          <div class="white-card" style="border-bottom-color:#4338CA;">
+            ${sceneHTML('sc-cheer','👏','🎉','😊','🏅','altD','')}
+            <div class="card-title" style="color:#4338CA;">Celebrate Others (Cheer Spinner)</div>
+            <p class="card-desc">Cheering for others is a skill. It makes your heart bigger, not smaller.</p>
+
+            <div class="mini-panel" id="cheerPanel">Press “Spin” to get a cheering move.</div>
+            <button class="btn btn-indigo" onclick="spinCheer()">Spin</button>
+          </div>
+
+          <!-- TOOL 5: My-Lane Shield -->
+          <div class="white-card" style="border-bottom-color:#E11D48;">
+            ${sceneHTML('sc-lane','🛡️','🧭','🧠','🚴','altA','')}
+            <div class="card-title" style="color:#E11D48;">My-Lane Shield</div>
+            <p class="card-desc">This shield reminds your brain: “Stay in my lane. My progress matters.”</p>
+
+            <div class="choiceGrid" role="group" aria-label="My lane choices">
+              <button class="choiceBtn" onclick="pickLane(0)">My Practice Lane</button>
+              <button class="choiceBtn" onclick="pickLane(1)">My Kindness Lane</button>
+              <button class="choiceBtn" onclick="pickLane(2)">My Goal Lane</button>
             </div>
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Sad</h2>
-            <p class="text-slate-500 text-lg">I feel heavy, tired, or want to cry.</p>
-        </a>
 
-        <a href="worried.html" class="block bg-white rounded-3xl p-8 border-b-8 border-purple-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
-            <div class="flex justify-between items-start mb-4">
-              <span class="text-6xl">😰</span>
-              <span class="bg-purple-100 text-purple-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+            <div class="resultBox" id="laneOut"></div>
+          </div>
+
+          <!-- TOOL 6: Ask-for-Help Script -->
+          <div class="white-card" style="border-bottom-color:#0D9488;">
+            ${sceneHTML('sc-help','📣','👨‍🏫','🗺️','🤝','altC','')}
+            <div class="card-title" style="color:#0D9488;">Ask-for-Help Script</div>
+            <p class="card-desc">Sometimes the best tool is a helper. Asking for guidance is brave.</p>
+
+            <div class="inputRow">
+              <input id="helpWho" type="text" placeholder="Who can help? (example: “Mom”, “Coach”, “Teacher”)" />
+              <textarea id="helpWhat" placeholder="What do you want to get better at? (example: “soccer” or “reading”)"></textarea>
             </div>
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Worried</h2>
-            <p class="text-slate-500 text-lg">I have butterflies in my tummy.</p>
-        </a>
 
-        <!-- NEW: ENVIOUS -->
-        <a href="envious.html" class="block bg-white rounded-3xl p-8 border-b-8 border-green-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
-            <div class="flex justify-between items-start mb-4">
-              <span class="text-6xl">😒</span>
-              <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
-            </div>
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Envious</h2>
-            <p class="text-slate-500 text-lg">I want what someone else has.</p>
-        </a>
+            <button class="btn btn-teal" onclick="makeHelpScript()">Build My Script</button>
+            <button class="btn btn-sky" onclick="clearHelpScript()">Clear</button>
 
-    </div>
+            <div class="resultBox" id="helpOut"></div>
+          </div>
 
-    <div class="mt-16 text-slate-400 font-bold text-sm text-center">
-        Brave Feelings Lab © 2025
-    </div>
+        </div>
 
+        <div class="foot">
+          <a class="menuLink" href="index.html">← Back to Menu</a>
+        </div>
+      `;
+
+      // Build Gratitude grid each time
+      buildGratitudeGrid();
+
+      // Reset tool states
+      resetPause(true);
+      chosenGratitude.clear();
+      window.scrollTo({top:0, behavior:'auto'});
+    }
+
+    // ===== TOOL 1: Pause Timer =====
+    function renderPause(){
+      const t = document.getElementById('pauseTimer');
+      const b = document.getElementById('pauseBar');
+      if(t){
+        const mm = String(Math.floor(pauseSecs/60)).padStart(2,'0');
+        const ss = String(pauseSecs%60).padStart(2,'0');
+        t.textContent = `${mm}:${ss}`;
+      }
+      if(b){
+        const pct = ((60 - pauseSecs)/60)*100;
+        b.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+      }
+    }
+
+    function startPause(){
+      animateScene('sc-pause','pop');
+      if(pauseRunning) return;
+      pauseRunning = true;
+
+      addInterval(setInterval(()=>{
+        if(!pauseRunning) return;
+        pauseSecs = Math.max(0, pauseSecs - 1);
+        renderPause();
+        if(pauseSecs === 0){
+          pauseRunning = false;
+          animateScene('sc-pause','shake');
+          addTimeout(setTimeout(()=>{
+            pauseSecs = 60;
+            renderPause();
+          }, 900));
+        }
+      }, 1000));
+    }
+
+    function pausePause(){
+      animateScene('sc-pause','shake');
+      pauseRunning = false;
+    }
+
+    function resetPause(silent){
+      pauseRunning = false;
+      pauseSecs = 60;
+      renderPause();
+      if(!silent) animateScene('sc-pause','pop');
+    }
+
+    // ===== TOOL 2: Wish-to-Goal =====
+    function makeGoal(){
+      animateScene('sc-goal','pop');
+      const wish = ((document.getElementById('wishInput')||{}).value || '').trim();
+      const out  = document.getElementById('goalOut');
+      if(!out) return;
+
+      const thing = wish || "____";
+      const step  = goalSteps[Math.floor(Math.random()*goalSteps.length)];
+
+      out.style.display = 'block';
+      out.innerHTML = `
+        <strong>My goal:</strong> I want to get better at <strong>${escapeHtml(thing)}</strong>.<br>
+        <strong>My next step:</strong> ${step}
+        <small>Why it helps: This is “turn envy into growth.” Your brain learns by small steps.</small>
+      `;
+    }
+
+    function clearGoal(){
+      animateScene('sc-goal','shake');
+      const i = document.getElementById('wishInput');
+      const o = document.getElementById('goalOut');
+      if(i) i.value = '';
+      if(o){ o.style.display='none'; o.textContent=''; }
+    }
+
+    // ===== TOOL 3: Gratitude Snapshot =====
+    function buildGratitudeGrid(){
+      const grid = document.getElementById('gratGrid');
+      if(!grid) return;
+
+      grid.innerHTML = gratitudePicks.map((txt, idx) => `
+        <button class="choiceBtn" type="button" onclick="toggleGrat(${idx})" id="gratBtn${idx}">
+          ${escapeHtml(txt)}
+        </button>
+      `).join('');
+    }
+
+    function toggleGrat(idx){
+      animateScene('sc-grat','pop');
+      const key = String(idx);
+      const btn = document.getElementById(`gratBtn${idx}`);
+      if(!btn) return;
+
+      if(chosenGratitude.has(key)){
+        chosenGratitude.delete(key);
+        btn.style.filter = '';
+        btn.style.transform = '';
+        btn.style.background = 'rgba(34,197,94,.10)';
+      }else{
+        if(chosenGratitude.size >= 3) return;
+        chosenGratitude.add(key);
+        btn.style.background = 'rgba(251,191,36,.18)';
+        btn.style.filter = 'saturate(1.15)';
+      }
+
+      const hint = document.getElementById('gratHint');
+      if(hint) hint.textContent = `Selected: ${chosenGratitude.size} / 3`;
+    }
+
+    function finishGratitude(){
+      animateScene('sc-grat','shake');
+      const out = document.getElementById('gratOut');
+      if(!out) return;
+
+      if(chosenGratitude.size < 3){
+        out.style.display = 'block';
+        out.innerHTML = `<strong>Pick 3 first.</strong><small>Tip: Your brain calms faster when you notice good things you already have.</small>`;
+        return;
+      }
+
+      const list = Array.from(chosenGratitude).map(k => gratitudePicks[Number(k)]);
+      out.style.display = 'block';
+      out.innerHTML = `
+        <strong>My snapshot:</strong><br>
+        1) ${escapeHtml(list[0])}<br>
+        2) ${escapeHtml(list[1])}<br>
+        3) ${escapeHtml(list[2])}
+        <small>Why it helps: Gratitude balances your attention so envy feels smaller.</small>
+      `;
+    }
+
+    function resetGratitude(){
+      animateScene('sc-grat','pop');
+      chosenGratitude.clear();
+      const hint = document.getElementById('gratHint');
+      if(hint) hint.textContent = 'Tap 3 things you have right now.';
+      const out = document.getElementById('gratOut');
+      if(out){ out.style.display='none'; out.textContent=''; }
+      // reset button styles
+      gratitudePicks.forEach((_, idx) => {
+        const btn = document.getElementById(`gratBtn${idx}`);
+        if(btn){
+          btn.style.background = 'rgba(34,197,94,.10)';
+          btn.style.filter = '';
+        }
+      });
+    }
+
+    // ===== TOOL 4: Cheer Spinner =====
+    function spinCheer(){
+      animateScene('sc-cheer','pop');
+      const panel = document.getElementById('cheerPanel');
+      if(!panel) return;
+      const pick = cheers[Math.floor(Math.random()*cheers.length)];
+      panel.textContent = pick;
+    }
+
+    // ===== TOOL 5: My Lane =====
+    function pickLane(i){
+      animateScene('sc-lane','pop');
+      const out = document.getElementById('laneOut');
+      if(!out) return;
+      const lane = lanes[i] || lanes[0];
+      out.style.display = 'block';
+      out.innerHTML = `
+        <strong>${escapeHtml(lane.title)}:</strong><br>
+        ${escapeHtml(lane.text)}
+        <small>Why it helps: ${escapeHtml(lane.why)}</small>
+      `;
+    }
+
+    // ===== TOOL 6: Help Script =====
+    function makeHelpScript(){
+      animateScene('sc-help','pop');
+      const who  = ((document.getElementById('helpWho')||{}).value || '').trim();
+      const what = ((document.getElementById('helpWhat')||{}).value || '').trim();
+      const out  = document.getElementById('helpOut');
+      if(!out) return;
+
+      const name = who || '____';
+      const skill = what || '____';
+
+      const script =
+        `“Hi ${name}. I feel envious sometimes because I really care about ${skill}. ` +
+        `Can you help me make a small plan to improve? I’ll try my best.”`;
+
+      out.style.display = 'block';
+      out.innerHTML = `
+        <strong>Practice script:</strong><br>${escapeHtml(script)}
+        <small>Why it helps: Asking for help turns envy into teamwork and progress.</small>
+      `;
+    }
+
+    function clearHelpScript(){
+      animateScene('sc-help','shake');
+      const who  = document.getElementById('helpWho');
+      const what = document.getElementById('helpWhat');
+      const out  = document.getElementById('helpOut');
+      if(who) who.value = '';
+      if(what) what.value = '';
+      if(out){ out.style.display='none'; out.textContent=''; }
+    }
+
+    // ===== tiny helper =====
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[m]));
+    }
+
+    // ===== Start =====
+    showHome();
+  </script>
 </body>
 </html>
