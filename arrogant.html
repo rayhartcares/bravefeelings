@@ -457,12 +457,13 @@ ar<!doctype html>
     function scene(main, mini1, mini2, mini3, altClass, id){
       const safeId = id ? `id="${id}"` : "";
       return `
-        <div class="scene ${altClass || ""}" ${safeId} aria-hidden="true">
-          <div class="emoji-main">${main}</div>
-          <div class="emoji-mini m1">${mini1}</div>
-          <div class="emoji-mini m2">${mini2}</div>
-          <div class="emoji-mini m3">${mini3}</div>
-        </div>
+       <div class="scene altA" aria-hidden="true">
+  <div class="main">🧰</div>
+  <div class="mini m1">🛠️</div>
+  <div class="mini m2">💡</div>
+  <div class="mini m3">🎈</div>
+</div>
+
       `;
     }
 
