@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding Worry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- THEME --- */
+    :root{
+      --bg: #F5F3FF;         /* soft lavender */
+      --ink: #2D3748;
+      --muted: #718096;
+      --purple: #805AD5;
+      --indigo: #4C51BF;
+      --blue: #3182CE;
+      --green: #38A169;
+      --orange: #DD6B20;
+      --gray: #718096;
+      --card: #ffffff;
+      --shadow: 0 10px 24px rgba(0,0,0,0.08);
+    }
+
+    body{
+      margin:0; padding:0;
+      font-family:'Fredoka', sans-serif;
+      background: radial-gradient(circle at 20% 10%, #FFFFFF 0%, var(--bg) 60%);
+      color: var(--ink);
+      display:flex;
+      justify-content:center;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    #app-container{
+      width:100%;
+      max-width:820px;
+      padding:40px 18px;
+    }
+
+    .title{
+      font-size: 38px;
+      font-weight: 700;
+      text-align:center;
+      margin: 0 0 10px 0;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle{
+      text-align:center;
+      color: var(--muted);
+      font-size: 18px;
+      margin: 0 0 34px 0;
+    }
+
+    .white-card{
+      background: var(--card);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      border-bottom: 7px solid #E9D8FD;
+      margin-bottom: 22px;
+      transition: transform .18s ease;
+      position: relative;
+      overflow: visible;
+    }
+    .white-card:hover{ transform: translateY(-4px); }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    @media (max-width: 650px){
+      .grid-2{ grid-template-columns: 1fr; }
+      .title{ font-size: 34px; }
+    }
+
+    .card-title{
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 6px;
+      margin-bottom: 6px;
+      text-align:center;
+    }
+
+    .card-desc{
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.45;
+      text-align:center;
+      margin: 0;
+    }
+
+    .btn{
+      width:100%;
+      margin-top: 14px;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 18px;
+      cursor:pointer;
+      color:#fff;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .btn:hover{ transform: scale(1.02); filter: brightness(1.05); }
+    .btn:disabled{ opacity:.75; cursor:not-allowed; transform:none; }
+
+    .btn-purple{ background: linear-gradient(135deg, #9F7AEA, #805AD5); }
+    .btn-blue{ background: linear-gradient(135deg, #63B3ED, #3182CE); }
+    .btn-green{ background: linear-gradient(135deg, #68D391, #38A169); }
+    .btn-orange{ background: linear-gradient(135deg, #F6AD55, #DD6B20); }
+    .btn-gray{ background: linear-gradient(135deg, #A0AEC0, #718096); }
+
+    .btn-back{
+      background:#fff;
+      border: 2px solid #E2E8F0;
+      color:#4A5568;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor:pointer;
+      margin-bottom: 18px;
+    }
+
+    /* --- 3D TOYS (NO EXTERNAL IMAGES) --- */
+    .toy-wrap{
+      width: 128px;
+      height: 128px;
+      margin: 0 auto 12px auto;
+      position: relative;
+      filter: drop-shadow(0 10px 10px rgba(0,0,0,0.10));
+    }
+
+    .toy{
+      width: 128px; height:128px;
+      position: relative;
+      border-radius: 26px;
+      background: linear-gradient(145deg, #ffffff, #EEE9FF);
+      box-shadow:
+        inset 0 10px 18px rgba(255,255,255,0.85),
+        inset 0 -14px 24px rgba(0,0,0,0.06),
+        0 12px 20px rgba(0,0,0,0.08);
+      overflow:hidden;
+    }
+
+    /* floating feel */
+    @keyframes floaty { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-10px);} }
+    .floaty{ animation: floaty 2.8s ease-in-out infinite; }
+
+    /* --- TOY: WORRY STORM --- */
+    .storm .swirl{
+      position:absolute;
+      inset: 18px;
+      border-radius: 999px;
+      border: 10px solid rgba(128,90,213,0.20);
+      box-shadow: inset 0 0 0 10px rgba(76,81,191,0.12);
+      animation: spin 2.3s linear infinite;
+    }
+    .storm .swirl::after{
+      content:"";
+      position:absolute;
+      inset: 14px;
+      border-radius: 999px;
+      border: 8px solid rgba(49,130,206,0.18);
+      animation: spin 1.5s linear reverse infinite;
+    }
+    .storm .cloud{
+      position:absolute;
+      left: 18px; bottom: 26px;
+      width: 92px; height: 44px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #FFFFFF, #E9E3FF);
+      box-shadow: inset 0 -8px 16px rgba(0,0,0,0.06);
+      animation: wobble 1.1s ease-in-out infinite;
+    }
+    .storm .cloud::before,
+    .storm .cloud::after{
+      content:"";
+      position:absolute;
+      background: linear-gradient(180deg, #FFFFFF, #E9E3FF);
+      border-radius: 999px;
+      box-shadow: inset 0 -8px 16px rgba(0,0,0,0.06);
+    }
+    .storm .cloud::before{ width: 48px; height: 48px; left: 8px; top: -20px; }
+    .storm .cloud::after{ width: 56px; height: 56px; right: 8px; top: -28px; }
+
+    .storm .zap{
+      position:absolute;
+      right: 22px; top: 22px;
+      width: 0; height:0;
+      border-left: 14px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 34px solid #F6E05E;
+      transform: rotate(18deg);
+      filter: drop-shadow(0 8px 6px rgba(246,224,94,0.35));
+      animation: blink 0.55s infinite alternate;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes wobble { 0%,100%{ transform: translateX(0);} 50%{ transform: translateX(6px);} }
+    @keyframes blink { 0%{ opacity: .25; transform: rotate(18deg) scale(0.9);} 100%{ opacity: 1; transform: rotate(18deg) scale(1.05);} }
+
+    /* --- TOY: UMBRELLA SHIELD --- */
+    .shield .dome{
+      position:absolute;
+      left: 18px; top: 22px;
+      width: 92px; height: 58px;
+      border-radius: 999px 999px 50px 50px;
+      background: linear-gradient(180deg, #B794F4, #805AD5);
+      box-shadow: inset 0 10px 18px rgba(255,255,255,0.35),
+                  inset 0 -10px 18px rgba(0,0,0,0.12);
+      animation: bob 1.6s ease-in-out infinite;
+    }
+    .shield .dome::after{
+      content:"";
+      position:absolute;
+      left: 10px; top: 10px;
+      width: 22px; height: 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.45);
+      filter: blur(1px);
+    }
+    .shield .handle{
+      position:absolute;
+      left: 62px; top: 74px;
+      width: 10px; height: 30px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #2D3748, #4A5568);
+    }
+    .shield .hook{
+      position:absolute;
+      left: 56px; top: 94px;
+      width: 22px; height: 18px;
+      border: 6px solid #4A5568;
+      border-left-color: transparent;
+      border-top-color: transparent;
+      border-radius: 0 0 18px 18px;
+      transform: rotate(10deg);
+    }
+    .shield .rain{
+      position:absolute;
+      inset: 0;
+    }
+    .shield .drop{
+      position:absolute;
+      width: 10px; height: 16px;
+      background: linear-gradient(180deg, #90CDF4, #3182CE);
+      border-radius: 50% 50% 35% 35%;
+      opacity: .9;
+      animation: rain 0.9s linear infinite;
+    }
+    .shield .drop:nth-child(1){ left: 16px; top: 10px; animation-delay: .0s;}
+    .shield .drop:nth-child(2){ left: 38px; top: 0px; animation-delay: .2s;}
+    .shield .drop:nth-child(3){ left: 88px; top: 14px; animation-delay: .35s;}
+    .shield .drop:nth-child(4){ left: 104px; top: 6px; animation-delay: .55s;}
+
+    @keyframes bob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-8px);} }
+    @keyframes rain { 0%{ transform: translateY(0); opacity:.2;} 70%{opacity:1;} 100%{ transform: translateY(60px); opacity:0;} }
+
+    /* --- TOY: LABEL TAG (NAME IT) --- */
+    .tagtoy .scribble{
+      position:absolute;
+      left: 18px; top: 22px;
+      width: 92px; height: 58px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(128,90,213,0.18), rgba(49,130,206,0.12));
+      overflow:hidden;
+    }
+    .tagtoy .scribble::before{
+      content:"";
+      position:absolute;
+      inset: -30px;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(128,90,213,0.55), transparent 55%),
+        radial-gradient(circle at 70% 55%, rgba(49,130,206,0.45), transparent 55%),
+        radial-gradient(circle at 55% 20%, rgba(246,224,94,0.30), transparent 55%);
+      animation: swirl2 1.3s linear infinite;
+    }
+    @keyframes swirl2 { to { transform: rotate(360deg);} }
+
+    .tagtoy .label{
+      position:absolute;
+      left: 18px; bottom: 22px;
+      width: 92px; height: 32px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #FFFFFF, #F7FAFC);
+      box-shadow: inset 0 -8px 14px rgba(0,0,0,0.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 800;
+      color: #4C51BF;
+      letter-spacing:.2px;
+      transform: scale(1);
+      animation: pop 1.4s ease-in-out infinite;
+    }
+    @keyframes pop { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.06);} }
+
+    /* --- TOY: RADAR (GROUNDING) --- */
+    .radar .plate{
+      position:absolute;
+      left: 18px; top: 18px;
+      width: 92px; height: 92px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #FFFFFF, #E9D8FD);
+      box-shadow: inset 0 -12px 20px rgba(0,0,0,0.08);
+      overflow:hidden;
+    }
+    .radar .grid{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle, rgba(76,81,191,0.25) 1px, transparent 2px) 0 0/16px 16px;
+      opacity: .55;
+    }
+    .radar .beam{
+      position:absolute;
+      left: 50%; top: 50%;
+      width: 2px; height: 50px;
+      background: linear-gradient(180deg, rgba(56,161,105,0.0), rgba(56,161,105,0.95));
+      transform-origin: bottom center;
+      animation: sweep 1.6s linear infinite;
+    }
+    @keyframes sweep { to { transform: rotate(360deg);} }
+    .radar .dot{
+      position:absolute;
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: #38A169;
+      box-shadow: 0 0 0 8px rgba(56,161,105,0.18);
+      animation: ping 1.2s ease-in-out infinite;
+    }
+    .radar .dot:nth-child(1){ left: 18px; top: 20px; animation-delay:.0s;}
+    .radar .dot:nth-child(2){ left: 62px; top: 38px; animation-delay:.2s;}
+    .radar .dot:nth-child(3){ left: 40px; top: 64px; animation-delay:.4s;}
+    @keyframes ping { 0%,100%{ transform: scale(.9); opacity:.7;} 50%{ transform: scale(1.1); opacity:1;} }
+
+    /* --- TOY: BELLOWS BREATH (NO BALLOON) --- */
+    .bellows .frame{
+      position:absolute;
+      left: 20px; top: 20px;
+      width: 88px; height: 88px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #FFFFFF, #EDF2F7);
+      box-shadow: inset 0 -12px 18px rgba(0,0,0,0.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .bellows .core{
+      width: 64px; height: 50px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #63B3ED, #3182CE);
+      box-shadow: inset 0 10px 14px rgba(255,255,255,0.25),
+                  inset 0 -10px 16px rgba(0,0,0,0.18);
+      position: relative;
+      transform: scaleX(0.88);
+      transition: transform 1.8s ease-in-out;
+    }
+    .bellows .core::before{
+      content:"";
+      position:absolute;
+      left: 10px; right: 10px; top: 10px; bottom: 10px;
+      border-radius: 12px;
+      border: 3px dashed rgba(255,255,255,0.55);
+      opacity: .9;
+    }
+    .bellows .puff{
+      position:absolute;
+      right: -8px; top: 18px;
+      width: 18px; height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      filter: blur(.2px);
+      opacity: 0;
+      transform: translateX(0);
+    }
+    .bellows.exhale .core{ transform: scaleX(1.18); }
+    .bellows.exhale .puff{
+      opacity: 1;
+      animation: puff 0.7s ease-out infinite;
+    }
+    @keyframes puff{
+      0%{ transform: translateX(0) scale(.9); opacity:.9;}
+      100%{ transform: translateX(14px) scale(1.25); opacity:0;}
+    }
+
+    /* --- TOY: WORRY TIMER CLOCK --- */
+    .clock .face{
+      position:absolute;
+      left: 18px; top: 18px;
+      width: 92px; height: 92px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #FFFFFF, #E2E8F0);
+      box-shadow: inset 0 -12px 18px rgba(0,0,0,0.10);
+    }
+    .clock .hand{
+      position:absolute;
+      left: 64px; top: 30px;
+      width: 6px; height: 42px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #F6AD55, #DD6B20);
+      transform-origin: bottom center;
+      animation: tick 1.0s steps(6,end) infinite;
+      box-shadow: 0 8px 10px rgba(221,107,32,0.25);
+    }
+    @keyframes tick { to { transform: rotate(360deg);} }
+    .clock .spark{
+      position:absolute;
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: #F6E05E;
+      box-shadow: 0 0 0 10px rgba(246,224,94,0.22);
+      animation: sparkle 0.9s ease-in-out infinite;
+    }
+    .clock .spark:nth-child(1){ left: 24px; top: 46px; }
+    .clock .spark:nth-child(2){ left: 96px; top: 66px; animation-delay:.2s;}
+    @keyframes sparkle { 0%,100%{ transform: scale(.7); opacity:.5;} 50%{ transform: scale(1.2); opacity:1;} }
+
+    /* --- TOY: STRESS BALL --- */
+    .ball .orb{
+      position:absolute;
+      left: 22px; top: 26px;
+      width: 84px; height: 84px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 25%, #FFFFFF 0%, #FEB2B2 18%, #E53E3E 80%);
+      box-shadow: inset 0 14px 18px rgba(255,255,255,0.35),
+                  inset 0 -16px 22px rgba(0,0,0,0.20);
+      transform: scale(1);
+      transition: transform .18s ease;
+    }
+    .ball.squish .orb{
+      transform: scaleX(1.15) scaleY(0.88);
+    }
+    .ball .shine{
+      position:absolute;
+      left: 34px; top: 40px;
+      width: 20px; height: 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.55);
+      filter: blur(.2px);
+    }
+
+    /* --- TOY: PUZZLE INTO SLOT (TINY PLAN) --- */
+    .puzzle .slot{
+      position:absolute;
+      left: 22px; top: 32px;
+      width: 84px; height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #CBD5E0, #A0AEC0);
+      box-shadow: inset 0 10px 16px rgba(255,255,255,0.25),
+                  inset 0 -12px 18px rgba(0,0,0,0.18);
+      overflow:hidden;
+    }
+    .puzzle .hole{
+      position:absolute;
+      left: 18px; top: 16px;
+      width: 48px; height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.06));
+      box-shadow: inset 0 10px 14px rgba(0,0,0,0.18);
+    }
+    .puzzle .peg{
+      position:absolute;
+      left: 96px; top: 18px;
+      width: 40px; height: 30px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #68D391, #38A169);
+      box-shadow: inset 0 10px 14px rgba(255,255,255,0.25),
+                  inset 0 -10px 16px rgba(0,0,0,0.18);
+      transform: rotate(8deg);
+      transition: transform .45s ease, left .45s ease, top .45s ease;
+    }
+    .puzzle.snap .peg{
+      left: 50px; top: 48px;
+      transform: rotate(0deg) scale(1.02);
+    }
+    .puzzle .starburst{
+      position:absolute;
+      left: 50px; top: 46px;
+      width: 0; height: 0;
+      opacity: 0;
+      transition: opacity .15s ease;
+    }
+    .puzzle.snap .starburst{
+      opacity: 1;
+      width: 60px; height: 60px;
+      margin-left: -18px;
+      margin-top: -18px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(246,224,94,0.95), transparent 70%);
+      animation: boom .7s ease-out;
+    }
+    @keyframes boom { from{ transform: scale(.6); opacity:.3;} to{ transform: scale(1.3); opacity:0;} }
+
+    /* --- Inputs --- */
+    .input{
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 2px solid #E2E8F0;
+      font-size: 16px;
+      outline:none;
+      font-family:'Fredoka', sans-serif;
+    }
+    .input:focus{ border-color:#B794F4; box-shadow: 0 0 0 4px rgba(183,148,244,0.18); }
+
+    .helper-box{
+      margin-top: 12px;
+      background: #F7FAFC;
+      border: 2px dashed #CBD5E0;
+      border-radius: 16px;
+      padding: 12px;
+      text-align:center;
+      color: #4A5568;
+      font-weight:700;
+    }
+
+    .backlink{
+      text-align:center;
+      margin-top: 26px;
+    }
+    .backlink a{
+      color:#A0AEC0;
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    .badge{
+      display:inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing:.6px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-container"></div>
+
+  <script>
+    const container = document.getElementById('app-container');
+
+    /* ---------------- HOME ---------------- */
+    function showHome(){
+      container.innerHTML = `
+        <h1 class="title">Understanding Worry</h1>
+        <p class="subtitle">Worry feels like a storm in your head. We can calm it down.</p>
+
+        <div class="grid-2">
+
+          <div class="white-card" style="border-bottom-color:#B794F4;">
+            <div class="toy-wrap floaty">
+              <div class="toy storm">
+                <div class="swirl"></div>
+                <div class="cloud"></div>
+                <div class="zap"></div>
+              </div>
+            </div>
+            <div class="card-title" style="color:#6B46C1;">The Worry Storm</div>
+            <p class="card-desc">“What if something bad happens?”</p>
+            <button class="btn btn-purple" onclick="showReactions()">See What Worry Makes Me Do</button>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#63B3ED;">
+            <div class="toy-wrap floaty">
+              <div class="toy shield">
+                <div class="rain">
+                  <div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>
+                </div>
+                <div class="dome"></div>
+                <div class="handle"></div>
+                <div class="hook"></div>
+              </div>
+            </div>
+            <div class="card-title" style="color:#3182CE;">Comfort Tools</div>
+            <p class="card-desc">Science-backed ways to feel safe again.</p>
+            <button class="btn btn-blue" onclick="showSolutions()">Show Comfort Tools</button>
+          </div>
+
+        </div>
+
+        <div class="backlink"><a href="index.html">← Back to Menu</a></div>
+      `;
+    }
+
+    /* ---------------- REACTIONS ---------------- */
+    function showReactions(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="showHome()">← Back</button>
+        <h1 class="title" style="color:#6B46C1;">What Worry Makes Me Do</h1>
+        <p class="subtitle" style="margin-bottom:26px;">Worry tries to protect you… but it can overdo it.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#B794F4;">
+            <div class="toy-wrap floaty">
+              <div class="toy storm">
+                <div class="swirl"></div>
+                <div class="zap"></div>
+              </div>
+            </div>
+            <div class="card-title">What-If Spiral</div>
+            <p class="card-desc">My brain keeps spinning scary ideas.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#A0AEC0;">
+            <div class="toy-wrap floaty">
+              <div class="toy radar">
+                <div class="plate">
+                  <div class="grid"></div>
+                  <div class="beam"></div>
+                  <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+              </div>
+            </div>
+            <div class="card-title">Checking Again & Again</div>
+            <p class="card-desc">I keep checking because I don’t feel sure.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#F6AD55;">
+            <div class="toy-wrap floaty">
+              <div class="toy clock">
+                <div class="face"></div>
+                <div class="hand"></div>
+                <div class="spark"></div><div class="spark"></div>
+              </div>
+            </div>
+            <div class="card-title">Avoiding</div>
+            <p class="card-desc">I hide from things that feel scary.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#FC8181;">
+            <div class="toy-wrap floaty">
+              <div class="toy ball" id="demo-ball">
+                <div class="orb"></div>
+                <div class="shine"></div>
+              </div>
+            </div>
+            <div class="card-title">Fidgeting</div>
+            <p class="card-desc">My body feels tight or jittery.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="border-bottom-color:#6B46C1; text-align:center;">
+          <div class="card-title" style="color:#6B46C1;">What happens if I stay in worry too long?</div>
+          <button class="btn btn-purple" style="width:auto; padding-left:26px; padding-right:26px;" onclick="showConsequences()">See The Result ➔</button>
+        </div>
+      `;
+
+      // tiny demo squish on load
+      setTimeout(() => {
+        const b = document.getElementById('demo-ball');
+        if(!b) return;
+        b.classList.add('squish');
+        setTimeout(()=>b.classList.remove('squish'), 260);
+      }, 250);
+    }
+
+    /* ---------------- CONSEQUENCES ---------------- */
+    function showConsequences(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="showReactions()">← Back</button>
+        <h1 class="title" style="color:#6B46C1;">When Worry Takes Over</h1>
+        <p class="subtitle" style="margin-bottom:26px;">Your brain gets tired. Your body gets tense.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#B794F4;">
+            <div class="toy-wrap floaty">
+              <div class="toy tagtoy">
+                <div class="scribble"></div>
+                <div class="label">OVERLOAD</div>
+              </div>
+            </div>
+            <div class="card-title">Brain Overload</div>
+            <p class="card-desc">It’s hard to think clearly.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#63B3ED;">
+            <div class="toy-wrap floaty">
+              <div class="toy shield">
+                <div class="rain">
+                  <div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>
+                </div>
+                <div class="dome"></div>
+              </div>
+            </div>
+            <div class="card-title">Body Alarm</div>
+            <p class="card-desc">Fast heart, tight tummy, tense muscles.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#F6AD55;">
+            <div class="toy-wrap floaty">
+              <div class="toy clock">
+                <div class="face"></div>
+                <div class="hand"></div>
+              </div>
+            </div>
+            <div class="card-title">Time Lost</div>
+            <p class="card-desc">Worry steals your fun and focus.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#FC8181;">
+            <div class="toy-wrap floaty">
+              <div class="toy ball">
+                <div class="orb"></div>
+              </div>
+            </div>
+            <div class="card-title">Tired & Grumpy</div>
+            <p class="card-desc">You may feel exhausted or snappy.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="border-bottom-color:#38A169; text-align:center;">
+          <div class="card-title" style="color:#2F855A;">Now let’s use comfort tools!</div>
+          <button class="btn btn-green" style="width:auto; padding-left:26px; padding-right:26px;" onclick="showSolutions()">Comfort Tools ➔</button>
+        </div>
+      `;
+    }
+
+    /* ---------------- SOLUTIONS ---------------- */
+    function showSolutions(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="showHome()">← Back to Start</button>
+        <h1 class="title" style="color:#2F855A;">Comfort Tools</h1>
+        <p class="subtitle" style="margin-bottom:26px;">These calm your brain and your body — fast.</p>
+
+        <!-- 1) NAME IT -->
+        <div class="white-card" style="border-bottom-color:#805AD5;">
+          <div class="toy-wrap floaty">
+            <div class="toy tagtoy" id="toy-nameit">
+              <div class="scribble"></div>
+              <div class="label" id="nameit-label">NAME IT</div>
+            </div>
+          </div>
+          <div class="card-title" style="color:#6B46C1;">Name the Worry</div>
+          <p class="card-desc">Putting feelings into words helps your thinking brain calm your alarm brain.</p>
+          <input class="input" id="worry-input" placeholder="Type your worry (example: “I might mess up.”)" />
+          <button class="btn btn-purple" onclick="nameTheWorry()">Tag It</button>
+          <div class="helper-box" id="nameit-box" style="display:none;"></div>
+        </div>
+
+        <!-- 2) GROUNDING -->
+        <div class="white-card" style="border-bottom-color:#38A169;">
+          <div class="toy-wrap floaty">
+            <div class="toy radar">
+              <div class="plate">
+                <div class="grid"></div>
+                <div class="beam"></div>
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-title" style="color:#2F855A;">5-4-3-2-1 Grounding</div>
+          <p class="card-desc">Use your senses to come back to “right now.”</p>
+          <div class="helper-box" id="ground-box">Press Start to begin.</div>
+          <button class="btn btn-green" onclick="startGrounding()" id="ground-btn">Start Grounding</button>
+        </div>
+
+        <!-- 3) BELLOWS BREATH -->
+        <div class="white-card" style="border-bottom-color:#3182CE;">
+          <div class="toy-wrap floaty">
+            <div class="toy bellows" id="bellows-toy">
+              <div class="frame">
+                <div class="core" id="bellows-core">
+                  <div class="puff"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-title" style="color:#3182CE;">Slow Breath (Bellows)</div>
+          <p class="card-desc">Slow breathing tells your body: “I am safe.”</p>
+          <div class="helper-box" id="breath-box">Press Start. Follow the bellows.</div>
+          <button class="btn btn-blue" onclick="toggleBellows()" id="breath-btn">Start Breathing</button>
+        </div>
+
+        <!-- 4) WORRY TIMER -->
+        <div class="white-card" style="border-bottom-color:#DD6B20;">
+          <div class="toy-wrap floaty">
+            <div class="toy clock">
+              <div class="face"></div>
+              <div class="hand"></div>
+              <div class="spark"></div><div class="spark"></div>
+            </div>
+          </div>
+          <div class="card-title" style="color:#C05621;">Worry Time Box</div>
+          <p class="card-desc">Give worry a tiny time slot — then you are done.</p>
+          <div class="helper-box" id="worrytimer-box">Press Start for a 60-second worry box.</div>
+          <button class="btn btn-orange" onclick="startWorryTimer()" id="worrytimer-btn">Start 60s Worry Box</button>
+        </div>
+
+        <!-- 5) SQUEEZE & RELEASE -->
+        <div class="white-card" style="border-bottom-color:#E53E3E;">
+          <div class="toy-wrap floaty">
+            <div class="toy ball" id="stress-toy">
+              <div class="orb"></div>
+              <div class="shine"></div>
+            </div>
+          </div>
+          <div class="card-title" style="color:#C53030;">Squeeze & Release</div>
+          <p class="card-desc">Relaxing muscles reduces the “alarm” feeling in your body.</p>
+          <div class="helper-box" id="stress-box">Press Start for 5 squeezes.</div>
+          <button class="btn btn-gray" onclick="startSqueezes()" id="stress-btn">Start Squeezes</button>
+        </div>
+
+        <!-- 6) TINY PLAN (SQUARE PEG IN SQUARE HOLE) -->
+        <div class="white-card" style="border-bottom-color:#4A5568;">
+          <div class="toy-wrap floaty">
+            <div class="toy puzzle" id="puzzle-toy">
+              <div class="slot">
+                <div class="hole"></div>
+              </div>
+              <div class="peg" id="peg"></div>
+              <div class="starburst" id="starburst"></div>
+            </div>
+          </div>
+          <div class="card-title" style="color:#4A5568;">Make a Tiny Plan</div>
+          <p class="card-desc">One small step gives your brain a “handle.”</p>
+
+          <select class="input" id="plan-pick" style="margin-top:10px;">
+            <option value="">Pick one tiny step…</option>
+            <option>Ask for help</option>
+            <option>Get information</option>
+            <option>Practice once</option>
+            <option>Take a break</option>
+            <option>Write it down</option>
+          </select>
+
+          <button class="btn btn-gray" onclick="snapPlan()">Snap the Plan In</button>
+          <div class="helper-box" id="plan-box" style="display:none;"></div>
+        </div>
+
+        <div class="backlink"><a href="index.html">← Back to Menu</a></div>
+      `;
+    }
+
+    /* ---------------- LOGIC ---------------- */
+
+    // 1) NAME IT
+    function nameTheWorry(){
+      const input = document.getElementById('worry-input');
+      const box = document.getElementById('nameit-box');
+      const label = document.getElementById('nameit-label');
+
+      const text = (input.value || "").trim();
+      const finalText = text ? text.toUpperCase().slice(0, 18) : "WORRY";
+
+      label.textContent = finalText;
+      box.style.display = "block";
+      box.textContent = `I can handle this worry: "${text || "I feel worried."}"`;
+
+      // quick celebratory pulse
+      label.style.transform = "scale(1.15)";
+      setTimeout(()=> label.style.transform = "scale(1)", 180);
+    }
+
+    // 2) GROUNDING
+    let groundStep = 0;
+    const groundScript = [
+      "5 things you can SEE. (Look around.)",
+      "4 things you can TOUCH. (Feel your shirt, chair, hair.)",
+      "3 things you can HEAR. (Listen carefully.)",
+      "2 things you can SMELL. (Even a little.)",
+      "1 thing you can TASTE. (Sip water, taste your mouth.)",
+      "Done. You are back in the present."
+    ];
+
+    function startGrounding(){
+      const box = document.getElementById('ground-box');
+      const btn = document.getElementById('ground-btn');
+
+      if(groundStep === 0){
+        btn.textContent = "Next";
+      }
+
+      box.textContent = groundScript[groundStep];
+      groundStep++;
+
+      if(groundStep >= groundScript.length){
+        btn.textContent = "Restart Grounding";
+        groundStep = 0;
+      }
+    }
+
+    // 3) BELLOWS BREATH
+    let breathOn = false;
+    let breathInterval = null;
+    function toggleBellows(){
+      const toy = document.getElementById('bellows-toy');
+      const box = document.getElementById('breath-box');
+      const btn = document.getElementById('breath-btn');
+
+      breathOn = !breathOn;
+
+      if(!breathOn){
+        clearInterval(breathInterval);
+        breathInterval = null;
+        toy.classList.remove('exhale');
+        box.textContent = "Stopped. Nice job.";
+        btn.textContent = "Start Breathing";
+        return;
+      }
+
+      btn.textContent = "Stop Breathing";
+      let phase = "IN";
+      box.textContent = "IN… slow and steady.";
+
+      // start in “in”, then alternate exhale/in
+      toy.classList.remove('exhale');
+      breathInterval = setInterval(() => {
+        if(phase === "IN"){
+          phase = "OUT";
+          toy.classList.add('exhale');
+          box.textContent = "OUT… let the worry leave.";
+        } else {
+          phase = "IN";
+          toy.classList.remove('exhale');
+          box.textContent = "IN… fill up calm.";
+        }
+      }, 2200);
+    }
+
+    // 4) WORRY TIMER (60s)
+    let worryTimer = null;
+    function startWorryTimer(){
+      const box = document.getElementById('worrytimer-box');
+      const btn = document.getElementById('worrytimer-btn');
+
+      if(worryTimer) return;
+
+      let t = 60;
+      btn.disabled = true;
+      btn.textContent = "Worry Box Running…";
+      box.textContent = `Worry time: ${t}s (Then you stop.)`;
+
+      worryTimer = setInterval(() => {
+        t--;
+        box.textContent = `Worry time: ${t}s (Then you stop.)`;
+        if(t <= 0){
+          clearInterval(worryTimer);
+          worryTimer = null;
+          btn.disabled = false;
+          btn.textContent = "Start 60s Worry Box";
+          box.textContent = "Done. Tell worry: “Not now.”";
+        }
+      }, 1000);
+    }
+
+    // 5) SQUEEZE & RELEASE
+    let squeezeRun = null;
+    function startSqueezes(){
+      const toy = document.getElementById('stress-toy');
+      const box = document.getElementById('stress-box');
+      const btn = document.getElementById('stress-btn');
+
+      if(squeezeRun) return;
+
+      btn.disabled = true;
+      let count = 0;
+      box.textContent = "Squeeze 1…";
+
+      squeezeRun = setInterval(() => {
+        toy.classList.add('squish');
+        setTimeout(()=> toy.classList.remove('squish'), 220);
+
+        count++;
+        if(count < 5){
+          box.textContent = `Squeeze ${count + 1}…`;
+        } else {
+          clearInterval(squeezeRun);
+          squeezeRun = null;
+          btn.disabled = false;
+          box.textContent = "Done. Your body is calmer now.";
+        }
+      }, 520);
+    }
+
+    // 6) TINY PLAN SNAP
+    function snapPlan(){
+      const pick = document.getElementById('plan-pick');
+      const toy = document.getElementById('puzzle-toy');
+      const box = document.getElementById('plan-box');
+
+      const step = pick.value.trim();
+      if(!step){
+        box.style.display = "block";
+        box.textContent = "Pick one tiny step first.";
+        return;
+      }
+
+      toy.classList.add('snap');
+      box.style.display = "block";
+      box.textContent = `My tiny plan: ${step}. I can do one small step.`;
+
+      setTimeout(()=> toy.classList.remove('snap'), 900);
+    }
+
+    // init
+    showHome();
+  </script>
+</body>
+</html>
