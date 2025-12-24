@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resentful — Brave Feelings Lab</title>
+
+  <!-- Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#f7f4ff;
+      --bg2:#fff7fb;
+      --ink:#1f2330;
+      --muted:#5b6477;
+      --card:#ffffff;
+      --shadow: 0 10px 24px rgba(22, 20, 40, .10);
+      --stroke: rgba(40, 34, 70, .12);
+      --accent:#8b5cf6; /* purple */
+      --accent2:#ec4899; /* rose */
+      --accent3:#22c55e; /* green */
+      --accent4:#0ea5e9; /* sky */
+      --accent5:#f59e0b; /* amber */
+      --accent6:#14b8a6; /* teal */
+      --radius:20px;
+      --emoji-font: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Fredoka", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 2px 2px, rgba(30, 25, 60, .09) 1.5px, transparent 1.7px) 0 0 / 18px 18px,
+        radial-gradient(circle at 9px 9px, rgba(30, 25, 60, .06) 1.2px, transparent 1.4px) 0 0 / 18px 18px,
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:860px;
+      margin:0 auto;
+      padding:22px 16px 30px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .backlink{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      color:var(--ink);
+      text-decoration:none;
+      font-weight:700;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.75);
+      border:1px solid var(--stroke);
+      box-shadow: 0 6px 14px rgba(22, 20, 40, .08);
+      transition: transform .12s ease, box-shadow .12s ease;
+      user-select:none;
+    }
+    .backlink:hover{ transform: translateY(-1px); box-shadow: 0 10px 18px rgba(22,20,40,.10); }
+    .backlink:active{ transform: translateY(0px) scale(.99); }
+
+    .titleBlock{
+      flex:1;
+      min-width:0;
+      text-align:right;
+    }
+    h1{
+      margin:2px 0 4px;
+      font-size: clamp(28px, 3.6vw, 42px);
+      line-height:1.05;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size: 15px;
+      line-height:1.3;
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin:14px 0 18px;
+    }
+    .nav button{
+      border:0;
+      cursor:pointer;
+      font-family:inherit;
+      font-weight:800;
+      letter-spacing:.2px;
+      color:#0f1320;
+      padding:12px 14px;
+      border-radius:999px;
+      min-width:140px;
+      background: linear-gradient(135deg, rgba(139,92,246,.20), rgba(236,72,153,.16));
+      box-shadow: 0 10px 20px rgba(22, 20, 40, .10);
+      border:1px solid rgba(70, 50, 120, .18);
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      user-select:none;
+    }
+    .nav button:hover{ transform: translateY(-1px); filter:saturate(1.05); box-shadow: 0 14px 22px rgba(22,20,40,.12); }
+    .nav button:active{ transform: translateY(0px) scale(.99); }
+    .nav button.active{
+      background: linear-gradient(135deg, rgba(139,92,246,.32), rgba(236,72,153,.26));
+      border-color: rgba(139,92,246,.35);
+      box-shadow: 0 16px 28px rgba(22,20,40,.14);
+    }
+
+    .view{ display:none; }
+    .view.active{ display:block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    @media (max-width: 720px){
+      .grid{ grid-template-columns: 1fr; }
+      .titleBlock{ text-align:left; }
+      .topbar{ align-items:flex-start; }
+      .nav button{ min-width: 46%; flex:1; }
+    }
+
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--stroke);
+      overflow:hidden;
+      position:relative;
+    }
+    .cardInner{
+      padding:16px 16px 14px;
+    }
+
+    .accentBar{
+      height:8px;
+      background: var(--accent);
+      border-bottom:1px solid rgba(0,0,0,.04);
+    }
+
+    .card h2, .card h3{
+      margin:0 0 8px;
+      line-height:1.1;
+    }
+    .card h2{ font-size: 20px; }
+    .card h3{ font-size: 18px; }
+    .card p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.35;
+    }
+
+    .pillRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(139,92,246,.10);
+      border: 1px solid rgba(139,92,246,.18);
+      color:#2b214d;
+      font-weight:700;
+      font-size: 13px;
+    }
+    .pill small{
+      font-weight:800;
+      color:#3b2f66;
+      opacity:.9;
+    }
+
+    /* Emoji scenes */
+    .scene{
+      height:112px;
+      margin-bottom:10px;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(139,92,246,.22), transparent 48%),
+        radial-gradient(circle at 82% 70%, rgba(236,72,153,.18), transparent 52%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(139,92,246,.06));
+      border: 1px dashed rgba(60, 40, 120, .18);
+      position:relative;
+      overflow:hidden;
+    }
+    .scene .main{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      font-size: 56px;
+      font-family: var(--emoji-font);
+      filter: drop-shadow(0 10px 16px rgba(20, 18, 40, .16));
+      animation: floaty 2.6s ease-in-out infinite;
+    }
+    .scene .mini{
+      position:absolute;
+      font-size: 26px;
+      font-family: var(--emoji-font);
+      opacity:.98;
+      filter: drop-shadow(0 6px 10px rgba(20, 18, 40, .12));
+      animation: wobble 2.2s ease-in-out infinite;
+    }
+
+    .scene .mini.m1{ left:12px; top:16px; transform: rotate(-8deg); animation-delay: .05s; }
+    .scene .mini.m2{ right:14px; top:14px; transform: rotate(10deg); animation-delay: .25s; }
+    .scene .mini.m3{ right:18px; bottom:14px; transform: rotate(-6deg); animation-delay: .45s; }
+
+    .scene.altA{ background:
+        radial-gradient(circle at 18% 25%, rgba(14,165,233,.20), transparent 52%),
+        radial-gradient(circle at 78% 70%, rgba(139,92,246,.16), transparent 54%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(14,165,233,.06));
+      border-color: rgba(14,165,233,.22);
+    }
+    .scene.altB{ background:
+        radial-gradient(circle at 18% 25%, rgba(245,158,11,.18), transparent 52%),
+        radial-gradient(circle at 80% 72%, rgba(236,72,153,.16), transparent 56%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(245,158,11,.06));
+      border-color: rgba(245,158,11,.22);
+    }
+    .scene.altC{ background:
+        radial-gradient(circle at 18% 25%, rgba(34,197,94,.18), transparent 52%),
+        radial-gradient(circle at 78% 70%, rgba(20,184,166,.16), transparent 56%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(34,197,94,.06));
+      border-color: rgba(34,197,94,.22);
+    }
+    .scene.altD{ background:
+        radial-gradient(circle at 20% 28%, rgba(236,72,153,.18), transparent 52%),
+        radial-gradient(circle at 78% 70%, rgba(14,165,233,.16), transparent 56%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(236,72,153,.06));
+      border-color: rgba(236,72,153,.22);
+    }
+
+    @keyframes floaty{
+      0%,100%{ transform: translate(-50%, -50%) translateY(0px); }
+      50%{ transform: translate(-50%, -50%) translateY(-6px); }
+    }
+    @keyframes wobble{
+      0%,100%{ transform: rotate(-6deg) translateY(0px); }
+      50%{ transform: rotate(6deg) translateY(-2px); }
+    }
+    @keyframes pop{
+      0%{ transform: translate(-50%, -50%) scale(1); }
+      45%{ transform: translate(-50%, -50%) scale(1.12); }
+      100%{ transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes gentleShake{
+      0%,100%{ transform: translate(-50%, -50%) rotate(0deg); }
+      20%{ transform: translate(-50%, -50%) rotate(-3deg); }
+      40%{ transform: translate(-50%, -50%) rotate(3deg); }
+      60%{ transform: translate(-50%, -50%) rotate(-2deg); }
+      80%{ transform: translate(-50%, -50%) rotate(2deg); }
+    }
+    .scene.is-active .main{ animation: pop .55s ease-in-out 1; }
+    .scene.is-shaking .main{ animation: gentleShake .55s ease-in-out 1; }
+
+    /* Tool UI */
+    .toolMeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+    .toolBtn{
+      border:0;
+      cursor:pointer;
+      font-family:inherit;
+      font-weight:900;
+      padding:10px 12px;
+      border-radius:14px;
+      color:#111426;
+      box-shadow: 0 10px 18px rgba(22, 20, 40, .12);
+      border:1px solid rgba(35, 26, 70, .16);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .toolBtn:hover{ transform: translateY(-1px); filter:saturate(1.06); box-shadow: 0 14px 22px rgba(22,20,40,.14); }
+    .toolBtn:active{ transform: translateY(0px) scale(.99); }
+
+    .toolBtn.purple{ background: linear-gradient(135deg, rgba(139,92,246,.34), rgba(167,139,250,.18)); }
+    .toolBtn.rose{ background: linear-gradient(135deg, rgba(236,72,153,.30), rgba(244,114,182,.16)); }
+    .toolBtn.sky{ background: linear-gradient(135deg, rgba(14,165,233,.30), rgba(56,189,248,.14)); }
+    .toolBtn.amber{ background: linear-gradient(135deg, rgba(245,158,11,.30), rgba(253,230,138,.20)); }
+    .toolBtn.teal{ background: linear-gradient(135deg, rgba(20,184,166,.30), rgba(153,246,228,.18)); }
+    .toolBtn.green{ background: linear-gradient(135deg, rgba(34,197,94,.28), rgba(134,239,172,.18)); }
+
+    .miniInputRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .miniInputRow input, .miniInputRow textarea{
+      flex:1;
+      min-width:220px;
+      font-family:inherit;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(35,26,70,.18);
+      outline:none;
+      background: rgba(255,255,255,.92);
+      box-shadow: inset 0 1px 0 rgba(0,0,0,.04);
+      font-size:14px;
+    }
+    .miniInputRow textarea{ min-height:44px; resize:vertical; }
+    .resultBox{
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(35,26,70,.14);
+      background: rgba(139,92,246,.07);
+      color:#2c2251;
+      font-weight:700;
+      line-height:1.3;
+    }
+    .resultBox small{
+      display:block;
+      margin-top:8px;
+      color:rgba(44,34,81,.78);
+      font-weight:700;
+    }
+
+    .timerRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .timerFace{
+      font-weight:900;
+      font-size:18px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(35,26,70,.16);
+      background: rgba(255,255,255,.92);
+      min-width:140px;
+      text-align:center;
+    }
+    .bar{
+      flex:1;
+      min-width:200px;
+      height:14px;
+      background: rgba(30, 25, 60, .10);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(35,26,70,.12);
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(139,92,246,.70), rgba(236,72,153,.60));
+      transition: width .2s ease;
+    }
+
+    .checklist{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+    }
+    .checkItem{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(35,26,70,.14);
+      background: rgba(20,184,166,.07);
+    }
+    .checkItem input{ margin-top:3px; transform: scale(1.1); }
+    .checkItem label{
+      font-weight:800;
+      color:#183b39;
+      line-height:1.25;
+      cursor:pointer;
+    }
+    .meter{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(35,26,70,.14);
+      background: rgba(20,184,166,.06);
+      font-weight:900;
+      color:#14433f;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .choiceGrid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:10px;
+    }
+    @media (max-width: 720px){ .choiceGrid{ grid-template-columns: 1fr; } }
+
+    .choiceBtn{
+      border:1px solid rgba(35,26,70,.16);
+      background: rgba(245,158,11,.10);
+      border-radius:18px;
+      padding:12px 12px;
+      cursor:pointer;
+      font-family:inherit;
+      font-weight:900;
+      color:#3a2b10;
+      box-shadow: 0 10px 18px rgba(22,20,40,.10);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      user-select:none;
+      text-align:left;
+    }
+    .choiceBtn:hover{ transform: translateY(-1px); filter:saturate(1.06); box-shadow: 0 14px 22px rgba(22,20,40,.12); }
+    .choiceBtn:active{ transform: translateY(0px) scale(.99); }
+
+    .footerBack{
+      margin-top:16px;
+      display:flex;
+      justify-content:center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="backlink" href="index.html">← Back to Menu</a>
+      <div class="titleBlock">
+        <h1>Resentful</h1>
+        <p class="subtitle">When your heart says, “That wasn’t fair… and I’m still holding it.”</p>
+      </div>
+    </div>
+
+    <div class="nav" role="navigation" aria-label="Emotion views">
+      <button id="tabHome" onclick="showHome()">HOME</button>
+      <button id="tabReact" onclick="showReactions()">BEHAVIORS</button>
+      <button id="tabCons" onclick="showConsequences()">CONSEQUENCES</button>
+      <button id="tabTools" onclick="showTools()">COMFORT TOOLS</button>
+    </div>
+
+    <!-- VIEW 1: HOME -->
+    <section id="viewHome" class="view">
+      <div class="grid">
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent)"></div>
+          <div class="cardInner">
+            <div class="scene altD" aria-hidden="true">
+              <div class="main">😒</div>
+              <div class="mini m1">💭</div>
+              <div class="mini m2">🧊</div>
+              <div class="mini m3">⛓️</div>
+            </div>
+            <h2>What’s happening?</h2>
+            <p>
+              Resentful is when you keep a “not fair!” moment in your mind, and it starts to feel like a heavy grudge you carry.
+              It can make you act cold or sharp even if you don’t want to.
+            </p>
+
+            <div class="pillRow" aria-label="Body signals and triggers">
+              <span class="pill"><small>Body:</small> tight jaw</span>
+              <span class="pill"><small>Body:</small> hot cheeks</span>
+              <span class="pill"><small>Body:</small> tummy twist</span>
+              <span class="pill"><small>Triggers:</small> someone gets picked</span>
+              <span class="pill"><small>Triggers:</small> feeling blamed</span>
+              <span class="pill"><small>Triggers:</small> rules feel unfair</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent2)"></div>
+          <div class="cardInner">
+            <div class="scene" aria-hidden="true">
+              <div class="main">🧰</div>
+              <div class="mini m1">🧠</div>
+              <div class="mini m2">🛡️</div>
+              <div class="mini m3">✨</div>
+            </div>
+            <h2>Tools</h2>
+            <p>
+              Resentment tries to glue the hurt to your heart. These tools help you calm your body, check the story in your mind,
+              and choose a smart next step—without needing to “get even.”
+            </p>
+            <div class="toolMeta">
+              <button class="toolBtn rose" onclick="showTools()">Go to Comfort Tools</button>
+              <button class="toolBtn purple" onclick="showReactions()">See Behaviors</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: REACTIONS -->
+    <section id="viewReact" class="view">
+      <div class="grid">
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent)"></div>
+          <div class="cardInner">
+            <div class="scene altA" aria-hidden="true">
+              <div class="main">🧊</div>
+              <div class="mini m1">😒</div>
+              <div class="mini m2">🙅‍♀️</div>
+              <div class="mini m3">👫</div>
+            </div>
+            <h3>Cold shoulder</h3>
+            <p>You pull away, act distant, or ignore someone because your feelings feel “stuck.”</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent4)"></div>
+          <div class="cardInner">
+            <div class="scene altD" aria-hidden="true">
+              <div class="main">🧮</div>
+              <div class="mini m1">🧾</div>
+              <div class="mini m2">👀</div>
+              <div class="mini m3">😑</div>
+            </div>
+            <h3>Keeping score</h3>
+            <p>You replay what happened and count who did what, like your brain is holding a “points chart.”</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent2)"></div>
+          <div class="cardInner">
+            <div class="scene altB" aria-hidden="true">
+              <div class="main">🗯️</div>
+              <div class="mini m1">😤</div>
+              <div class="mini m2">🔥</div>
+              <div class="mini m3">👂</div>
+            </div>
+            <h3>Snappy words</h3>
+            <p>Your mouth gets sharp: you say something mean, or you “bite” with your tone.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent5)"></div>
+          <div class="cardInner">
+            <div class="scene altC" aria-hidden="true">
+              <div class="main">🎯</div>
+              <div class="mini m1">🤫</div>
+              <div class="mini m2">🙈</div>
+              <div class="mini m3">😬</div>
+            </div>
+            <h3>Trying to “get even”</h3>
+            <p>You want to do something small to “match” the hurt—like a sneaky payback plan.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: CONSEQUENCES -->
+    <section id="viewCons" class="view">
+      <div class="grid">
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent4)"></div>
+          <div class="cardInner">
+            <div class="scene altA" aria-hidden="true">
+              <div class="main">🧍‍♀️↔️🧍‍♂️</div>
+              <div class="mini m1">📏</div>
+              <div class="mini m2">🧊</div>
+              <div class="mini m3">💔</div>
+            </div>
+            <h3>Friendships feel far</h3>
+            <p>Resentment builds distance, so it’s harder to laugh, trust, or play together.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent)"></div>
+          <div class="cardInner">
+            <div class="scene altD" aria-hidden="true">
+              <div class="main">🎒</div>
+              <div class="mini m1">🧱</div>
+              <div class="mini m2">⛓️</div>
+              <div class="mini m3">😮‍💨</div>
+            </div>
+            <h3>Your feelings get heavy</h3>
+            <p>Holding a grudge can feel like carrying a backpack full of rocks all day.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent2)"></div>
+          <div class="cardInner">
+            <div class="scene altB" aria-hidden="true">
+              <div class="main">🎉</div>
+              <div class="mini m1">🚫</div>
+              <div class="mini m2">😕</div>
+              <div class="mini m3">🫧</div>
+            </div>
+            <h3>You miss the fun</h3>
+            <p>Your brain keeps replaying the unfair moment, so “now” feels less joyful.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent6)"></div>
+          <div class="cardInner">
+            <div class="scene altC" aria-hidden="true">
+              <div class="main">🌀</div>
+              <div class="mini m1">💓</div>
+              <div class="mini m2">⚡</div>
+              <div class="mini m3">😣</div>
+            </div>
+            <h3>Body stays on “alert”</h3>
+            <p>When your mind keeps yelling “not fair,” your body can stay tense and restless.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: COMFORT TOOLS -->
+    <section id="viewTools" class="view">
+      <div class="grid">
+
+        <!-- Tool 1: 60-second timer -->
+        <div class="card" id="toolTimerCard">
+          <div class="accentBar" style="background: var(--accent)"></div>
+          <div class="cardInner">
+            <div class="scene altD" id="sceneTimer" aria-hidden="true">
+              <div class="main">⏱️</div>
+              <div class="mini m1">🧊</div>
+              <div class="mini m2">🌬️</div>
+              <div class="mini m3">🫧</div>
+            </div>
+            <h3>Melt-the-Ice Timer (60 seconds)</h3>
+            <p>
+              When you slow down for one minute, your body can shift out of “fight mode,”
+              and your thinking brain can come back online.
+            </p>
+
+            <div class="timerRow">
+              <div class="timerFace" id="timerFace">01:00</div>
+              <div class="bar" aria-label="timer progress"><div id="timerBar"></div></div>
+            </div>
+
+            <div class="toolMeta">
+              <button class="toolBtn purple" id="timerStartBtn" onclick="startResentTimer()">Start</button>
+              <button class="toolBtn sky" onclick="pauseResentTimer()">Pause</button>
+              <button class="toolBtn rose" onclick="resetResentTimer()">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool 2: Words tool -->
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent2)"></div>
+          <div class="cardInner">
+            <div class="scene altB" id="sceneNameIt" aria-hidden="true">
+              <div class="main">🏷️</div>
+              <div class="mini m1">💔</div>
+              <div class="mini m2">🗣️</div>
+              <div class="mini m3">🧠</div>
+            </div>
+            <h3>Name-It to Tame-It</h3>
+            <p>
+              Putting feelings into words helps your brain organize the storm.
+              It turns a loud “grudge feeling” into a clear message.
+            </p>
+
+            <div class="miniInputRow">
+              <input id="hurtInput" type="text" placeholder="What felt unfair? (example: “They blamed me.”)" />
+              <input id="needInput" type="text" placeholder="What did you need? (example: “To be heard.”)" />
+            </div>
+
+            <div class="toolMeta">
+              <button class="toolBtn rose" onclick="makeNameIt()">Make my sentence</button>
+              <button class="toolBtn teal" onclick="clearNameIt()">Clear</button>
+            </div>
+
+            <div class="resultBox" id="nameItResult" style="display:none;"></div>
+          </div>
+        </div>
+
+        <!-- Tool 3: Check the facts -->
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent5)"></div>
+          <div class="cardInner">
+            <div class="scene altA" id="sceneFacts" aria-hidden="true">
+              <div class="main">🔎</div>
+              <div class="mini m1">⚖️</div>
+              <div class="mini m2">🧩</div>
+              <div class="mini m3">✅</div>
+            </div>
+            <h3>Detective Mode: Check the Facts</h3>
+            <p>
+              Resentment can tell a scary story. Checking facts helps you find the most fair, true explanation—so you can choose a smart next step.
+            </p>
+
+            <div class="choiceGrid" role="group" aria-label="Detective choices">
+              <button class="choiceBtn" onclick="detectivePick('A')">A) I know exactly what they meant.</button>
+              <button class="choiceBtn" onclick="detectivePick('B')">B) I’m not sure—there might be another reason.</button>
+              <button class="choiceBtn" onclick="detectivePick('C')">C) I can ask one calm question to find out.</button>
+            </div>
+
+            <div class="resultBox" id="detectiveResult" style="display:none;"></div>
+          </div>
+        </div>
+
+        <!-- Tool 4: Repair request script generator -->
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent4)"></div>
+          <div class="cardInner">
+            <div class="scene altC" id="sceneRepair" aria-hidden="true">
+              <div class="main">🧑‍🤝‍🧑</div>
+              <div class="mini m1">💬</div>
+              <div class="mini m2">🫶</div>
+              <div class="mini m3">📨</div>
+            </div>
+            <h3>Repair Request (Practice Words)</h3>
+            <p>
+              A calm script helps you speak up without attacking. It’s a “bridge builder” for your friendships.
+            </p>
+
+            <div class="miniInputRow">
+              <input id="whoInput" type="text" placeholder="Who is it with? (example: “Sam”)" />
+              <textarea id="whatInput" placeholder="What happened? (example: “You said it was my fault.”)"></textarea>
+            </div>
+
+            <div class="toolMeta">
+              <button class="toolBtn sky" onclick="makeRepairScript()">Build my script</button>
+              <button class="toolBtn amber" onclick="clearRepairScript()">Clear</button>
+            </div>
+
+            <div class="resultBox" id="repairResult" style="display:none;"></div>
+          </div>
+        </div>
+
+        <!-- Tool 5: Kindness spark checklist -->
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent6)"></div>
+          <div class="cardInner">
+            <div class="scene altC" id="sceneSpark" aria-hidden="true">
+              <div class="main">✨</div>
+              <div class="mini m1">🤝</div>
+              <div class="mini m2">🌱</div>
+              <div class="mini m3">🎁</div>
+            </div>
+            <h3>Tiny Kindness Spark</h3>
+            <p>
+              Small kind actions can loosen a grudge. This isn’t “pretending it’s okay”—it’s helping your heart get unstuck.
+            </p>
+
+            <div class="checklist" aria-label="Kindness checklist">
+              <div class="checkItem">
+                <input id="k1" type="checkbox" onchange="updateSpark()" />
+                <label for="k1">Do one friendly thing (a wave, a smile, a hello).</label>
+              </div>
+              <div class="checkItem">
+                <input id="k2" type="checkbox" onchange="updateSpark()" />
+                <label for="k2">Say one true, kind sentence (even a small one).</label>
+              </div>
+              <div class="checkItem">
+                <input id="k3" type="checkbox" onchange="updateSpark()" />
+                <label for="k3">Give yourself credit: “I’m choosing the strong path.”</label>
+              </div>
+            </div>
+
+            <div class="meter" id="sparkMeter">
+              <span>Spark Meter</span>
+              <span id="sparkValue">0 / 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool 6: Body tool (active animation state) -->
+        <div class="card">
+          <div class="accentBar" style="background: var(--accent3)"></div>
+          <div class="cardInner">
+            <div class="scene altB" id="scenePress" aria-hidden="true">
+              <div class="main">✋</div>
+              <div class="mini m1">💪</div>
+              <div class="mini m2">🧠</div>
+              <div class="mini m3">🌡️</div>
+            </div>
+            <h3>Hand-Press Reset</h3>
+            <p>
+              Press-and-release helps your muscles soften. When your body relaxes, your thoughts can become less “spiky.”
+            </p>
+
+            <div class="toolMeta">
+              <button class="toolBtn green" onclick="doHandPress()">Press & Release</button>
+              <button class="toolBtn teal" onclick="resetHandPress()">Reset Count</button>
+            </div>
+
+            <div class="resultBox" id="pressResult">
+              Count: <span id="pressCount">0</span> / 10
+              <small>Tip: Press your palms together for 3 seconds… then relax for 3 seconds.</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footerBack">
+        <a class="backlink" href="index.html">← Back to Menu</a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ===== Robust helpers =====
+    const _intervals = [];
+    const _timeouts = [];
+
+    function addInterval(id){ _intervals.push(id); return id; }
+    function addTimeout(id){ _timeouts.push(id); return id; }
+
+    function clearAllIntervals(){
+      while(_intervals.length){
+        const id = _intervals.pop();
+        try{ clearInterval(id); }catch(e){}
+      }
+      while(_timeouts.length){
+        const id = _timeouts.pop();
+        try{ clearTimeout(id); }catch(e){}
+      }
+    }
+
+    function setActiveTab(tabId){
+      const tabs = ["tabHome","tabReact","tabCons","tabTools"];
+      tabs.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.classList.toggle("active", id === tabId);
+      });
+    }
+
+    function showOnly(viewId, tabId){
+      clearAllIntervals();
+      const views = ["viewHome","viewReact","viewCons","viewTools"];
+      views.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.classList.toggle("active", id === viewId);
+      });
+      setActiveTab(tabId);
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    // ===== View switching =====
+    function showHome(){ showOnly("viewHome","tabHome"); }
+    function showReactions(){ showOnly("viewReact","tabReact"); }
+    function showConsequences(){ showOnly("viewCons","tabCons"); }
+    function showTools(){ showOnly("viewTools","tabTools"); resetResentTimer(true); }
+
+    // ===== Tool 1: 60-second timer =====
+    let timerRemaining = 60;
+    let timerRunning = false;
+
+    function fmtTime(s){
+      const mm = String(Math.floor(s/60)).padStart(2,"0");
+      const ss = String(s%60).padStart(2,"0");
+      return `${mm}:${ss}`;
+    }
+
+    function renderTimer(){
+      const face = document.getElementById("timerFace");
+      const bar = document.getElementById("timerBar");
+      if(face) face.textContent = fmtTime(timerRemaining);
+      if(bar){
+        const pct = ((60 - timerRemaining) / 60) * 100;
+        bar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+      }
+    }
+
+    function animateScene(el, mode){
+      if(!el) return;
+      el.classList.remove("is-active","is-shaking");
+      void el.offsetWidth; // reflow to restart animation
+      el.classList.add(mode);
+      addTimeout(setTimeout(()=>{ el.classList.remove(mode); }, 650));
+    }
+
+    function startResentTimer(){
+      const scene = document.getElementById("sceneTimer");
+      animateScene(scene, "is-active");
+
+      if(timerRunning) return;
+      timerRunning = true;
+
+      addInterval(setInterval(()=>{
+        if(!timerRunning) return;
+        timerRemaining = Math.max(0, timerRemaining - 1);
+        renderTimer();
+
+        if(timerRemaining === 0){
+          timerRunning = false;
+          const s = document.getElementById("sceneTimer");
+          animateScene(s, "is-shaking");
+          addTimeout(setTimeout(()=>{
+            timerRemaining = 60;
+            renderTimer();
+          }, 900));
+        }
+      }, 1000));
+    }
+
+    function pauseResentTimer(){
+      const scene = document.getElementById("sceneTimer");
+      animateScene(scene, "is-shaking");
+      timerRunning = false;
+    }
+
+    function resetResentTimer(silent){
+      timerRunning = false;
+      timerRemaining = 60;
+      renderTimer();
+      if(!silent){
+        const scene = document.getElementById("sceneTimer");
+        animateScene(scene, "is-active");
+      }
+    }
+
+    // ===== Tool 2: Name-It to Tame-It =====
+    function makeNameIt(){
+      const hurt = (document.getElementById("hurtInput") || {}).value || "";
+      const need = (document.getElementById("needInput") || {}).value || "";
+      const out = document.getElementById("nameItResult");
+      const scene = document.getElementById("sceneNameIt");
+      animateScene(scene, "is-active");
+
+      const cleanHurt = hurt.trim();
+      const cleanNeed = need.trim();
+
+      let msg = "Try this:";
+      let line1 = cleanHurt ? `“I felt hurt when ${cleanHurt}.”` : `“I felt hurt when ____.”`;
+      let line2 = cleanNeed ? `“What I needed was: ${cleanNeed}.”` : `“What I needed was: ____.”`;
+      let line3 = `“I can choose one calm next step now.”`;
+
+      if(out){
+        out.style.display = "block";
+        out.innerHTML = `<strong>${msg}</strong><br>${line1}<br>${line2}<br>${line3}
+          <small>Why it helps: Naming feelings can shrink the storm so your thinking brain can help.</small>`;
+      }
+    }
+
+    function clearNameIt(){
+      const h = document.getElementById("hurtInput");
+      const n = document.getElementById("needInput");
+      const out = document.getElementById("nameItResult");
+      const scene = document.getElementById("sceneNameIt");
+      animateScene(scene, "is-shaking");
+      if(h) h.value = "";
+      if(n) n.value = "";
+      if(out){ out.style.display="none"; out.textContent=""; }
+    }
+
+    // ===== Tool 3: Detective Mode =====
+    function detectivePick(choice){
+      const out = document.getElementById("detectiveResult");
+      const scene = document.getElementById("sceneFacts");
+      animateScene(scene, "is-active");
+
+      let msg = "";
+      if(choice === "A"){
+        msg = "Detective hint: Minds can guess wrong. Try one fact-check question: “What did you mean by that?”";
+      }else if(choice === "B"){
+        msg = "Smart! If you’re not sure, your brain gets a chance to calm down. Look for 1 other possible reason.";
+      }else{
+        msg = "Great plan. Ask one calm question and listen: “Can you help me understand what happened?”";
+      }
+
+      if(out){
+        out.style.display = "block";
+        out.innerHTML = `<strong>${msg}</strong>
+          <small>Why it helps: Checking facts stops the “unfair story” from growing bigger than it really is.</small>`;
+      }
+    }
+
+    // ===== Tool 4: Repair Script =====
+    function makeRepairScript(){
+      const who = ((document.getElementById("whoInput") || {}).value || "").trim();
+      const what = ((document.getElementById("whatInput") || {}).value || "").trim();
+      const out = document.getElementById("repairResult");
+      const scene = document.getElementById("sceneRepair");
+      animateScene(scene, "is-active");
+
+      const name = who || "____";
+      const eventLine = what ? `When ${what},` : "When ____,";
+
+      const script =
+        `“Hey ${name}. ${eventLine} I felt upset. ` +
+        `I want to fix this. Can we talk for 2 minutes and find a fair way?”`;
+
+      if(out){
+        out.style.display = "block";
+        out.innerHTML = `<strong>Practice script:</strong><br>${script}
+          <small>Why it helps: A short, calm request builds a bridge instead of a battle.</small>`;
+      }
+    }
+
+    function clearRepairScript(){
+      const w = document.getElementById("whoInput");
+      const t = document.getElementById("whatInput");
+      const out = document.getElementById("repairResult");
+      const scene = document.getElementById("sceneRepair");
+      animateScene(scene, "is-shaking");
+      if(w) w.value = "";
+      if(t) t.value = "";
+      if(out){ out.style.display="none"; out.textContent=""; }
+    }
+
+    // ===== Tool 5: Kindness Spark =====
+    function updateSpark(){
+      const c1 = (document.getElementById("k1") || {}).checked ? 1 : 0;
+      const c2 = (document.getElementById("k2") || {}).checked ? 1 : 0;
+      const c3 = (document.getElementById("k3") || {}).checked ? 1 : 0;
+      const total = c1 + c2 + c3;
+
+      const v = document.getElementById("sparkValue");
+      if(v) v.textContent = `${total} / 3`;
+
+      const scene = document.getElementById("sceneSpark");
+      if(total > 0) animateScene(scene, "is-active");
+    }
+
+    // ===== Tool 6: Hand-Press Reset =====
+    let pressCount = 0;
+    function doHandPress(){
+      pressCount = Math.min(10, pressCount + 1);
+      const el = document.getElementById("pressCount");
+      if(el) el.textContent = String(pressCount);
+
+      const scene = document.getElementById("scenePress");
+      animateScene(scene, "is-shaking");
+
+      const box = document.getElementById("pressResult");
+      if(box){
+        if(pressCount >= 10){
+          box.innerHTML = `Count: <span id="pressCount">10</span> / 10
+            <small>Nice! Your body is softer now. Try one calm sentence: “I can handle this with smart words.”</small>`;
+        }else{
+          box.innerHTML = `Count: <span id="pressCount">${pressCount}</span> / 10
+            <small>Tip: Press your palms together for 3 seconds… then relax for 3 seconds.</small>`;
+        }
+      }
+    }
+
+    function resetHandPress(){
+      pressCount = 0;
+      const el = document.getElementById("pressCount");
+      if(el) el.textContent = "0";
+      const scene = document.getElementById("scenePress");
+      animateScene(scene, "is-active");
+
+      const box = document.getElementById("pressResult");
+      if(box){
+        box.innerHTML = `Count: <span id="pressCount">0</span> / 10
+          <small>Tip: Press your palms together for 3 seconds… then relax for 3 seconds.</small>`;
+      }
+    }
+
+    // Never blank page on load:
+    showHome();
+  </script>
+</body>
+</html>
