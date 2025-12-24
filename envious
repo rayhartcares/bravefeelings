@@ -233,6 +233,16 @@
     .m3{ right:22px; bottom:16px; transform: rotate(-8deg); animation-delay:.28s; }
     .m4{ left:18px; bottom:16px; transform: rotate(8deg);  animation-delay:.35s; display:none; }
 
+    /* ===== Bigger emoji scenes ONLY on Comfort Tools view ===== */
+    .toolsBig .scene{ height:210px; }
+    .toolsBig .mainEmoji{ font-size:132px; }
+    .toolsBig .miniEmoji{ font-size:56px; }
+    @media (max-width:650px){
+      .toolsBig .scene{ height:200px; }
+      .toolsBig .mainEmoji{ font-size:124px; }
+      .toolsBig .miniEmoji{ font-size:52px; }
+    }
+
     /* tool press animations */
     @keyframes pop{
       0%{ transform: translate(-50%,-50%) scale(1); }
@@ -497,7 +507,7 @@
           <div class="white-card" style="border-bottom-color:#2563EB;">
             ${sceneHTML('sc-tools-home', '🧰', '🧠', '👂', '🤝', 'altD', '')}
             <div class="card-title" style="color:#2563EB;">Tools</div>
-            <p class="card-desc">
+            <p class="card-desc>
               These tools help your body calm down, share the spotlight, listen better,
               and use strong words that build friendships. You can still feel proud—without pushing others down.
             </p>
@@ -594,6 +604,9 @@
       window.scrollTo({top:0, behavior:'instant'});
     }
 
+    /* ============================
+       UPDATED: Comfort Tools visuals + BIGGER
+       ============================ */
     function showSolutions(){
       clearAllIntervals();
       app.innerHTML = `
@@ -601,11 +614,11 @@
         <h1 class="title" style="color:#2563EB;">Comfort Tools</h1>
         <p class="subtitle">Each tool is simple, kid-friendly, and helps pride stay kind.</p>
 
-        <div style="display:flex; flex-direction:column; gap:26px; margin-top:18px;">
+        <div class="toolsBig" style="display:flex; flex-direction:column; gap:26px; margin-top:18px;">
 
-          <!-- TOOL 1: 60s timer -->
+          <!-- TOOL 1: 60s timer (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#2563EB;">
-            ${sceneHTML('sc-timer','⏱️','📣','🌬️','🫧','altD','')}
+            ${sceneHTML('sc-timer','🧊','🔥','⏱️','💨','altD','')}
             <div class="card-title" style="color:#2563EB;">Calm-Down Minute (60 seconds)</div>
             <p class="card-desc">One quiet minute helps your body cool down so your thinking brain can choose kind actions.</p>
 
@@ -617,9 +630,9 @@
             <button class="btn btn-indigo" onclick="resetCalmMinute()">Reset</button>
           </div>
 
-          <!-- TOOL 2: Spotlight Share Spinner -->
+          <!-- TOOL 2: Spotlight Share Spinner (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#0EA5E9;">
-            ${sceneHTML('sc-spin','🎡','✨','👫','🎯','altA','')}
+            ${sceneHTML('sc-spin','🎠','🔄','👫','✨','altA','')}
             <div class="card-title" style="color:#0EA5E9;">Spotlight Share Spinner</div>
             <p class="card-desc">Sharing turns helps friendships grow. This gives you one “spotlight share” idea.</p>
 
@@ -627,9 +640,9 @@
             <button class="btn btn-sky" onclick="spinShare()">Spin</button>
           </div>
 
-          <!-- TOOL 3: Listening Laser checklist -->
+          <!-- TOOL 3: Listening Laser checklist (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#0D9488;">
-            ${sceneHTML('sc-listen','👂','🔦','✅','💬','altC','')}
+            ${sceneHTML('sc-listen','👂','👀','🤐','💬','altC','')}
             <div class="card-title" style="color:#0D9488;">Listening Laser</div>
             <p class="card-desc">Listening is a superpower. Check these while someone else is talking.</p>
 
@@ -651,9 +664,9 @@
             <div class="mini-panel" id="listenScore">Listening Score: 0 / 3</div>
           </div>
 
-          <!-- TOOL 4: Bridge Builder Script (WORDS TOOL) -->
+          <!-- TOOL 4: Bridge Builder Script (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#D97706;">
-            ${sceneHTML('sc-bridge','🌉','💬','🤝','🧠','altB','')}
+            ${sceneHTML('sc-bridge','🧩','📝','🤝','💬','altB','')}
             <div class="card-title" style="color:#D97706;">Bridge Builder Script</div>
             <p class="card-desc">Strong words don’t have to be mean. Build a bridge with a calm sentence.</p>
 
@@ -668,10 +681,10 @@
             <div class="resultBox" id="bridgeOut"></div>
           </div>
 
-          <!-- TOOL 5: Humble Sentence Picker -->
+          <!-- TOOL 5: Humility practice (NEW EMOJIS, no bowing/prayer vibe) -->
           <div class="white-card" style="border-bottom-color:#E11D48;">
-            ${sceneHTML('sc-humble','🪞','😌','🌟','🫶','altD','')}
-            <div class="card-title" style="color:#E11D48;">Humility Mirror</div>
+            ${sceneHTML('sc-humble','🌱','🫶','⭐','🙂','altD','')}
+            <div class="card-title" style="color:#E11D48;">Humility Seed</div>
             <p class="card-desc">Humility means “I matter, and you matter too.” Pick a sentence to practice.</p>
 
             <div class="choiceGrid" role="group" aria-label="Humble sentences">
@@ -683,9 +696,9 @@
             <div class="resultBox" id="humbleOut"></div>
           </div>
 
-          <!-- TOOL 6: Body Tool (active animation) -->
+          <!-- TOOL 6: Body Tool (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#16A34A;">
-            ${sceneHTML('sc-hifive','✋','💓','🌬️','✅','altC','')}
+            ${sceneHTML('sc-hifive','🤜🤛','💓','🌬️','🏁','altC','')}
             <div class="card-title" style="color:#16A34A;">Kindness High-Five Practice</div>
             <p class="card-desc">Do a quick body reset: breathe out, soften shoulders, then “high-five kindness.”</p>
 
@@ -789,7 +802,7 @@
       if(!out) return;
 
       const name = who || '____';
-      const eventLine = what ? `When ${what},` : 'When ____,'
+      const eventLine = what ? `When ${what},` : 'When ____,';
 
       const script =
         `“Hey ${name}. ${eventLine} I felt upset. ` +
@@ -810,7 +823,7 @@
       if(out){ out.style.display='none'; out.textContent=''; }
     }
 
-    // ===== TOOL 5: Humble picker =====
+    // ===== TOOL 5: Humility picker =====
     const humbleLines = [
       "Try this: “That’s a good idea. Let’s try it.”",
       "Try this: “You go first. I’ll take my turn next.”",
