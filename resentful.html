@@ -1,838 +1,390 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resentful — Brave Feelings Lab</title>
+  <title>Understanding Resentful</title>
 
-  <!-- Fredoka -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --bg1:#f7f4ff;
-      --bg2:#fff7fb;
-      --ink:#1f2330;
-      --muted:#5b6477;
-      --card:#ffffff;
-      --shadow: 0 10px 24px rgba(22, 20, 40, .10);
-      --stroke: rgba(40, 34, 70, .12);
-      --accent:#8b5cf6; /* purple */
-      --accent2:#ec4899; /* rose */
-      --accent3:#22c55e; /* green */
-      --accent4:#0ea5e9; /* sky */
-      --accent5:#f59e0b; /* amber */
-      --accent6:#14b8a6; /* teal */
-      --radius:20px;
-      --emoji-font: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
-    }
-
-    *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:"Fredoka", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at 2px 2px, rgba(30, 25, 60, .09) 1.5px, transparent 1.7px) 0 0 / 18px 18px,
-        radial-gradient(circle at 9px 9px, rgba(30, 25, 60, .06) 1.2px, transparent 1.4px) 0 0 / 18px 18px,
-        linear-gradient(135deg, var(--bg1), var(--bg2));
+      margin:0; padding:0;
+      background:#F4FAFF;
+      font-family:'Fredoka',sans-serif;
+      color:#1F2937;
+      display:flex; justify-content:center;
       min-height:100vh;
+      overflow-x:hidden;
     }
-
-    .wrap{
+    #app-container{
+      width:100%;
       max-width:860px;
-      margin:0 auto;
-      padding:22px 16px 30px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-    }
-
-    .backlink{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      color:var(--ink);
-      text-decoration:none;
-      font-weight:700;
-      padding:10px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.75);
-      border:1px solid var(--stroke);
-      box-shadow: 0 6px 14px rgba(22, 20, 40, .08);
-      transition: transform .12s ease, box-shadow .12s ease;
-      user-select:none;
-    }
-    .backlink:hover{ transform: translateY(-1px); box-shadow: 0 10px 18px rgba(22,20,40,.10); }
-    .backlink:active{ transform: translateY(0px) scale(.99); }
-
-    .titleBlock{
-      flex:1;
-      min-width:0;
-      text-align:right;
-    }
-    h1{
-      margin:2px 0 4px;
-      font-size: clamp(28px, 3.6vw, 42px);
-      line-height:1.05;
-      letter-spacing:.2px;
-    }
-    .subtitle{
-      margin:0;
-      color:var(--muted);
-      font-size: 15px;
-      line-height:1.3;
-    }
-
-    .nav{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:center;
-      margin:14px 0 18px;
-    }
-    .nav button{
-      border:0;
-      cursor:pointer;
-      font-family:inherit;
-      font-weight:800;
-      letter-spacing:.2px;
-      color:#0f1320;
-      padding:12px 14px;
-      border-radius:999px;
-      min-width:140px;
-      background: linear-gradient(135deg, rgba(139,92,246,.20), rgba(236,72,153,.16));
-      box-shadow: 0 10px 20px rgba(22, 20, 40, .10);
-      border:1px solid rgba(70, 50, 120, .18);
-      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
-      user-select:none;
-    }
-    .nav button:hover{ transform: translateY(-1px); filter:saturate(1.05); box-shadow: 0 14px 22px rgba(22,20,40,.12); }
-    .nav button:active{ transform: translateY(0px) scale(.99); }
-    .nav button.active{
-      background: linear-gradient(135deg, rgba(139,92,246,.32), rgba(236,72,153,.26));
-      border-color: rgba(139,92,246,.35);
-      box-shadow: 0 16px 28px rgba(22,20,40,.14);
-    }
-
-    .view{ display:none; }
-    .view.active{ display:block; }
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:14px;
-    }
-    @media (max-width: 720px){
-      .grid{ grid-template-columns: 1fr; }
-      .titleBlock{ text-align:left; }
-      .topbar{ align-items:flex-start; }
-      .nav button{ min-width: 46%; flex:1; }
-    }
-
-    .card{
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--stroke);
-      overflow:hidden;
+      padding:44px 18px;
       position:relative;
     }
-    .cardInner{
-      padding:16px 16px 14px;
-    }
 
-    .accentBar{
-      height:8px;
-      background: var(--accent);
-      border-bottom:1px solid rgba(0,0,0,.04);
+    .white-card{
+      background:white;
+      border-radius:26px;
+      padding:30px;
+      box-shadow:0 10px 26px rgba(0,0,0,0.06);
+      text-align:center;
+      margin-bottom:24px;
+      border-bottom:7px solid #E5E7EB;
+      position:relative;
+      overflow:visible;
+      transition:transform .18s ease;
     }
+    .white-card:hover{ transform: translateY(-4px); }
 
-    .card h2, .card h3{
-      margin:0 0 8px;
-      line-height:1.1;
+    .title{
+      font-size:40px;
+      font-weight:800;
+      text-align:center;
+      margin:0 0 8px 0;
+      letter-spacing:.2px;
+      color:#0F172A;
     }
-    .card h2{ font-size: 20px; }
-    .card h3{ font-size: 18px; }
-    .card p{
+    .subtitle{
+      text-align:center;
+      color:#64748B;
+      margin:0 0 34px 0;
+      font-size:18px;
+      line-height:1.45;
+    }
+    .violet-title{ color:#6D28D9; }
+
+    .card-title{
+      font-size:22px;
+      font-weight:800;
+      margin:10px 0 6px 0;
+      color:#0F172A;
+    }
+    .card-desc{
+      font-size:16px;
+      color:#64748B;
+      line-height:1.55;
       margin:0;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.35;
     }
+
+    .btn{
+      padding:14px 22px;
+      border-radius:16px;
+      font-weight:800;
+      font-size:18px;
+      border:none;
+      cursor:pointer;
+      color:white;
+      transition:transform .2s ease, filter .2s ease;
+      width:100%;
+      margin-top:16px;
+      box-shadow:0 7px 16px rgba(0,0,0,0.12);
+    }
+    .btn:hover{ transform: scale(1.02); filter: brightness(1.06); }
+    .btn:disabled{ opacity:.75; cursor:not-allowed; transform:none; }
+
+    .btn-violet { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+    .btn-indigo { background: linear-gradient(135deg, #6366F1, #4338CA); }
+    .btn-sky    { background: linear-gradient(135deg, #38BDF8, #0EA5E9); }
+    .btn-teal   { background: linear-gradient(135deg, #2DD4BF, #0D9488); }
+    .btn-amber  { background: linear-gradient(135deg, #FBBF24, #D97706); }
+    .btn-rose   { background: linear-gradient(135deg, #FB7185, #E11D48); }
+    .btn-green  { background: linear-gradient(135deg, #34D399, #16A34A); }
+
+    .btn-back{
+      background:white;
+      border:2px solid #CBD5E1;
+      color:#334155;
+      padding:9px 16px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      margin-bottom:18px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+    @media (max-width:650px){
+      .grid-2{ grid-template-columns:1fr; }
+    }
+
+    /* Emoji scenes (kid-friendly, big, simple) */
+    .emojiScene{
+      width: clamp(210px, 60vw, 320px);
+      height: 178px;
+      margin: 0 auto 10px auto;
+      border-radius: 22px;
+      position: relative;
+      overflow:hidden;
+      border:2px dashed rgba(109,40,217,.25);
+      background:
+        radial-gradient(circle at 18% 28%, rgba(139,92,246,.20), transparent 55%),
+        radial-gradient(circle at 78% 70%, rgba(14,165,233,.14), transparent 58%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(109,40,217,.05));
+    }
+    .emojiScene.altA{
+      border-color: rgba(14,165,233,.25);
+      background:
+        radial-gradient(circle at 18% 28%, rgba(14,165,233,.18), transparent 55%),
+        radial-gradient(circle at 78% 70%, rgba(99,102,241,.14), transparent 58%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(14,165,233,.05));
+    }
+    .emojiScene.altB{
+      border-color: rgba(217,119,6,.25);
+      background:
+        radial-gradient(circle at 18% 28%, rgba(245,158,11,.18), transparent 55%),
+        radial-gradient(circle at 78% 70%, rgba(236,72,153,.12), transparent 58%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(245,158,11,.05));
+    }
+    .emojiScene.altC{
+      border-color: rgba(13,148,136,.25);
+      background:
+        radial-gradient(circle at 18% 28%, rgba(45,212,191,.16), transparent 55%),
+        radial-gradient(circle at 78% 70%, rgba(34,197,94,.12), transparent 58%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(13,148,136,.05));
+    }
+    .emojiScene.altD{
+      border-color: rgba(225,29,72,.22);
+      background:
+        radial-gradient(circle at 18% 28%, rgba(251,113,133,.16), transparent 55%),
+        radial-gradient(circle at 78% 70%, rgba(139,92,246,.12), transparent 58%),
+        linear-gradient(135deg, rgba(255,255,255,.0), rgba(225,29,72,.05));
+    }
+
+    .emoMain{
+      position:absolute;
+      left:50%;
+      top:52%;
+      transform: translate(-50%, -50%);
+      font-size: 86px;
+      line-height: 1;
+      user-select:none;
+      filter: drop-shadow(0 16px 18px rgba(0,0,0,0.18));
+      font-family: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+    }
+    .emoMini{
+      position:absolute;
+      font-size: 34px;
+      line-height: 1;
+      user-select:none;
+      filter: drop-shadow(0 12px 14px rgba(0,0,0,0.14));
+      font-family: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+      opacity:.98;
+    }
+    .m1{ left:16px; top:16px; }
+    .m2{ right:16px; top:16px; }
+    .m3{ right:18px; bottom:14px; }
+
+    /* Animations */
+    @keyframes floaty{ 0%,100%{ transform: translate(-50%,-50%) translateY(0) scale(1); } 50%{ transform: translate(-50%,-50%) translateY(-12px) scale(1.03); } }
+    @keyframes wobble{ 0%{ transform: rotate(0deg) } 25%{ transform: rotate(6deg) } 50%{ transform: rotate(0deg) } 75%{ transform: rotate(-6deg) } 100%{ transform: rotate(0deg) } }
+    @keyframes boing{ 0%,100%{ transform: translate(-50%,-50%) scale(1) } 50%{ transform: translate(-50%,-50%) scale(1.18) } }
+    @keyframes popOnce{ 0%{ transform: translate(-50%,-50%) scale(1) } 45%{ transform: translate(-50%,-50%) scale(1.18) } 100%{ transform: translate(-50%,-50%) scale(1) } }
+    @keyframes shakeOnce{
+      0%,100%{ transform: translate(-50%,-50%) rotate(0deg); }
+      20%{ transform: translate(-50%,-50%) rotate(-4deg); }
+      40%{ transform: translate(-50%,-50%) rotate(4deg); }
+      60%{ transform: translate(-50%,-50%) rotate(-3deg); }
+      80%{ transform: translate(-50%,-50%) rotate(3deg); }
+    }
+
+    .floaty .emoMain{ animation: floaty 2.6s infinite ease-in-out; }
+    .wobble .emoMain{ animation: wobble 0.9s infinite ease-in-out; }
+    .boing  .emoMain{ animation: boing  1.1s infinite ease-in-out; }
+
+    .sceneActive .emoMain{ animation: popOnce .55s ease-in-out 1; }
+    .sceneShake  .emoMain{ animation: shakeOnce .55s ease-in-out 1; }
 
     .pillRow{
       display:flex;
       flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
+      justify-content:center;
+      gap:10px;
+      margin-top:14px;
     }
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
+      display:inline-block;
+      padding:6px 12px;
       border-radius:999px;
-      background: rgba(139,92,246,.10);
-      border: 1px solid rgba(139,92,246,.18);
-      color:#2b214d;
-      font-weight:700;
-      font-size: 13px;
-    }
-    .pill small{
       font-weight:800;
-      color:#3b2f66;
-      opacity:.9;
+      font-size:13px;
+      background:#F3E8FF;
+      color:#5B21B6;
+      border:1px solid rgba(109,40,217,.18);
     }
+    .pill.alt{ background:#E0F2FE; color:#075985; border-color: rgba(14,165,233,.18); }
 
-    /* Emoji scenes */
-    .scene{
-      height:112px;
-      margin-bottom:10px;
-      border-radius: 16px;
-      background:
-        radial-gradient(circle at 12% 20%, rgba(139,92,246,.22), transparent 48%),
-        radial-gradient(circle at 82% 70%, rgba(236,72,153,.18), transparent 52%),
-        linear-gradient(135deg, rgba(255,255,255,.0), rgba(139,92,246,.06));
-      border: 1px dashed rgba(60, 40, 120, .18);
-      position:relative;
-      overflow:hidden;
-    }
-    .scene .main{
-      position:absolute;
-      left:50%;
-      top:50%;
-      transform: translate(-50%, -50%);
-      font-size: 56px;
-      font-family: var(--emoji-font);
-      filter: drop-shadow(0 10px 16px rgba(20, 18, 40, .16));
-      animation: floaty 2.6s ease-in-out infinite;
-    }
-    .scene .mini{
-      position:absolute;
-      font-size: 26px;
-      font-family: var(--emoji-font);
-      opacity:.98;
-      filter: drop-shadow(0 6px 10px rgba(20, 18, 40, .12));
-      animation: wobble 2.2s ease-in-out infinite;
-    }
-
-    .scene .mini.m1{ left:12px; top:16px; transform: rotate(-8deg); animation-delay: .05s; }
-    .scene .mini.m2{ right:14px; top:14px; transform: rotate(10deg); animation-delay: .25s; }
-    .scene .mini.m3{ right:18px; bottom:14px; transform: rotate(-6deg); animation-delay: .45s; }
-
-    .scene.altA{ background:
-        radial-gradient(circle at 18% 25%, rgba(14,165,233,.20), transparent 52%),
-        radial-gradient(circle at 78% 70%, rgba(139,92,246,.16), transparent 54%),
-        linear-gradient(135deg, rgba(255,255,255,.0), rgba(14,165,233,.06));
-      border-color: rgba(14,165,233,.22);
-    }
-    .scene.altB{ background:
-        radial-gradient(circle at 18% 25%, rgba(245,158,11,.18), transparent 52%),
-        radial-gradient(circle at 80% 72%, rgba(236,72,153,.16), transparent 56%),
-        linear-gradient(135deg, rgba(255,255,255,.0), rgba(245,158,11,.06));
-      border-color: rgba(245,158,11,.22);
-    }
-    .scene.altC{ background:
-        radial-gradient(circle at 18% 25%, rgba(34,197,94,.18), transparent 52%),
-        radial-gradient(circle at 78% 70%, rgba(20,184,166,.16), transparent 56%),
-        linear-gradient(135deg, rgba(255,255,255,.0), rgba(34,197,94,.06));
-      border-color: rgba(34,197,94,.22);
-    }
-    .scene.altD{ background:
-        radial-gradient(circle at 20% 28%, rgba(236,72,153,.18), transparent 52%),
-        radial-gradient(circle at 78% 70%, rgba(14,165,233,.16), transparent 56%),
-        linear-gradient(135deg, rgba(255,255,255,.0), rgba(236,72,153,.06));
-      border-color: rgba(236,72,153,.22);
-    }
-
-    @keyframes floaty{
-      0%,100%{ transform: translate(-50%, -50%) translateY(0px); }
-      50%{ transform: translate(-50%, -50%) translateY(-6px); }
-    }
-    @keyframes wobble{
-      0%,100%{ transform: rotate(-6deg) translateY(0px); }
-      50%{ transform: rotate(6deg) translateY(-2px); }
-    }
-    @keyframes pop{
-      0%{ transform: translate(-50%, -50%) scale(1); }
-      45%{ transform: translate(-50%, -50%) scale(1.12); }
-      100%{ transform: translate(-50%, -50%) scale(1); }
-    }
-    @keyframes gentleShake{
-      0%,100%{ transform: translate(-50%, -50%) rotate(0deg); }
-      20%{ transform: translate(-50%, -50%) rotate(-3deg); }
-      40%{ transform: translate(-50%, -50%) rotate(3deg); }
-      60%{ transform: translate(-50%, -50%) rotate(-2deg); }
-      80%{ transform: translate(-50%, -50%) rotate(2deg); }
-    }
-    .scene.is-active .main{ animation: pop .55s ease-in-out 1; }
-    .scene.is-shaking .main{ animation: gentleShake .55s ease-in-out 1; }
-
-    /* Tool UI */
-    .toolMeta{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-top:10px;
-      flex-wrap:wrap;
-    }
-    .toolBtn{
-      border:0;
-      cursor:pointer;
-      font-family:inherit;
-      font-weight:900;
-      padding:10px 12px;
-      border-radius:14px;
-      color:#111426;
-      box-shadow: 0 10px 18px rgba(22, 20, 40, .12);
-      border:1px solid rgba(35, 26, 70, .16);
-      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .toolBtn:hover{ transform: translateY(-1px); filter:saturate(1.06); box-shadow: 0 14px 22px rgba(22,20,40,.14); }
-    .toolBtn:active{ transform: translateY(0px) scale(.99); }
-
-    .toolBtn.purple{ background: linear-gradient(135deg, rgba(139,92,246,.34), rgba(167,139,250,.18)); }
-    .toolBtn.rose{ background: linear-gradient(135deg, rgba(236,72,153,.30), rgba(244,114,182,.16)); }
-    .toolBtn.sky{ background: linear-gradient(135deg, rgba(14,165,233,.30), rgba(56,189,248,.14)); }
-    .toolBtn.amber{ background: linear-gradient(135deg, rgba(245,158,11,.30), rgba(253,230,138,.20)); }
-    .toolBtn.teal{ background: linear-gradient(135deg, rgba(20,184,166,.30), rgba(153,246,228,.18)); }
-    .toolBtn.green{ background: linear-gradient(135deg, rgba(34,197,94,.28), rgba(134,239,172,.18)); }
-
-    .miniInputRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .miniInputRow input, .miniInputRow textarea{
-      flex:1;
-      min-width:220px;
-      font-family:inherit;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(35,26,70,.18);
-      outline:none;
-      background: rgba(255,255,255,.92);
-      box-shadow: inset 0 1px 0 rgba(0,0,0,.04);
-      font-size:14px;
-    }
-    .miniInputRow textarea{ min-height:44px; resize:vertical; }
-    .resultBox{
-      margin-top:10px;
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px solid rgba(35,26,70,.14);
-      background: rgba(139,92,246,.07);
-      color:#2c2251;
-      font-weight:700;
-      line-height:1.3;
-    }
-    .resultBox small{
-      display:block;
-      margin-top:8px;
-      color:rgba(44,34,81,.78);
-      font-weight:700;
-    }
-
-    .timerRow{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .timerFace{
-      font-weight:900;
-      font-size:18px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(35,26,70,.16);
-      background: rgba(255,255,255,.92);
-      min-width:140px;
+    .mini-panel{
+      background:#F8FAFC;
+      border:2px dashed #CBD5E1;
+      border-radius:18px;
+      padding:14px;
+      margin-top:12px;
       text-align:center;
     }
+    .bubble{
+      display:none;
+      background:#F3E8FF;
+      border:2px solid #DDD6FE;
+      color:#4C1D95;
+      padding:14px 14px;
+      border-radius:18px;
+      font-weight:800;
+      margin-top:12px;
+    }
+
+    /* Tool-specific UI */
+    .timerFace{
+      font-size:34px;
+      font-weight:900;
+      margin-top:10px;
+      color:#0F172A;
+      min-height:44px;
+    }
     .bar{
-      flex:1;
-      min-width:200px;
+      width:100%;
       height:14px;
-      background: rgba(30, 25, 60, .10);
+      background: rgba(15,23,42,.10);
       border-radius:999px;
       overflow:hidden;
-      border:1px solid rgba(35,26,70,.12);
+      border:1px solid rgba(15,23,42,.10);
+      margin-top:10px;
     }
     .bar > div{
       height:100%;
       width:0%;
-      background: linear-gradient(90deg, rgba(139,92,246,.70), rgba(236,72,153,.60));
+      background: linear-gradient(90deg, rgba(139,92,246,.80), rgba(14,165,233,.60));
       transition: width .2s ease;
+    }
+    .rowBtns{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width:650px){ .rowBtns{ grid-template-columns:1fr; } }
+
+    .inputRow{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .inputRow input, .inputRow textarea{
+      width:100%;
+      font-family:inherit;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(15,23,42,.14);
+      outline:none;
+      background: rgba(255,255,255,.96);
+      box-shadow: inset 0 1px 0 rgba(0,0,0,.04);
+      font-size:15px;
+    }
+    .inputRow textarea{ min-height:46px; resize:vertical; }
+
+    .result{
+      margin-top:12px;
+      padding:14px 14px;
+      border-radius:18px;
+      border:2px solid rgba(109,40,217,.16);
+      background: rgba(139,92,246,.09);
+      color:#3B0764;
+      font-weight:900;
+      line-height:1.35;
+      display:none;
+      text-align:left;
+    }
+    .result small{
+      display:block;
+      margin-top:10px;
+      color: rgba(59,7,100,.72);
+      font-weight:800;
     }
 
     .checklist{
-      margin-top:10px;
       display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:12px;
+      text-align:left;
     }
     .checkItem{
       display:flex;
+      gap:12px;
       align-items:flex-start;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:16px;
-      border:1px solid rgba(35,26,70,.14);
-      background: rgba(20,184,166,.07);
+      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(13,148,136,.14);
+      background: rgba(45,212,191,.08);
     }
-    .checkItem input{ margin-top:3px; transform: scale(1.1); }
+    .checkItem input{ margin-top:3px; transform:scale(1.2); }
     .checkItem label{
-      font-weight:800;
-      color:#183b39;
-      line-height:1.25;
-      cursor:pointer;
-    }
-    .meter{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:16px;
-      border:1px solid rgba(35,26,70,.14);
-      background: rgba(20,184,166,.06);
       font-weight:900;
-      color:#14433f;
+      color:#134E4A;
+      cursor:pointer;
+      line-height:1.25;
+    }
+
+    .meter{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(13,148,136,.14);
+      background: rgba(45,212,191,.07);
+      font-weight:900;
+      color:#134E4A;
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:10px;
+      gap:12px;
       flex-wrap:wrap;
     }
 
-    .choiceGrid{
-      margin-top:10px;
+    .tinyGrid{
       display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap:10px;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
     }
-    @media (max-width: 720px){ .choiceGrid{ grid-template-columns: 1fr; } }
+    @media (max-width:650px){ .tinyGrid{ grid-template-columns:1fr; } }
 
-    .choiceBtn{
-      border:1px solid rgba(35,26,70,.16);
-      background: rgba(245,158,11,.10);
+    .tinyChoice{
+      border:2px solid rgba(217,119,6,.16);
+      background: rgba(251,191,36,.14);
       border-radius:18px;
-      padding:12px 12px;
+      padding:14px 12px;
       cursor:pointer;
       font-family:inherit;
       font-weight:900;
-      color:#3a2b10;
-      box-shadow: 0 10px 18px rgba(22,20,40,.10);
-      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-      user-select:none;
+      color:#7C2D12;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+      transition: transform .18s ease, filter .18s ease;
       text-align:left;
     }
-    .choiceBtn:hover{ transform: translateY(-1px); filter:saturate(1.06); box-shadow: 0 14px 22px rgba(22,20,40,.12); }
-    .choiceBtn:active{ transform: translateY(0px) scale(.99); }
+    .tinyChoice:hover{ transform: translateY(-2px); filter: brightness(1.04); }
 
-    .footerBack{
-      margin-top:16px;
-      display:flex;
-      justify-content:center;
+    .backLink{
+      color:#94A3B8;
+      text-decoration:none;
+      font-weight:800;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <a class="backlink" href="index.html">← Back to Menu</a>
-      <div class="titleBlock">
-        <h1>Resentful</h1>
-        <p class="subtitle">When your heart says, “That wasn’t fair… and I’m still holding it.”</p>
-      </div>
-    </div>
-
-    <div class="nav" role="navigation" aria-label="Emotion views">
-      <button id="tabHome" onclick="showHome()">HOME</button>
-      <button id="tabReact" onclick="showReactions()">BEHAVIORS</button>
-      <button id="tabCons" onclick="showConsequences()">CONSEQUENCES</button>
-      <button id="tabTools" onclick="showTools()">COMFORT TOOLS</button>
-    </div>
-
-    <!-- VIEW 1: HOME -->
-    <section id="viewHome" class="view">
-      <div class="grid">
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent)"></div>
-          <div class="cardInner">
-            <div class="scene altD" aria-hidden="true">
-              <div class="main">😒</div>
-              <div class="mini m1">💭</div>
-              <div class="mini m2">🧊</div>
-              <div class="mini m3">⛓️</div>
-            </div>
-            <h2>What’s happening?</h2>
-            <p>
-              Resentful is when you keep a “not fair!” moment in your mind, and it starts to feel like a heavy grudge you carry.
-              It can make you act cold or sharp even if you don’t want to.
-            </p>
-
-            <div class="pillRow" aria-label="Body signals and triggers">
-              <span class="pill"><small>Body:</small> tight jaw</span>
-              <span class="pill"><small>Body:</small> hot cheeks</span>
-              <span class="pill"><small>Body:</small> tummy twist</span>
-              <span class="pill"><small>Triggers:</small> someone gets picked</span>
-              <span class="pill"><small>Triggers:</small> feeling blamed</span>
-              <span class="pill"><small>Triggers:</small> rules feel unfair</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent2)"></div>
-          <div class="cardInner">
-            <div class="scene" aria-hidden="true">
-              <div class="main">🧰</div>
-              <div class="mini m1">🧠</div>
-              <div class="mini m2">🛡️</div>
-              <div class="mini m3">✨</div>
-            </div>
-            <h2>Tools</h2>
-            <p>
-              Resentment tries to glue the hurt to your heart. These tools help you calm your body, check the story in your mind,
-              and choose a smart next step—without needing to “get even.”
-            </p>
-            <div class="toolMeta">
-              <button class="toolBtn rose" onclick="showTools()">Go to Comfort Tools</button>
-              <button class="toolBtn purple" onclick="showReactions()">See Behaviors</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW 2: REACTIONS -->
-    <section id="viewReact" class="view">
-      <div class="grid">
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent)"></div>
-          <div class="cardInner">
-            <div class="scene altA" aria-hidden="true">
-              <div class="main">🧊</div>
-              <div class="mini m1">😒</div>
-              <div class="mini m2">🙅‍♀️</div>
-              <div class="mini m3">👫</div>
-            </div>
-            <h3>Cold shoulder</h3>
-            <p>You pull away, act distant, or ignore someone because your feelings feel “stuck.”</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent4)"></div>
-          <div class="cardInner">
-            <div class="scene altD" aria-hidden="true">
-              <div class="main">🧮</div>
-              <div class="mini m1">🧾</div>
-              <div class="mini m2">👀</div>
-              <div class="mini m3">😑</div>
-            </div>
-            <h3>Keeping score</h3>
-            <p>You replay what happened and count who did what, like your brain is holding a “points chart.”</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent2)"></div>
-          <div class="cardInner">
-            <div class="scene altB" aria-hidden="true">
-              <div class="main">🗯️</div>
-              <div class="mini m1">😤</div>
-              <div class="mini m2">🔥</div>
-              <div class="mini m3">👂</div>
-            </div>
-            <h3>Snappy words</h3>
-            <p>Your mouth gets sharp: you say something mean, or you “bite” with your tone.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent5)"></div>
-          <div class="cardInner">
-            <div class="scene altC" aria-hidden="true">
-              <div class="main">🎯</div>
-              <div class="mini m1">🤫</div>
-              <div class="mini m2">🙈</div>
-              <div class="mini m3">😬</div>
-            </div>
-            <h3>Trying to “get even”</h3>
-            <p>You want to do something small to “match” the hurt—like a sneaky payback plan.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW 3: CONSEQUENCES -->
-    <section id="viewCons" class="view">
-      <div class="grid">
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent4)"></div>
-          <div class="cardInner">
-            <div class="scene altA" aria-hidden="true">
-              <div class="main">🧍‍♀️↔️🧍‍♂️</div>
-              <div class="mini m1">📏</div>
-              <div class="mini m2">🧊</div>
-              <div class="mini m3">💔</div>
-            </div>
-            <h3>Friendships feel far</h3>
-            <p>Resentment builds distance, so it’s harder to laugh, trust, or play together.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent)"></div>
-          <div class="cardInner">
-            <div class="scene altD" aria-hidden="true">
-              <div class="main">🎒</div>
-              <div class="mini m1">🧱</div>
-              <div class="mini m2">⛓️</div>
-              <div class="mini m3">😮‍💨</div>
-            </div>
-            <h3>Your feelings get heavy</h3>
-            <p>Holding a grudge can feel like carrying a backpack full of rocks all day.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent2)"></div>
-          <div class="cardInner">
-            <div class="scene altB" aria-hidden="true">
-              <div class="main">🎉</div>
-              <div class="mini m1">🚫</div>
-              <div class="mini m2">😕</div>
-              <div class="mini m3">🫧</div>
-            </div>
-            <h3>You miss the fun</h3>
-            <p>Your brain keeps replaying the unfair moment, so “now” feels less joyful.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent6)"></div>
-          <div class="cardInner">
-            <div class="scene altC" aria-hidden="true">
-              <div class="main">🌀</div>
-              <div class="mini m1">💓</div>
-              <div class="mini m2">⚡</div>
-              <div class="mini m3">😣</div>
-            </div>
-            <h3>Body stays on “alert”</h3>
-            <p>When your mind keeps yelling “not fair,” your body can stay tense and restless.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW 4: COMFORT TOOLS -->
-    <section id="viewTools" class="view">
-      <div class="grid">
-
-        <!-- Tool 1: 60-second timer -->
-        <div class="card" id="toolTimerCard">
-          <div class="accentBar" style="background: var(--accent)"></div>
-          <div class="cardInner">
-            <div class="scene altD" id="sceneTimer" aria-hidden="true">
-              <div class="main">⏱️</div>
-              <div class="mini m1">🧊</div>
-              <div class="mini m2">🌬️</div>
-              <div class="mini m3">🫧</div>
-            </div>
-            <h3>Melt-the-Ice Timer (60 seconds)</h3>
-            <p>
-              When you slow down for one minute, your body can shift out of “fight mode,”
-              and your thinking brain can come back online.
-            </p>
-
-            <div class="timerRow">
-              <div class="timerFace" id="timerFace">01:00</div>
-              <div class="bar" aria-label="timer progress"><div id="timerBar"></div></div>
-            </div>
-
-            <div class="toolMeta">
-              <button class="toolBtn purple" id="timerStartBtn" onclick="startResentTimer()">Start</button>
-              <button class="toolBtn sky" onclick="pauseResentTimer()">Pause</button>
-              <button class="toolBtn rose" onclick="resetResentTimer()">Reset</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tool 2: Words tool -->
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent2)"></div>
-          <div class="cardInner">
-            <div class="scene altB" id="sceneNameIt" aria-hidden="true">
-              <div class="main">🏷️</div>
-              <div class="mini m1">💔</div>
-              <div class="mini m2">🗣️</div>
-              <div class="mini m3">🧠</div>
-            </div>
-            <h3>Name-It to Tame-It</h3>
-            <p>
-              Putting feelings into words helps your brain organize the storm.
-              It turns a loud “grudge feeling” into a clear message.
-            </p>
-
-            <div class="miniInputRow">
-              <input id="hurtInput" type="text" placeholder="What felt unfair? (example: “They blamed me.”)" />
-              <input id="needInput" type="text" placeholder="What did you need? (example: “To be heard.”)" />
-            </div>
-
-            <div class="toolMeta">
-              <button class="toolBtn rose" onclick="makeNameIt()">Make my sentence</button>
-              <button class="toolBtn teal" onclick="clearNameIt()">Clear</button>
-            </div>
-
-            <div class="resultBox" id="nameItResult" style="display:none;"></div>
-          </div>
-        </div>
-
-        <!-- Tool 3: Check the facts -->
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent5)"></div>
-          <div class="cardInner">
-            <div class="scene altA" id="sceneFacts" aria-hidden="true">
-              <div class="main">🔎</div>
-              <div class="mini m1">⚖️</div>
-              <div class="mini m2">🧩</div>
-              <div class="mini m3">✅</div>
-            </div>
-            <h3>Detective Mode: Check the Facts</h3>
-            <p>
-              Resentment can tell a scary story. Checking facts helps you find the most fair, true explanation—so you can choose a smart next step.
-            </p>
-
-            <div class="choiceGrid" role="group" aria-label="Detective choices">
-              <button class="choiceBtn" onclick="detectivePick('A')">A) I know exactly what they meant.</button>
-              <button class="choiceBtn" onclick="detectivePick('B')">B) I’m not sure—there might be another reason.</button>
-              <button class="choiceBtn" onclick="detectivePick('C')">C) I can ask one calm question to find out.</button>
-            </div>
-
-            <div class="resultBox" id="detectiveResult" style="display:none;"></div>
-          </div>
-        </div>
-
-        <!-- Tool 4: Repair request script generator -->
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent4)"></div>
-          <div class="cardInner">
-            <div class="scene altC" id="sceneRepair" aria-hidden="true">
-              <div class="main">🧑‍🤝‍🧑</div>
-              <div class="mini m1">💬</div>
-              <div class="mini m2">🫶</div>
-              <div class="mini m3">📨</div>
-            </div>
-            <h3>Repair Request (Practice Words)</h3>
-            <p>
-              A calm script helps you speak up without attacking. It’s a “bridge builder” for your friendships.
-            </p>
-
-            <div class="miniInputRow">
-              <input id="whoInput" type="text" placeholder="Who is it with? (example: “Sam”)" />
-              <textarea id="whatInput" placeholder="What happened? (example: “You said it was my fault.”)"></textarea>
-            </div>
-
-            <div class="toolMeta">
-              <button class="toolBtn sky" onclick="makeRepairScript()">Build my script</button>
-              <button class="toolBtn amber" onclick="clearRepairScript()">Clear</button>
-            </div>
-
-            <div class="resultBox" id="repairResult" style="display:none;"></div>
-          </div>
-        </div>
-
-        <!-- Tool 5: Kindness spark checklist -->
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent6)"></div>
-          <div class="cardInner">
-            <div class="scene altC" id="sceneSpark" aria-hidden="true">
-              <div class="main">✨</div>
-              <div class="mini m1">🤝</div>
-              <div class="mini m2">🌱</div>
-              <div class="mini m3">🎁</div>
-            </div>
-            <h3>Tiny Kindness Spark</h3>
-            <p>
-              Small kind actions can loosen a grudge. This isn’t “pretending it’s okay”—it’s helping your heart get unstuck.
-            </p>
-
-            <div class="checklist" aria-label="Kindness checklist">
-              <div class="checkItem">
-                <input id="k1" type="checkbox" onchange="updateSpark()" />
-                <label for="k1">Do one friendly thing (a wave, a smile, a hello).</label>
-              </div>
-              <div class="checkItem">
-                <input id="k2" type="checkbox" onchange="updateSpark()" />
-                <label for="k2">Say one true, kind sentence (even a small one).</label>
-              </div>
-              <div class="checkItem">
-                <input id="k3" type="checkbox" onchange="updateSpark()" />
-                <label for="k3">Give yourself credit: “I’m choosing the strong path.”</label>
-              </div>
-            </div>
-
-            <div class="meter" id="sparkMeter">
-              <span>Spark Meter</span>
-              <span id="sparkValue">0 / 3</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tool 6: Body tool (active animation state) -->
-        <div class="card">
-          <div class="accentBar" style="background: var(--accent3)"></div>
-          <div class="cardInner">
-            <div class="scene altB" id="scenePress" aria-hidden="true">
-              <div class="main">✋</div>
-              <div class="mini m1">💪</div>
-              <div class="mini m2">🧠</div>
-              <div class="mini m3">🌡️</div>
-            </div>
-            <h3>Hand-Press Reset</h3>
-            <p>
-              Press-and-release helps your muscles soften. When your body relaxes, your thoughts can become less “spiky.”
-            </p>
-
-            <div class="toolMeta">
-              <button class="toolBtn green" onclick="doHandPress()">Press & Release</button>
-              <button class="toolBtn teal" onclick="resetHandPress()">Reset Count</button>
-            </div>
-
-            <div class="resultBox" id="pressResult">
-              Count: <span id="pressCount">0</span> / 10
-              <small>Tip: Press your palms together for 3 seconds… then relax for 3 seconds.</small>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="footerBack">
-        <a class="backlink" href="index.html">← Back to Menu</a>
-      </div>
-    </section>
-  </div>
+  <div id="app-container"></div>
 
   <script>
-    // ===== Robust helpers =====
-    const _intervals = [];
-    const _timeouts = [];
+    const container = document.getElementById('app-container');
 
+    // ===== Robust interval/timeout management =====
+    const _intervals = [];
+    const _timeouts  = [];
     function addInterval(id){ _intervals.push(id); return id; }
     function addTimeout(id){ _timeouts.push(id); return id; }
 
@@ -845,67 +397,320 @@
         const id = _timeouts.pop();
         try{ clearTimeout(id); }catch(e){}
       }
+      // also reset tool-running flags safely
+      timerRunning = false;
+      detectiveHintShown = false;
     }
 
-    function setActiveTab(tabId){
-      const tabs = ["tabHome","tabReact","tabCons","tabTools"];
-      tabs.forEach(id=>{
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.classList.toggle("active", id === tabId);
-      });
+    function scene(main, a, b, c, sceneClass, altClass, id){
+      return `
+        <div class="emojiScene ${altClass || ""} ${sceneClass || ""}" ${id ? `id="${id}"` : ""} aria-hidden="true">
+          <div class="emoMain">${main}</div>
+          <div class="emoMini m1">${a}</div>
+          <div class="emoMini m2">${b}</div>
+          <div class="emoMini m3">${c}</div>
+        </div>
+      `;
     }
 
-    function showOnly(viewId, tabId){
+    function pingScene(id, kind){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.remove('sceneActive','sceneShake');
+      void el.offsetWidth;
+      if(kind === 'shake') el.classList.add('sceneShake');
+      else el.classList.add('sceneActive');
+      addTimeout(setTimeout(()=>{ el.classList.remove('sceneActive','sceneShake'); }, 650));
+    }
+
+    // ===== Views =====
+    function showHome(){
       clearAllIntervals();
-      const views = ["viewHome","viewReact","viewCons","viewTools"];
-      views.forEach(id=>{
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.classList.toggle("active", id === viewId);
-      });
-      setActiveTab(tabId);
-      window.scrollTo({top:0, behavior:"smooth"});
+      container.innerHTML = `
+        <h1 class="title">Understanding Resentful</h1>
+        <p class="subtitle">Resentful is a “not fair!” feeling that sticks like glue. Let’s unstick it—gently.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#8B5CF6;">
+            ${scene("😒","💭","🧊","⛓️","floaty","", "")}
+            <div class="card-title">The Sticky Grudge</div>
+            <p class="card-desc">“I’m still mad about what happened… and my heart won’t let it go.”</p>
+
+            <div class="pillRow">
+              <span class="pill">Body: tight jaw</span>
+              <span class="pill">Body: hot cheeks</span>
+              <span class="pill">Body: tummy twist</span>
+              <span class="pill alt">Trigger: unfair rules</span>
+              <span class="pill alt">Trigger: being blamed</span>
+              <span class="pill alt">Trigger: someone else picked</span>
+            </div>
+
+            <button class="btn btn-violet" onclick="showReactions()">See Behaviors</button>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#4338CA;">
+            ${scene("🧰","🧠","🛡️","✨","floaty","altA","")}
+            <div class="card-title">Comfort Tools</div>
+            <p class="card-desc">Simple, kid-friendly tools to calm your body and choose smart words.</p>
+            <button class="btn btn-indigo" onclick="showSolutions()">Show Comfort Tools</button>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" class="backLink">← Back to Menu</a>
+        </div>
+      `;
     }
 
-    // ===== View switching =====
-    function showHome(){ showOnly("viewHome","tabHome"); }
-    function showReactions(){ showOnly("viewReact","tabReact"); }
-    function showConsequences(){ showOnly("viewCons","tabCons"); }
-    function showTools(){ showOnly("viewTools","tabTools"); resetResentTimer(true); }
+    function showReactions(){
+      clearAllIntervals();
+      container.innerHTML = `
+        <button class="btn-back" onclick="showHome()">← Back</button>
+        <h1 class="title violet-title">How Do I Act When I’m Resentful?</h1>
+        <p class="subtitle" style="color:#6D28D9; font-weight:800;">These are clues: your feelings need care, not payback.</p>
 
-    // ===== Tool 1: 60-second timer =====
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${scene("🧊","😒","🙅‍♀️","👫","wobble","altA","")}
+            <div class="card-title">Cold Shoulder</div>
+            <p class="card-desc">I pull away, ignore, or act distant—even if I still care.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${scene("🧮","🧾","👀","😑","floaty","altB","")}
+            <div class="card-title">Keeping Score</div>
+            <p class="card-desc">My brain counts who did what—like a secret points chart.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${scene("🗯️","😤","🔥","👂","boing","altD","")}
+            <div class="card-title">Snappy Words</div>
+            <p class="card-desc">My voice gets sharp. I might “bite” with my tone.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${scene("🎯","🤫","🙈","😬","wobble","altC","")}
+            <div class="card-title">Tiny Payback Plan</div>
+            <p class="card-desc">I want to “get even” with a little sneaky move.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#0EA5E9;">
+          <p style="font-weight:900; font-size:20px; color:#075985; margin:0;">What happens if resentment stays in charge?</p>
+          <button class="btn btn-sky" style="width:auto; margin-top:14px;" onclick="showConsequences()">See Consequences ➔</button>
+        </div>
+      `;
+    }
+
+    function showConsequences(){
+      clearAllIntervals();
+      container.innerHTML = `
+        <button class="btn-back" onclick="showReactions()">← Back</button>
+        <h1 class="title violet-title">When Resentment Stays Too Long…</h1>
+        <p class="subtitle">It can make your heart heavy and your friendships wobbly.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${scene("🧍‍♀️↔️🧍‍♂️","📏","🧊","💔","floaty","altA","")}
+            <div class="card-title">Friendships Feel Far</div>
+            <p class="card-desc">It’s harder to trust, laugh, or play together.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${scene("🎒","🧱","⛓️","😮‍💨","wobble","altB","")}
+            <div class="card-title">Heavy Backpack Feeling</div>
+            <p class="card-desc">Holding a grudge can feel like carrying rocks all day.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${scene("🎉","🚫","😕","🫧","boing","altD","")}
+            <div class="card-title">You Miss the Fun</div>
+            <p class="card-desc">Your brain replays “not fair,” so now feels less bright.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${scene("🌀","💓","⚡","😣","floaty","altC","")}
+            <div class="card-title">Body Stays Tight</div>
+            <p class="card-desc">Tension sticks around—jaw, shoulders, belly.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#16A34A;">
+          <p style="font-weight:900; font-size:20px; color:#166534; margin:0;">Good news: tools can unstick your heart.</p>
+          <button class="btn btn-green" style="width:auto; margin-top:14px;" onclick="showSolutions()">Go to Comfort Tools ➔</button>
+        </div>
+      `;
+    }
+
+    function showSolutions(){
+      clearAllIntervals();
+      container.innerHTML = `
+        <button class="btn-back" onclick="showHome()">← Back to Start</button>
+        <h1 class="title violet-title">Comfort Tools</h1>
+        <p class="subtitle">Each tool is simple and kid-friendly—so your brain can switch from “fight” to “wise.”</p>
+
+        <div style="display:flex; flex-direction:column; gap:26px; margin-top:18px;">
+
+          <!-- TOOL 1: 60-second timer -->
+          <div class="white-card" style="border-bottom-color:#6D28D9;">
+            ${scene("⏱️","🧊","🌬️","🫧","floaty","", "sceneTimer")}
+            <div class="card-title" style="color:#6D28D9;">Melt-the-Ice Minute (60 seconds)</div>
+            <p class="card-desc">One calm minute helps your body cool down so your thinking brain can help again.</p>
+
+            <div class="mini-panel">
+              <div class="pill" id="timerLabel">Timer</div>
+              <div class="timerFace" id="timerFace">01:00</div>
+              <div style="color:#64748B; font-weight:800;" id="timerHint">Slow breath… soft shoulders…</div>
+              <div class="bar" aria-label="timer progress"><div id="timerBar"></div></div>
+            </div>
+
+            <div class="rowBtns">
+              <button class="btn btn-violet" style="margin-top:0;" onclick="startTimer()">Start</button>
+              <button class="btn btn-sky" style="margin-top:0;" onclick="pauseTimer()">Pause</button>
+              <button class="btn btn-rose" style="margin-top:0;" onclick="resetTimer()">Reset</button>
+            </div>
+          </div>
+
+          <!-- TOOL 2: Words tool (builder) -->
+          <div class="white-card" style="border-bottom-color:#E11D48;">
+            ${scene("🗣️","❤️","🧠","🧩","boing","altD", "sceneWords")}
+            <div class="card-title" style="color:#E11D48;">Kind Words Builder</div>
+            <p class="card-desc">Putting feelings into words helps your brain organize the storm and choose calm steps.</p>
+
+            <div class="inputRow">
+              <input id="unfairInput" type="text" placeholder="What felt unfair? (example: “They blamed me.”)" />
+              <input id="needInput" type="text" placeholder="What did you need? (example: “To be heard.”)" />
+            </div>
+
+            <button class="btn btn-rose" onclick="buildWords()">Build my sentence</button>
+            <div class="result" id="wordsResult"></div>
+          </div>
+
+          <!-- TOOL 3: Thought Detective -->
+          <div class="white-card" style="border-bottom-color:#D97706;">
+            ${scene("🔎","⚖️","❓","✅","floaty","altB", "sceneDetective")}
+            <div class="card-title" style="color:#D97706;">Detective Mode: Two Other Reasons</div>
+            <p class="card-desc">Resentment tells one loud story. Detective mode finds other possible reasons—so you can choose fair actions.</p>
+
+            <div class="tinyGrid" role="group" aria-label="Detective choices">
+              <button class="tinyChoice" onclick="pickDetective(1)">Maybe it was a mistake.</button>
+              <button class="tinyChoice" onclick="pickDetective(2)">Maybe they didn’t know.</button>
+              <button class="tinyChoice" onclick="pickDetective(3)">Maybe they were having a hard day.</button>
+            </div>
+
+            <div class="mini-panel" style="margin-top:12px;">
+              <div class="pill" id="detPill">Clue</div>
+              <div style="font-weight:900; font-size:18px; margin-top:10px;" id="detLine">Pick a clue to practice.</div>
+              <div style="color:#64748B; margin-top:6px; font-weight:800;" id="detHelp">This helps your brain calm down before you act.</div>
+            </div>
+
+            <button class="btn btn-amber" onclick="makeDetectiveQuestion()">Make a calm question</button>
+            <div class="result" id="detResult"></div>
+          </div>
+
+          <!-- TOOL 4: Bridge Builder (repair script) -->
+          <div class="white-card" style="border-bottom-color:#0EA5E9;">
+            ${scene("🧑‍🤝‍🧑","💬","🫶","📨","floaty","altA", "sceneBridge")}
+            <div class="card-title" style="color:#0EA5E9;">Bridge Builder Script</div>
+            <p class="card-desc">A short script helps you speak up without attacking. It builds a bridge, not a battle.</p>
+
+            <div class="inputRow">
+              <input id="whoInput" type="text" placeholder="Who is it with? (example: “Sam”)" />
+              <textarea id="whatInput" placeholder="What happened? (example: “You said it was my fault.”)"></textarea>
+            </div>
+
+            <button class="btn btn-sky" onclick="buildBridge()">Build my script</button>
+            <div class="result" id="bridgeResult"></div>
+          </div>
+
+          <!-- TOOL 5: Unstick Checklist -->
+          <div class="white-card" style="border-bottom-color:#0D9488;">
+            ${scene("🧼","👐","🌬️","✨","floaty","altC", "sceneUnstick")}
+            <div class="card-title" style="color:#0D9488;">Unstick My Heart Checklist</div>
+            <p class="card-desc">Tiny body moves can loosen the grudge feeling—so your words can be kinder.</p>
+
+            <div class="checklist" aria-label="Unstick checklist">
+              <div class="checkItem">
+                <input id="u1" type="checkbox" onchange="updateUnstick()" />
+                <label for="u1">Unclench your jaw (soft teeth, soft tongue).</label>
+              </div>
+              <div class="checkItem">
+                <input id="u2" type="checkbox" onchange="updateUnstick()" />
+                <label for="u2">Open your hands (no fists for 5 seconds).</label>
+              </div>
+              <div class="checkItem">
+                <input id="u3" type="checkbox" onchange="updateUnstick()" />
+                <label for="u3">Pick one “tiny fair step” instead of payback.</label>
+              </div>
+            </div>
+
+            <div class="meter" id="unstickMeter">
+              <span>Unstick Meter</span>
+              <span id="unstickValue">0 / 3</span>
+            </div>
+          </div>
+
+          <!-- TOOL 6: Body tool (active animation) -->
+          <div class="white-card" style="border-bottom-color:#16A34A;">
+            ${scene("✋","💪","🧠","🌡️","wobble","altB", "scenePress")}
+            <div class="card-title" style="color:#16A34A;">Palm-Press Reset</div>
+            <p class="card-desc">Press-and-release helps your muscles soften. When your body relaxes, your thoughts get less “spiky.”</p>
+
+            <div class="mini-panel">
+              <div class="pill" id="pressPill">Count</div>
+              <div style="font-weight:900; font-size:22px; margin-top:10px;" id="pressCount">0 / 10</div>
+              <div style="color:#64748B; margin-top:6px; font-weight:800;" id="pressHelp">Press palms 3 seconds… relax 3 seconds.</div>
+            </div>
+
+            <div class="rowBtns">
+              <button class="btn btn-green" style="margin-top:0;" onclick="doPress()">Press & Release</button>
+              <button class="btn btn-teal" style="margin-top:0;" onclick="resetPress()">Reset</button>
+              <button class="btn btn-indigo" style="margin-top:0;" onclick="finishPress()">Finish with a calm line</button>
+            </div>
+
+            <div class="result" id="pressResult"></div>
+          </div>
+
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" class="backLink">← Back to Menu</a>
+        </div>
+      `;
+
+      resetToolStates();
+      renderTimer();
+    }
+
+    // ===== Tool 1: Timer =====
     let timerRemaining = 60;
     let timerRunning = false;
 
     function fmtTime(s){
-      const mm = String(Math.floor(s/60)).padStart(2,"0");
-      const ss = String(s%60).padStart(2,"0");
+      const mm = String(Math.floor(s/60)).padStart(2,'0');
+      const ss = String(s%60).padStart(2,'0');
       return `${mm}:${ss}`;
     }
 
     function renderTimer(){
-      const face = document.getElementById("timerFace");
-      const bar = document.getElementById("timerBar");
+      const face = document.getElementById('timerFace');
+      const bar  = document.getElementById('timerBar');
+      const hint = document.getElementById('timerHint');
       if(face) face.textContent = fmtTime(timerRemaining);
       if(bar){
         const pct = ((60 - timerRemaining) / 60) * 100;
         bar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
       }
+      if(hint){
+        if(timerRemaining > 40) hint.textContent = "Breathe slow…";
+        else if(timerRemaining > 20) hint.textContent = "Shoulders down…";
+        else if(timerRemaining > 0) hint.textContent = "Soft face… soft hands…";
+        else hint.textContent = "Nice! Your brain is back.";
+      }
     }
 
-    function animateScene(el, mode){
-      if(!el) return;
-      el.classList.remove("is-active","is-shaking");
-      void el.offsetWidth; // reflow to restart animation
-      el.classList.add(mode);
-      addTimeout(setTimeout(()=>{ el.classList.remove(mode); }, 650));
-    }
-
-    function startResentTimer(){
-      const scene = document.getElementById("sceneTimer");
-      animateScene(scene, "is-active");
-
+    function startTimer(){
+      pingScene('sceneTimer','pop');
       if(timerRunning) return;
       timerRunning = true;
 
@@ -913,11 +718,9 @@
         if(!timerRunning) return;
         timerRemaining = Math.max(0, timerRemaining - 1);
         renderTimer();
-
         if(timerRemaining === 0){
           timerRunning = false;
-          const s = document.getElementById("sceneTimer");
-          animateScene(s, "is-shaking");
+          pingScene('sceneTimer','shake');
           addTimeout(setTimeout(()=>{
             timerRemaining = 60;
             renderTimer();
@@ -926,159 +729,162 @@
       }, 1000));
     }
 
-    function pauseResentTimer(){
-      const scene = document.getElementById("sceneTimer");
-      animateScene(scene, "is-shaking");
+    function pauseTimer(){
+      pingScene('sceneTimer','shake');
       timerRunning = false;
     }
 
-    function resetResentTimer(silent){
+    function resetTimer(){
       timerRunning = false;
       timerRemaining = 60;
       renderTimer();
-      if(!silent){
-        const scene = document.getElementById("sceneTimer");
-        animateScene(scene, "is-active");
-      }
+      pingScene('sceneTimer','pop');
     }
 
-    // ===== Tool 2: Name-It to Tame-It =====
-    function makeNameIt(){
-      const hurt = (document.getElementById("hurtInput") || {}).value || "";
-      const need = (document.getElementById("needInput") || {}).value || "";
-      const out = document.getElementById("nameItResult");
-      const scene = document.getElementById("sceneNameIt");
-      animateScene(scene, "is-active");
+    // ===== Tool 2: Words builder =====
+    function buildWords(){
+      pingScene('sceneWords','pop');
+      const unfair = ((document.getElementById('unfairInput')||{}).value||"").trim();
+      const need   = ((document.getElementById('needInput')||{}).value||"").trim();
+      const out    = document.getElementById('wordsResult');
+      if(!out) return;
 
-      const cleanHurt = hurt.trim();
-      const cleanNeed = need.trim();
+      const a = unfair ? `when ${unfair}` : "when ____";
+      const b = need ? `${need}` : "____";
 
-      let msg = "Try this:";
-      let line1 = cleanHurt ? `“I felt hurt when ${cleanHurt}.”` : `“I felt hurt when ____.”`;
-      let line2 = cleanNeed ? `“What I needed was: ${cleanNeed}.”` : `“What I needed was: ____.”`;
-      let line3 = `“I can choose one calm next step now.”`;
-
-      if(out){
-        out.style.display = "block";
-        out.innerHTML = `<strong>${msg}</strong><br>${line1}<br>${line2}<br>${line3}
-          <small>Why it helps: Naming feelings can shrink the storm so your thinking brain can help.</small>`;
-      }
+      out.style.display = 'block';
+      out.innerHTML =
+        `<div>Try this:</div>
+         <div style="margin-top:8px;">“I felt upset ${a}.”</div>
+         <div style="margin-top:6px;">“What I needed was: ${b}.”</div>
+         <div style="margin-top:6px;">“Can we try a fair fix?”</div>
+         <small>Why it helps: Clear words calm the brain and protect friendships.</small>`;
     }
 
-    function clearNameIt(){
-      const h = document.getElementById("hurtInput");
-      const n = document.getElementById("needInput");
-      const out = document.getElementById("nameItResult");
-      const scene = document.getElementById("sceneNameIt");
-      animateScene(scene, "is-shaking");
-      if(h) h.value = "";
-      if(n) n.value = "";
-      if(out){ out.style.display="none"; out.textContent=""; }
-    }
+    // ===== Tool 3: Detective =====
+    let detectiveHintShown = false;
+    let detectiveClue = 0;
 
-    // ===== Tool 3: Detective Mode =====
-    function detectivePick(choice){
-      const out = document.getElementById("detectiveResult");
-      const scene = document.getElementById("sceneFacts");
-      animateScene(scene, "is-active");
+    function pickDetective(n){
+      detectiveClue = n;
+      pingScene('sceneDetective','pop');
 
-      let msg = "";
-      if(choice === "A"){
-        msg = "Detective hint: Minds can guess wrong. Try one fact-check question: “What did you mean by that?”";
-      }else if(choice === "B"){
-        msg = "Smart! If you’re not sure, your brain gets a chance to calm down. Look for 1 other possible reason.";
+      const pill = document.getElementById('detPill');
+      const line = document.getElementById('detLine');
+      const help = document.getElementById('detHelp');
+
+      if(!pill || !line || !help) return;
+
+      if(n === 1){
+        pill.textContent = "Clue: Mistake";
+        line.textContent = "Mistakes happen—even to good people.";
+        help.textContent = "Try a calm question before you decide the story.";
+      }else if(n === 2){
+        pill.textContent = "Clue: Didn’t know";
+        line.textContent = "They might not know it hurt you.";
+        help.textContent = "Your words can teach them—kindly.";
       }else{
-        msg = "Great plan. Ask one calm question and listen: “Can you help me understand what happened?”";
-      }
-
-      if(out){
-        out.style.display = "block";
-        out.innerHTML = `<strong>${msg}</strong>
-          <small>Why it helps: Checking facts stops the “unfair story” from growing bigger than it really is.</small>`;
+        pill.textContent = "Clue: Hard day";
+        line.textContent = "A hard day can make people act weird.";
+        help.textContent = "You can be fair AND protect yourself.";
       }
     }
 
-    // ===== Tool 4: Repair Script =====
-    function makeRepairScript(){
-      const who = ((document.getElementById("whoInput") || {}).value || "").trim();
-      const what = ((document.getElementById("whatInput") || {}).value || "").trim();
-      const out = document.getElementById("repairResult");
-      const scene = document.getElementById("sceneRepair");
-      animateScene(scene, "is-active");
+    function makeDetectiveQuestion(){
+      pingScene('sceneDetective','shake');
+      const out = document.getElementById('detResult');
+      if(!out) return;
 
-      const name = who || "____";
+      let q = "“Can you help me understand what happened?”";
+      if(detectiveClue === 1) q = "“Was that a mistake, or did you mean it?”";
+      if(detectiveClue === 2) q = "“Did you know that hurt my feelings?”";
+      if(detectiveClue === 3) q = "“Are you having a hard day, or was it about me?”";
+
+      out.style.display = 'block';
+      out.innerHTML =
+        `<div>Calm question:</div>
+         <div style="margin-top:8px;">${q}</div>
+         <small>Why it helps: Questions turn guessing into facts.</small>`;
+
+      detectiveHintShown = true;
+    }
+
+    // ===== Tool 4: Bridge script =====
+    function buildBridge(){
+      pingScene('sceneBridge','pop');
+      const who  = ((document.getElementById('whoInput')||{}).value||"").trim() || "____";
+      const what = ((document.getElementById('whatInput')||{}).value||"").trim();
+      const out  = document.getElementById('bridgeResult');
+      if(!out) return;
+
       const eventLine = what ? `When ${what},` : "When ____,";
 
-      const script =
-        `“Hey ${name}. ${eventLine} I felt upset. ` +
-        `I want to fix this. Can we talk for 2 minutes and find a fair way?”`;
-
-      if(out){
-        out.style.display = "block";
-        out.innerHTML = `<strong>Practice script:</strong><br>${script}
-          <small>Why it helps: A short, calm request builds a bridge instead of a battle.</small>`;
-      }
+      out.style.display = 'block';
+      out.innerHTML =
+        `<div>Practice script:</div>
+         <div style="margin-top:8px;">“Hey ${who}. ${eventLine} I felt upset. I want a fair fix. Can we talk for 2 minutes?”</div>
+         <small>Why it helps: A bridge script keeps your voice calm and clear.</small>`;
     }
 
-    function clearRepairScript(){
-      const w = document.getElementById("whoInput");
-      const t = document.getElementById("whatInput");
-      const out = document.getElementById("repairResult");
-      const scene = document.getElementById("sceneRepair");
-      animateScene(scene, "is-shaking");
-      if(w) w.value = "";
-      if(t) t.value = "";
-      if(out){ out.style.display="none"; out.textContent=""; }
-    }
+    // ===== Tool 5: Unstick checklist =====
+    function updateUnstick(){
+      const a = (document.getElementById('u1')||{}).checked ? 1 : 0;
+      const b = (document.getElementById('u2')||{}).checked ? 1 : 0;
+      const c = (document.getElementById('u3')||{}).checked ? 1 : 0;
+      const total = a + b + c;
 
-    // ===== Tool 5: Kindness Spark =====
-    function updateSpark(){
-      const c1 = (document.getElementById("k1") || {}).checked ? 1 : 0;
-      const c2 = (document.getElementById("k2") || {}).checked ? 1 : 0;
-      const c3 = (document.getElementById("k3") || {}).checked ? 1 : 0;
-      const total = c1 + c2 + c3;
-
-      const v = document.getElementById("sparkValue");
+      const v = document.getElementById('unstickValue');
       if(v) v.textContent = `${total} / 3`;
 
-      const scene = document.getElementById("sceneSpark");
-      if(total > 0) animateScene(scene, "is-active");
+      if(total > 0) pingScene('sceneUnstick','pop');
+      if(total === 3) pingScene('sceneUnstick','shake');
     }
 
-    // ===== Tool 6: Hand-Press Reset =====
-    let pressCount = 0;
-    function doHandPress(){
-      pressCount = Math.min(10, pressCount + 1);
-      const el = document.getElementById("pressCount");
-      if(el) el.textContent = String(pressCount);
+    // ===== Tool 6: Press tool =====
+    let press = 0;
+    function doPress(){
+      press = Math.min(10, press + 1);
+      pingScene('scenePress','shake');
 
-      const scene = document.getElementById("scenePress");
-      animateScene(scene, "is-shaking");
-
-      const box = document.getElementById("pressResult");
-      if(box){
-        if(pressCount >= 10){
-          box.innerHTML = `Count: <span id="pressCount">10</span> / 10
-            <small>Nice! Your body is softer now. Try one calm sentence: “I can handle this with smart words.”</small>`;
-        }else{
-          box.innerHTML = `Count: <span id="pressCount">${pressCount}</span> / 10
-            <small>Tip: Press your palms together for 3 seconds… then relax for 3 seconds.</small>`;
-        }
+      const count = document.getElementById('pressCount');
+      const help  = document.getElementById('pressHelp');
+      if(count) count.textContent = `${press} / 10`;
+      if(help){
+        help.textContent = (press >= 10)
+          ? "Nice! Your body is softer now."
+          : "Press 3…2…1… relax 3…2…1…";
       }
     }
 
-    function resetHandPress(){
-      pressCount = 0;
-      const el = document.getElementById("pressCount");
-      if(el) el.textContent = "0";
-      const scene = document.getElementById("scenePress");
-      animateScene(scene, "is-active");
+    function resetPress(){
+      press = 0;
+      pingScene('scenePress','pop');
+      const count = document.getElementById('pressCount');
+      const help  = document.getElementById('pressHelp');
+      const out   = document.getElementById('pressResult');
+      if(count) count.textContent = "0 / 10";
+      if(help) help.textContent = "Press palms 3 seconds… relax 3 seconds.";
+      if(out){ out.style.display = 'none'; out.textContent = ""; }
+    }
 
-      const box = document.getElementById("pressResult");
-      if(box){
-        box.innerHTML = `Count: <span id="pressCount">0</span> / 10
-          <small>Tip: Press your palms together for 3 seconds… then relax for 3 seconds.</small>`;
-      }
+    function finishPress(){
+      pingScene('scenePress','pop');
+      const out = document.getElementById('pressResult');
+      if(!out) return;
+
+      out.style.display = 'block';
+      out.innerHTML =
+        `<div>Calm finish line:</div>
+         <div style="margin-top:8px;">“I can be fair and kind. I can choose smart words.”</div>
+         <small>Tip: Say it once in a quiet voice. Then choose one tiny next step.</small>`;
+    }
+
+    function resetToolStates(){
+      timerRemaining = 60;
+      timerRunning = false;
+      detectiveClue = 0;
+      detectiveHintShown = false;
+      press = 0;
     }
 
     // Never blank page on load:
