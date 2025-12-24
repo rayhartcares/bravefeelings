@@ -109,7 +109,7 @@
     }
     @media (max-width: 650px) { .grid-2 { grid-template-columns: 1fr; } }
 
-    /* Existing emoji stickers (keep for earlier tools) */
+    /* Existing emoji stickers */
     .sticker-img {
       width: clamp(118px, 32vw, 160px);
       height: clamp(118px, 32vw, 160px);
@@ -169,28 +169,27 @@
       min-height: 44px;
     }
 
-    /* Bright Spot beam toggle (kept) */
+    /* Bright Spot beam toggle */
     .beam {
       position: absolute;
       left: 50%;
       top: 110px;
       transform: translateX(-50%);
-      width: 300px;
-      height: 180px;
-      background: radial-gradient(circle at top, rgba(253,224,71,0.65), rgba(253,224,71,0.0) 70%);
+      width: 340px;
+      height: 210px;
+      background: radial-gradient(circle at top, rgba(253,224,71,0.75), rgba(253,224,71,0.0) 70%);
       border-radius: 50%;
       filter: blur(2px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity .25s ease;
+      transition: opacity .22s ease;
     }
     .beam.on { opacity: 1; }
 
-    /* ---------- NEW 3D ILLUSTRATIONS (ONLY LAST 3 TOOLS) ---------- */
-
+    /* ---------- 3D ILLUSTRATIONS ---------- */
     .illus3d {
-      width: 190px;
-      height: 160px;
+      width: 210px;
+      height: 170px;
       margin: 0 auto 6px auto;
       position: relative;
       display: flex;
@@ -199,7 +198,7 @@
       filter: drop-shadow(0 18px 18px rgba(0,0,0,0.16));
     }
 
-    /* 1) WARM SQUEEZE: squishy pillow hugging itself */
+    /* WARM SQUEEZE (kept as-is, already good) */
     @keyframes pillow-squish {
       0%,100% { transform: scale(1); }
       40% { transform: scale(1.06, 0.92); }
@@ -277,23 +276,37 @@
       opacity: .9;
     }
 
-    /* 2) BRIGHT SPOT: spotlight shining on a star */
-    @keyframes spot-sway {
-      0%,100% { transform: rotate(-6deg); }
-      50% { transform: rotate(6deg); }
+    /* ==============================
+       BRIGHT SPOT (UPGRADED: SUPER BRIGHT + GLITTER)
+       ============================== */
+
+    @keyframes spot-sway { 0%,100%{ transform: rotate(-7deg); } 50%{ transform: rotate(7deg); } }
+    @keyframes mega-glow {
+      0%,100% { filter: drop-shadow(0 0 0 rgba(253,224,71,0)); }
+      50% { filter: drop-shadow(0 0 34px rgba(253,224,71,0.95)); }
     }
-    @keyframes star-twinkle {
-      0%,100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(253,224,71,0)); }
-      50% { transform: scale(1.14); filter: drop-shadow(0 0 22px rgba(253,224,71,0.85)); }
+    @keyframes star-pulse {
+      0%,100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.22); }
     }
-    .spotlight {
-      width: 160px;
-      height: 150px;
+    @keyframes sparkle-twinkle {
+      0%,100% { transform: scale(0.6) rotate(0deg); opacity: 0.15; }
+      50% { transform: scale(1.55) rotate(25deg); opacity: 1; }
+    }
+    @keyframes glitter-pop {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+      20% { transform: translate(-50%, -50%) scale(1.0); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.7); opacity: 0; }
+    }
+
+    .brightRig {
+      width: 190px;
+      height: 160px;
       position: relative;
-      animation: spot-sway 2.4s infinite ease-in-out;
+      animation: spot-sway 2.2s infinite ease-in-out;
     }
-    .spot-top {
-      width: 46px; height: 46px;
+    .brightRig .lampCap {
+      width: 44px; height: 44px;
       border-radius: 16px;
       background: linear-gradient(135deg, #E2E8F0, #94A3B8);
       box-shadow: inset 0 8px 14px rgba(255,255,255,0.35), inset 0 -8px 14px rgba(0,0,0,0.12);
@@ -301,85 +314,165 @@
       left: 50%; top: 0;
       transform: translateX(-50%);
     }
-    .spot-cone {
+    .brightRig .lampHead {
+      width: 66px; height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #F8FAFC, #CBD5E1);
+      box-shadow: inset 0 8px 14px rgba(255,255,255,0.42), inset 0 -8px 12px rgba(0,0,0,0.10);
       position: absolute;
-      left: 50%; top: 34px;
+      left: 50%; top: 30px;
+      transform: translateX(-50%);
+    }
+    .brightRig .cone {
+      position: absolute;
+      left: 50%; top: 52px;
       transform: translateX(-50%);
       width: 0; height: 0;
-      border-left: 70px solid transparent;
-      border-right: 70px solid transparent;
-      border-top: 95px solid rgba(253,224,71,0.50);
-      filter: blur(0.3px);
+      border-left: 78px solid transparent;
+      border-right: 78px solid transparent;
+      border-top: 105px solid rgba(253,224,71,0.35);
+      filter: blur(0.2px);
+      opacity: 0.25;
+      transition: opacity .2s ease;
     }
-    .star {
+    .brightRig .star {
       position: absolute;
-      left: 50%; top: 78px;
+      left: 50%; top: 92px;
       transform: translateX(-50%);
-      width: 46px; height: 46px;
-      background: linear-gradient(135deg, #FFF3A3, #F59E0B);
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, #FFF7B2, #F59E0B);
       clip-path: polygon(50% 0%, 62% 34%, 98% 35%, 69% 57%, 80% 92%, 50% 72%, 20% 92%, 31% 57%, 2% 35%, 38% 34%);
-      border-radius: 10px;
-      animation: star-twinkle 1.25s infinite ease-in-out;
-      box-shadow: inset 0 10px 16px rgba(255,255,255,0.35), inset 0 -10px 16px rgba(0,0,0,0.12);
+      border-radius: 12px;
+      box-shadow: inset 0 12px 18px rgba(255,255,255,0.42), inset 0 -12px 18px rgba(0,0,0,0.14);
+      transition: filter .2s ease;
     }
-    .spark {
+    .brightRig .sparkle {
       position: absolute;
       width: 10px; height: 10px;
-      background: rgba(253,224,71,0.9);
-      border-radius: 3px;
-      box-shadow: 0 0 16px rgba(253,224,71,0.8);
-      opacity: .8;
+      background: rgba(253,224,71,0.95);
+      border-radius: 4px;
+      box-shadow: 0 0 18px rgba(253,224,71,0.9);
+      opacity: .2;
+      animation: sparkle-twinkle 1.2s infinite ease-in-out;
     }
-    .spark.s1 { left: 26px; top: 112px; transform: rotate(18deg); }
-    .spark.s2 { right: 26px; top: 104px; transform: rotate(-14deg); }
+    .s1 { left: 18px; top: 118px; animation-delay: .05s; }
+    .s2 { left: 52px; top: 96px;  animation-delay: .22s; }
+    .s3 { right: 50px; top: 92px; animation-delay: .12s; }
+    .s4 { right: 22px; top: 118px; animation-delay: .30s; }
+    .s5 { left: 88px; top: 132px; animation-delay: .18s; }
 
-    /* 3) BOX BREATH: dot travels around a box path */
-    @keyframes dot-run {
-      0%   { transform: translate(0,0); }
-      25%  { transform: translate(112px,0); }
-      50%  { transform: translate(112px,112px); }
-      75%  { transform: translate(0,112px); }
-      100% { transform: translate(0,0); }
+    /* When ON: make it REALLY bright + glitter */
+    #bright-art.on .cone { opacity: 1; border-top-color: rgba(253,224,71,0.62); }
+    #bright-art.on .star {
+      animation: star-pulse 0.95s infinite ease-in-out, mega-glow 0.95s infinite ease-in-out;
+      filter: drop-shadow(0 0 35px rgba(253,224,71,0.95));
     }
-    @keyframes box-pulse {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
+    #bright-art.on .sparkle { opacity: 1; }
+
+    /* Pop burst glitter (created by JS) */
+    .glitterBurst {
+      position: absolute;
+      left: 50%;
+      top: 112px;
+      width: 18px; height: 18px;
+      background: rgba(253,224,71,0.95);
+      border-radius: 6px;
+      box-shadow: 0 0 24px rgba(253,224,71,0.9);
+      animation: glitter-pop .9s ease-out forwards;
+      pointer-events: none;
     }
-    .boxBreathArt {
-      width: 160px; height: 160px;
+
+    /* ==============================
+       BOX BREATH (UPGRADED: 3D BALLOON INHALE/EXHALE)
+       ============================== */
+
+    @keyframes balloon-float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes balloon-shine {
+      0%,100% { filter: drop-shadow(0 14px 18px rgba(0,0,0,0.14)); }
+      50% { filter: drop-shadow(0 0 26px rgba(56,189,248,0.55)); }
+    }
+    @keyframes puff-drift {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      30% { opacity: 0.7; }
+      100% { transform: translateY(-26px) scale(1.5); opacity: 0; }
+    }
+
+    .balloonWrap {
+      width: 190px;
+      height: 160px;
+      position: relative;
       display: grid;
       place-items: center;
-      animation: box-pulse 1.4s infinite ease-in-out;
+      animation: balloon-float 2.2s infinite ease-in-out;
     }
-    .boxTrack {
-      width: 130px; height: 130px;
-      border-radius: 26px;
-      background: linear-gradient(135deg, #DBEAFE, #93C5FD);
-      box-shadow: inset 0 10px 18px rgba(255,255,255,0.40), inset 0 -10px 18px rgba(0,0,0,0.10);
+    .balloon {
+      width: 110px;
+      height: 130px;
+      background: linear-gradient(135deg, #C7D2FE, #38BDF8);
+      border-radius: 55% 55% 50% 50%;
+      box-shadow:
+        inset 0 14px 24px rgba(255,255,255,0.45),
+        inset 0 -16px 22px rgba(0,0,0,0.12);
       position: relative;
-      outline: 6px solid rgba(37,99,235,0.35);
-      outline-offset: -6px;
+      transform: scale(0.98);
+      transition: transform .6s ease, filter .6s ease;
+      animation: balloon-shine 1.8s infinite ease-in-out;
     }
-    .runner {
+    .balloon:before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      width: 26px;
+      height: 46px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.30);
+      transform: rotate(-12deg);
+    }
+    .knot {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 16px;
+      background: linear-gradient(135deg, #93C5FD, #2563EB);
+      border-radius: 6px 6px 10px 10px;
+      box-shadow: inset 0 6px 10px rgba(255,255,255,0.25);
+    }
+    .string {
+      position: absolute;
+      bottom: -52px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 52px;
+      background: rgba(37,99,235,0.35);
+      border-radius: 99px;
+    }
+    .puff {
+      position: absolute;
       width: 18px; height: 18px;
-      background: linear-gradient(135deg, #FFFFFF, #E2E8F0);
       border-radius: 8px;
-      position: absolute;
-      left: 9px; top: 9px;
-      box-shadow: 0 10px 16px rgba(15,23,42,0.18);
-      animation: dot-run 4s infinite linear;
+      background: rgba(255,255,255,0.75);
+      box-shadow: 0 0 18px rgba(56,189,248,0.35);
+      opacity: 0;
+      pointer-events: none;
     }
-    .cornerGlow {
-      position: absolute;
-      width: 16px; height: 16px;
-      background: rgba(37,99,235,0.25);
-      border-radius: 6px;
-      filter: blur(0.3px);
-    }
-    .c1 { left: 9px; top: 9px; }
-    .c2 { right: 9px; top: 9px; }
-    .c3 { right: 9px; bottom: 9px; }
-    .c4 { left: 9px; bottom: 9px; }
+    .p1 { left: 34px; top: 96px; }
+    .p2 { right: 34px; top: 96px; }
+    .p3 { left: 50%; top: 112px; transform: translateX(-50%); }
+
+    /* Phase-driven exaggeration */
+    .balloonWrap.inhale .balloon { transform: scale(1.22); filter: drop-shadow(0 0 28px rgba(56,189,248,0.55)); }
+    .balloonWrap.exhale .balloon { transform: scale(0.86); filter: drop-shadow(0 0 10px rgba(56,189,248,0.22)); }
+    .balloonWrap.hold   .balloon { transform: scale(1.08); }
+
+    /* Puff appears mainly on EXHALE to show air leaving */
+    .balloonWrap.exhale .puff { animation: puff-drift .8s ease-out forwards; }
 
   </style>
 </head>
@@ -562,7 +655,7 @@
             </div>
           </div>
 
-          <!-- TOOL 4 (REPLACED ILLUSTRATION) -->
+          <!-- TOOL 4 -->
           <div class="white-card" style="border-bottom-color:#E11D48;">
             <div class="illus3d">
               <div class="pillow">
@@ -583,18 +676,24 @@
             <button class="btn btn-rose" onclick="doSqueeze()">Squeeze Power</button>
           </div>
 
-          <!-- TOOL 5 (REPLACED ILLUSTRATION) -->
+          <!-- TOOL 5 (BRIGHT SPOT: NOW EXTRA BRIGHT + GLITTER) -->
           <div class="white-card" style="border-bottom-color:#4338CA; position:relative;">
             <div class="beam" id="beam"></div>
-            <div class="illus3d">
-              <div class="spotlight">
-                <div class="spot-top"></div>
-                <div class="spot-cone"></div>
+
+            <div class="illus3d" id="bright-art">
+              <div class="brightRig">
+                <div class="lampCap"></div>
+                <div class="lampHead"></div>
+                <div class="cone"></div>
                 <div class="star"></div>
-                <div class="spark s1"></div>
-                <div class="spark s2"></div>
+                <div class="sparkle s1"></div>
+                <div class="sparkle s2"></div>
+                <div class="sparkle s3"></div>
+                <div class="sparkle s4"></div>
+                <div class="sparkle s5"></div>
               </div>
             </div>
+
             <div class="card-title" style="color:#4338CA;">Find a Bright Spot</div>
             <p class="card-desc">Find one small good thing—just to balance the heavy feeling.</p>
             <div class="mini-panel" id="bright-panel" style="display:none;">
@@ -605,19 +704,20 @@
             <button class="btn btn-indigo" onclick="toggleBright()">Turn On Bright Spot</button>
           </div>
 
-          <!-- TOOL 6 (REPLACED ILLUSTRATION) -->
+          <!-- TOOL 6 (BOX BREATH: NOW A BALLOON THAT INFLATES/DEFLATES) -->
           <div class="white-card" style="border-bottom-color:#0EA5E9;">
             <div class="illus3d">
-              <div class="boxBreathArt">
-                <div class="boxTrack">
-                  <div class="cornerGlow c1"></div>
-                  <div class="cornerGlow c2"></div>
-                  <div class="cornerGlow c3"></div>
-                  <div class="cornerGlow c4"></div>
-                  <div class="runner"></div>
+              <div class="balloonWrap" id="balloonWrap">
+                <div class="balloon" id="balloon">
+                  <div class="knot"></div>
                 </div>
+                <div class="string"></div>
+                <div class="puff p1"></div>
+                <div class="puff p2"></div>
+                <div class="puff p3"></div>
               </div>
             </div>
+
             <div class="card-title" style="color:#0EA5E9;">Box Breath</div>
             <p class="card-desc">Slow breathing helps your nervous system downshift.</p>
             <div class="mini-panel">
@@ -697,13 +797,34 @@
       setTimeout(() => { msg.style.display = 'none'; }, 2600);
     }
 
+    // BRIGHT SPOT: now toggles mega bright + glitter burst
     function toggleBright(){
       const panel = document.getElementById('bright-panel');
       const beam  = document.getElementById('beam');
+      const art   = document.getElementById('bright-art');
       if(!panel) return;
+
       const on = (panel.style.display !== 'block');
       panel.style.display = on ? 'block' : 'none';
       if(beam) beam.classList.toggle('on', on);
+      if(art) art.classList.toggle('on', on);
+
+      // Glitter burst when turning ON
+      if(on && art){
+        for(let i=0; i<7; i++){
+          setTimeout(() => {
+            const g = document.createElement('div');
+            g.className = 'glitterBurst';
+            // random burst around the star zone
+            const x = 90 + (Math.random()*60 - 30);
+            const y = 90 + (Math.random()*40 - 20);
+            g.style.left = x + 'px';
+            g.style.top  = y + 'px';
+            art.appendChild(g);
+            setTimeout(() => g.remove(), 900);
+          }, i * 70);
+        }
+      }
     }
 
     let boxRunning = false;
@@ -722,6 +843,8 @@
       const countEl = document.getElementById('box-count');
       const helpEl  = document.getElementById('box-help');
       const btn     = document.getElementById('box-btn');
+      const wrap    = document.getElementById('balloonWrap');
+
       if(!phaseEl || !countEl || !helpEl || !btn) return;
 
       if(boxRunning){
@@ -733,6 +856,7 @@
         countEl.textContent = "4";
         helpEl.textContent  = "Breathe in slowly.";
         boxPhaseIndex = 0; boxCount = 4;
+        if(wrap) wrap.className = "balloonWrap";
         return;
       }
 
@@ -755,6 +879,14 @@
         phaseEl.textContent = p.phase;
         helpEl.textContent  = p.help;
         countEl.textContent = boxCount;
+
+        // Drive balloon exaggeration
+        if(wrap){
+          wrap.classList.remove('inhale','exhale','hold');
+          if(p.phase === "In") wrap.classList.add('inhale');
+          else if(p.phase === "Out") wrap.classList.add('exhale');
+          else wrap.classList.add('hold');
+        }
       }
     }
 
