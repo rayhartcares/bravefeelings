@@ -382,99 +382,173 @@
       pointer-events: none;
     }
 
-    /* ==============================
-       BOX BREATH (UPGRADED: 3D BALLOON INHALE/EXHALE)
-       ============================== */
+   /* ==============================
+   BOX BREATH (NEW: 3D CARTOON LUNGS + AIR PUFFS)
+   ============================== */
 
-    @keyframes balloon-float {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    @keyframes balloon-shine {
-      0%,100% { filter: drop-shadow(0 14px 18px rgba(0,0,0,0.14)); }
-      50% { filter: drop-shadow(0 0 26px rgba(56,189,248,0.55)); }
-    }
-    @keyframes puff-drift {
-      0% { transform: translateY(0) scale(0.8); opacity: 0; }
-      30% { opacity: 0.7; }
-      100% { transform: translateY(-26px) scale(1.5); opacity: 0; }
-    }
+@keyframes lungs-float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes lungs-wiggle {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(1deg); }
+}
 
-    .balloonWrap {
-      width: 190px;
-      height: 160px;
-      position: relative;
-      display: grid;
-      place-items: center;
-      animation: balloon-float 2.2s infinite ease-in-out;
-    }
-    .balloon {
-      width: 110px;
-      height: 130px;
-      background: linear-gradient(135deg, #C7D2FE, #38BDF8);
-      border-radius: 55% 55% 50% 50%;
-      box-shadow:
-        inset 0 14px 24px rgba(255,255,255,0.45),
-        inset 0 -16px 22px rgba(0,0,0,0.12);
-      position: relative;
-      transform: scale(0.98);
-      transition: transform .6s ease, filter .6s ease;
-      animation: balloon-shine 1.8s infinite ease-in-out;
-    }
-    .balloon:before {
-      content: "";
-      position: absolute;
-      left: 18px;
-      top: 18px;
-      width: 26px;
-      height: 46px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.30);
-      transform: rotate(-12deg);
-    }
-    .knot {
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-      height: 16px;
-      background: linear-gradient(135deg, #93C5FD, #2563EB);
-      border-radius: 6px 6px 10px 10px;
-      box-shadow: inset 0 6px 10px rgba(255,255,255,0.25);
-    }
-    .string {
-      position: absolute;
-      bottom: -52px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 52px;
-      background: rgba(37,99,235,0.35);
-      border-radius: 99px;
-    }
-    .puff {
-      position: absolute;
-      width: 18px; height: 18px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.75);
-      box-shadow: 0 0 18px rgba(56,189,248,0.35);
-      opacity: 0;
-      pointer-events: none;
-    }
-    .p1 { left: 34px; top: 96px; }
-    .p2 { right: 34px; top: 96px; }
-    .p3 { left: 50%; top: 112px; transform: translateX(-50%); }
+@keyframes puff-up {
+  0%   { transform: translateY(18px) scale(0.6); opacity: 0; }
+  20%  { opacity: .8; }
+  100% { transform: translateY(-40px) scale(1.6); opacity: 0; }
+}
+@keyframes puff-down {
+  0%   { transform: translateY(-18px) scale(0.6); opacity: 0; }
+  20%  { opacity: .8; }
+  100% { transform: translateY(38px) scale(1.6); opacity: 0; }
+}
 
-    /* Phase-driven exaggeration */
-    .balloonWrap.inhale .balloon { transform: scale(1.22); filter: drop-shadow(0 0 28px rgba(56,189,248,0.55)); }
-    .balloonWrap.exhale .balloon { transform: scale(0.86); filter: drop-shadow(0 0 10px rgba(56,189,248,0.22)); }
-    .balloonWrap.hold   .balloon { transform: scale(1.08); }
+.lungsWrap {
+  width: 210px;
+  height: 170px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  animation: lungs-float 2.2s infinite ease-in-out;
+  filter: drop-shadow(0 18px 18px rgba(0,0,0,0.16));
+}
 
-    /* Puff appears mainly on EXHALE to show air leaving */
-    .balloonWrap.exhale .puff { animation: puff-drift .8s ease-out forwards; }
+/* Air tube */
+.airTube {
+  position: absolute;
+  top: 16px;
+  width: 46px;
+  height: 64px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #E2E8F0, #94A3B8);
+  box-shadow: inset 0 10px 18px rgba(255,255,255,0.35),
+              inset 0 -10px 18px rgba(0,0,0,0.12);
+}
+.airTube::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 44px;
+  transform: translateX(-50%);
+  width: 66px;
+  height: 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #F8FAFC, #CBD5E1);
+  box-shadow: inset 0 8px 12px rgba(255,255,255,0.35),
+              inset 0 -8px 12px rgba(0,0,0,0.10);
+}
 
-  </style>
+/* Lungs body */
+.lungs {
+  position: absolute;
+  top: 58px;
+  width: 190px;
+  height: 108px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.lung {
+  width: 84px;
+  height: 104px;
+  border-radius: 48% 52% 60% 40% / 55% 55% 45% 45%;
+  background: linear-gradient(135deg, #C7D2FE, #38BDF8);
+  box-shadow: inset 0 16px 26px rgba(255,255,255,0.45),
+              inset 0 -18px 24px rgba(0,0,0,0.14);
+  position: relative;
+  transform: scale(0.98);
+  transition: transform .55s ease, filter .55s ease;
+}
+
+.lung::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 16px;
+  width: 22px;
+  height: 46px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.28);
+  transform: rotate(-10deg);
+}
+
+.lung.left  { transform-origin: 70% 50%; }
+.lung.right { transform-origin: 30% 50%; }
+
+/* cute “bounce lines” ribs */
+.ribs {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 26px;
+  border-radius: 999px;
+  box-shadow:
+    0 8px 0 rgba(15,23,42,0.08),
+    0 16px 0 rgba(15,23,42,0.06);
+  opacity: 0.55;
+}
+
+/* Air puffs */
+.airFlow {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.airIn  { top: 18px; }
+.airOut { top: 68px; }
+
+.puff {
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 0 18px rgba(56,189,248,0.35);
+  opacity: 0;
+}
+.p1 { left: 16px; }
+.p2 { left: 52px; }
+.p3 { left: 88px; }
+
+/* Phase behavior */
+.lungsWrap.inhale .lung {
+  transform: scale(1.22);
+  filter: drop-shadow(0 0 22px rgba(56,189,248,0.55));
+}
+.lungsWrap.hold .lungs { animation: lungs-wiggle 1.0s infinite ease-in-out; }
+.lungsWrap.exhale .lung {
+  transform: scale(0.86);
+  filter: drop-shadow(0 0 10px rgba(56,189,248,0.25));
+}
+
+/* Show puffs on inhale/exhale */
+.lungsWrap.inhale .airIn  { opacity: 1; }
+.lungsWrap.exhale .airOut { opacity: 1; }
+
+/* Animate puffs */
+.lungsWrap.inhale .airIn .puff {
+  animation: puff-up .85s ease-out infinite;
+}
+.lungsWrap.inhale .airIn .p2 { animation-delay: .12s; }
+.lungsWrap.inhale .airIn .p3 { animation-delay: .24s; }
+
+.lungsWrap.exhale .airOut .puff {
+  animation: puff-down .85s ease-out infinite;
+}
+.lungsWrap.exhale .airOut .p2 { animation-delay: .12s; }
+.lungsWrap.exhale .airOut .p3 { animation-delay: .24s; }
+
 </head>
 
 <body>
