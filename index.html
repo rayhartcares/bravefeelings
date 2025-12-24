@@ -6,13 +6,13 @@
   <title>Brave Feelings Lab</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     body { font-family: 'Fredoka', sans-serif; background-color: #F0F9FF; }
     .hero-bg { background-image: radial-gradient(#bae6fd 2px, transparent 2px); background-size: 30px 30px; }
     .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .card-hover:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1); }
+    .card-hover:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12); }
   </style>
 </head>
 
@@ -24,78 +24,75 @@
         src="assets/benne-hart-avatar.png"
         alt="Benne Hart"
         class="w-full h-full object-cover rounded-full"
-        onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Benne';"
+        onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Benne'"
       >
     </div>
-    <h1 class="text-5xl md:text-6xl font-bold text-slate-800 mb-3">Hi, I'm Benne Hart! 🐻</h1>
+
+    <h1 class="text-5xl md:text-6xl font-extrabold text-slate-800 mb-3">
+      Hi, I'm Benne Hart! 🐻
+    </h1>
     <p class="text-2xl text-slate-600">How is your heart feeling right now?</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full px-4">
 
-    <!-- ANGRY -->
-    <a href="canva.html" class="block bg-white rounded-3xl p-8 border-b-8 border-red-400 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
+    <a href="./canva.html" class="block bg-white rounded-3xl p-8 border-b-8 border-red-400 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
       <div class="flex justify-between items-start mb-4">
         <span class="text-6xl group-hover:scale-110 transition-transform">😡</span>
-        <span class="bg-red-500 text-white px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+        <span class="bg-red-500 text-white px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
-      <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Angry</h2>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Angry</h2>
       <p class="text-slate-500 text-lg">I feel like a volcano ready to explode.</p>
     </a>
 
-    <!-- FRUSTRATED -->
-    <a href="frustrated.html" class="block bg-white rounded-3xl p-8 border-b-8 border-orange-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
+    <a href="./frustrated.html" class="block bg-white rounded-3xl p-8 border-b-8 border-orange-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
       <div class="flex justify-between items-start mb-4">
-        <span class="text-6xl">😤</span>
-        <span class="bg-orange-100 text-orange-600 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+        <span class="text-6xl group-hover:scale-110 transition-transform">😤</span>
+        <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
-      <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Frustrated</h2>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Frustrated</h2>
       <p class="text-slate-500 text-lg">I'm trying hard but it's not working.</p>
     </a>
 
-    <!-- SAD -->
-    <a href="sad.html" class="block bg-white rounded-3xl p-8 border-b-8 border-blue-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
+    <a href="./sad.html" class="block bg-white rounded-3xl p-8 border-b-8 border-blue-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
       <div class="flex justify-between items-start mb-4">
-        <span class="text-6xl">😢</span>
-        <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+        <span class="text-6xl group-hover:scale-110 transition-transform">😢</span>
+        <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
-      <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Sad</h2>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Sad</h2>
       <p class="text-slate-500 text-lg">I feel heavy, tired, or want to cry.</p>
     </a>
 
-    <!-- WORRIED -->
-    <a href="worried.html" class="block bg-white rounded-3xl p-8 border-b-8 border-purple-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
+    <a href="./worried.html" class="block bg-white rounded-3xl p-8 border-b-8 border-purple-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
       <div class="flex justify-between items-start mb-4">
-        <span class="text-6xl">😰</span>
-        <span class="bg-purple-100 text-purple-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+        <span class="text-6xl group-hover:scale-110 transition-transform">😰</span>
+        <span class="bg-purple-100 text-purple-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
-      <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Worried</h2>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Worried</h2>
       <p class="text-slate-500 text-lg">I have butterflies in my tummy.</p>
     </a>
 
-    <!-- ENVIOUS -->
-    <a href="envious.html" class="block bg-white rounded-3xl p-8 border-b-8 border-green-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
+    <a href="./envious.html" class="block bg-white rounded-3xl p-8 border-b-8 border-green-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
       <div class="flex justify-between items-start mb-4">
-        <span class="text-6xl">😒</span>
-        <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+        <span class="text-6xl group-hover:scale-110 transition-transform">😒</span>
+        <span class="bg-green-100 text-green-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
-      <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Envious</h2>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Envious</h2>
       <p class="text-slate-500 text-lg">I want what someone else has.</p>
     </a>
 
-    <!-- ARROGANT -->
-    <a href="arrogant.html" class="block bg-white rounded-3xl p-8 border-b-8 border-amber-300 shadow-sm hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
+    <a href="./arrogant.html" class="block bg-white rounded-3xl p-8 border-b-8 border-yellow-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
       <div class="flex justify-between items-start mb-4">
-        <span class="text-6xl">😏</span>
-        <span class="bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">Start</span>
+        <span class="text-6xl group-hover:scale-110 transition-transform">😏</span>
+        <span class="bg-yellow-100 text-yellow-900 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
-      <h2 class="text-3xl font-bold text-slate-800 mb-2">I am Arrogant</h2>
-      <p class="text-slate-500 text-lg">I feel like I’m better than others.</p>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Arrogant</h2>
+      <p class="text-slate-500 text-lg">I feel like I'm better than others.</p>
     </a>
 
   </div>
 
-  <div class="mt-16 text-slate-400 font-bold text-sm text-center">
+  <div class="mt-16 text-slate-400 font-extrabold text-sm text-center">
     Brave Feelings Lab © 2025
   </div>
 
