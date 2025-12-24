@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding Sadness</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body{
+      margin:0; padding:0;
+      background:#F3F7FF;
+      font-family:'Fredoka',sans-serif;
+      color:#2D3748;
+      display:flex; justify-content:center;
+      min-height:100vh; overflow-x:hidden;
+    }
+    #app-container{ width:100%; max-width:900px; padding:40px 18px; }
+
+    .white-card{
+      background:#fff;
+      border-radius:24px;
+      padding:28px 22px;
+      box-shadow:0 10px 24px rgba(0,0,0,0.06);
+      text-align:center;
+      margin-bottom:24px;
+      border-bottom:6px solid #E7EEF9;
+      position:relative;
+      overflow:visible;
+      transition:transform .2s;
+    }
+    .white-card:hover{ transform:translateY(-5px); }
+
+    .title{ font-size:36px; font-weight:800; text-align:center; margin:0 0 10px; }
+    .blue-title{ color:#3B82F6; }
+    .indigo-title{ color:#4F46E5; }
+    .card-title{ font-size:22px; font-weight:800; margin:10px 0 6px; }
+    .card-desc{ font-size:16px; color:#64748B; line-height:1.5; margin:0; }
+
+    .btn{
+      padding:14px 28px;
+      border-radius:16px;
+      font-weight:800;
+      font-size:18px;
+      border:none;
+      cursor:pointer;
+      color:white;
+      transition:all .2s;
+      width:100%;
+      margin-top:15px;
+      box-shadow:0 4px 6px rgba(0,0,0,0.12);
+    }
+    .btn:hover{ transform:scale(1.02); filter:brightness(1.08); }
+
+    .btn-blue{ background:linear-gradient(135deg,#3B82F6,#2563EB); }
+    .btn-indigo{ background:linear-gradient(135deg,#6366F1,#4F46E5); }
+    .btn-teal{ background:linear-gradient(135deg,#14B8A6,#0D9488); }
+    .btn-rose{ background:linear-gradient(135deg,#FB7185,#E11D48); }
+    .btn-amber{ background:linear-gradient(135deg,#F59E0B,#D97706); }
+    .btn-back{
+      background:#fff;
+      border:2px solid #CBD5E1;
+      color:#334155;
+      padding:8px 16px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+      margin-bottom:20px;
+    }
+
+    .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:25px; }
+    @media(max-width:600px){ .grid-2{ grid-template-columns:1fr; } }
+
+    .view.hidden{ display:none !important; }
+
+    /* Inline sticker wrapper */
+    .sticker-wrap{
+      width:clamp(150px,34vw,215px);
+      height:clamp(150px,34vw,215px);
+      margin:0 auto 10px;
+      filter:drop-shadow(0 12px 14px rgba(0,0,0,0.14));
+    }
+    .sticker-wrap svg{ width:100%; height:100%; display:block; }
+
+    /* Subtle UI helpers */
+    .hint-box{
+      background:#EFF6FF;
+      color:#1D4ED8;
+      padding:14px 14px;
+      border-radius:16px;
+      text-align:center;
+      display:none;
+      margin-top:10px;
+      font-weight:800;
+    }
+    .pill{
+      display:inline-block;
+      background:#EEF2FF;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:800;
+      color:#3730A3;
+      margin-top:10px;
+    }
+    .meter{
+      width:100%;
+      height:14px;
+      background:#E2E8F0;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .meter > div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(135deg,#60A5FA,#2563EB);
+      border-radius:999px;
+      transition:width .2s;
+    }
+
+    /* Sad cloud drip animation */
+    @keyframes drip {
+      0% { transform: translateY(-6px); opacity: 0; }
+      30%{ opacity: 1; }
+      100%{ transform: translateY(26px); opacity: 0; }
+    }
+    .drip1{ animation:drip 1.1s infinite; }
+    .drip2{ animation:drip 1.1s .35s infinite; }
+    .drip3{ animation:drip 1.1s .7s infinite; }
+
+    /* Heart hug pulse animation */
+    @keyframes heartPulse{
+      0%,100%{ transform:scale(1); }
+      40%{ transform:scale(1.08); }
+      60%{ transform:scale(1.02); }
+    }
+    .heartPulse{ transform-origin:center; transform-box:fill-box; animation:heartPulse 1.2s infinite ease-in-out; }
+
+    /* Label pop (affect labeling tool) */
+    @keyframes labelPop{
+      0%{ transform:scale(.9) rotate(-6deg); }
+      50%{ transform:scale(1.08) rotate(4deg); }
+      100%{ transform:scale(1) rotate(0deg); }
+    }
+    .labelPop{ transform-origin:center; transform-box:fill-box; animation:labelPop .8s infinite ease-in-out; }
+
+    /* Tiny steps bounce */
+    @keyframes stepBounce{
+      0%,100%{ transform:translateY(0); }
+      50%{ transform:translateY(-10px); }
+    }
+    .stepBounce{ transform-origin:center; transform-box:fill-box; animation:stepBounce .9s infinite ease-in-out; }
+
+    /* Sun rise (progress variable) */
+    .sunrise-sticker{ --p:0; }
+    .sunrise-sticker .sun{ transform: translateY(calc(30px - (var(--p) * 30px))); transition:transform .2s; }
+    .sunrise-sticker .rays{ opacity: calc(0.15 + (var(--p) * 0.85)); transition:opacity .2s; }
+
+    /* Gentle breath (box-breath) */
+    @keyframes boxGlow{
+      0%,100%{ opacity:.25; }
+      50%{ opacity:.55; }
+    }
+    .boxGlow{ animation:boxGlow 1.2s infinite ease-in-out; }
+
+  </style>
+</head>
+
+<body>
+  <div id="app-container">
+
+    <!-- VIEW: HOME -->
+    <section id="view-home" class="view">
+      <h1 class="title">Understanding Sadness</h1>
+      <p style="text-align:center; color:#64748B; margin:0 0 38px;">
+        Sadness can feel heavy. We can carry it gently and get help.
+      </p>
+
+      <div class="grid-2">
+        <div class="white-card">
+          <!-- BIG SAD CLOUD sticker (inline) -->
+          <div class="sticker-wrap" aria-label="Sad Cloud Sticker">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EFF6FF"/>
+
+              <g>
+                <path d="M70 120 C58 120 48 110 48 98
+                         C48 88 56 80 66 79
+                         C72 60 90 46 112 46
+                         C136 46 156 62 160 84
+                         C174 86 184 98 184 112
+                         C184 128 172 140 156 140
+                         L76 140
+                         C72 140 70 136 70 120 Z"
+                      fill="#93C5FD" opacity="0.95"/>
+                <path d="M78 126 C70 126 64 120 64 112
+                         C64 104 70 98 78 98
+                         C82 84 96 74 112 74
+                         C130 74 146 88 148 106
+                         C158 108 166 116 166 126
+                         C166 138 156 148 144 148
+                         L84 148
+                         C82 148 78 144 78 126 Z"
+                      fill="#60A5FA" opacity="0.95"/>
+              </g>
+
+              <!-- face -->
+              <circle cx="98" cy="120" r="6" fill="#0F172A"/>
+              <circle cx="126" cy="120" r="6" fill="#0F172A"/>
+              <path d="M98 136 Q112 126 126 136" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+
+              <!-- drips -->
+              <g opacity="0.9">
+                <circle class="drip1" cx="90" cy="150" r="6" fill="#3B82F6"/>
+                <circle class="drip2" cx="112" cy="150" r="6" fill="#3B82F6"/>
+                <circle class="drip3" cx="134" cy="150" r="6" fill="#3B82F6"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="card-title">The Heavy Feeling</div>
+          <p class="card-desc">“My heart feels down… I don’t want to do anything.”</p>
+          <button id="btn-see-behavior" class="btn btn-blue">See Behaviors</button>
+        </div>
+
+        <div class="white-card">
+          <!-- small sunshine hint -->
+          <div class="sticker-wrap sunrise-sticker" id="homeSunSticker" style="--p:0.2;">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EEF2FF"/>
+              <g class="sun">
+                <circle cx="110" cy="126" r="36" fill="#FBBF24"/>
+                <circle cx="98" cy="124" r="6" fill="#0F172A"/>
+                <circle cx="122" cy="124" r="6" fill="#0F172A"/>
+                <path d="M98 140 Q110 150 122 140" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+              </g>
+              <g class="rays">
+                <path d="M110 64 L110 80" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+                <path d="M148 78 L136 90" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+                <path d="M72 78 L84 90" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+              </g>
+              <path d="M60 156 C76 140 88 136 110 136
+                       C132 136 144 140 160 156"
+                    fill="none" stroke="#94A3B8" stroke-width="8" stroke-linecap="round" opacity="0.55"/>
+            </svg>
+          </div>
+
+          <div class="card-title">Comfort Tools</div>
+          <p class="card-desc">Science-based ways to feel safer and lighter.</p>
+          <button id="btn-show-solutions" class="btn btn-indigo">Show Solutions</button>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:28px;">
+        <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+      </div>
+    </section>
+
+    <!-- VIEW: BEHAVIORS -->
+    <section id="view-behavior" class="view hidden">
+      <button class="btn-back" id="btn-back-home-1">← Back</button>
+      <h1 class="title blue-title">How Do We Act?</h1>
+      <p style="text-align:center; color:#3B82F6; margin:0 0 28px; font-weight:800;">
+        Sadness can slow our body and shrink our world.
+      </p>
+
+      <div class="grid-2">
+        <div class="white-card">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EFF6FF"/>
+              <circle cx="110" cy="110" r="54" fill="#93C5FD"/>
+              <circle cx="94" cy="106" r="6" fill="#0F172A"/>
+              <circle cx="126" cy="106" r="6" fill="#0F172A"/>
+              <path d="M92 132 Q110 118 128 132" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+              <path d="M86 156 L134 156" stroke="#1D4ED8" stroke-width="10" stroke-linecap="round" opacity="0.25"/>
+            </svg>
+          </div>
+          <div class="card-title">Withdrawing</div>
+          <p class="card-desc">Hiding, staying quiet, going away from people.</p>
+        </div>
+
+        <div class="white-card">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EFF6FF"/>
+              <rect x="62" y="88" width="96" height="96" rx="28" fill="#60A5FA"/>
+              <circle cx="98" cy="124" r="6" fill="#0F172A"/>
+              <circle cx="122" cy="124" r="6" fill="#0F172A"/>
+              <path d="M98 146 Q110 134 122 146" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="110" cy="160" r="7" fill="#3B82F6"/>
+              <path d="M110 160 C108 170 102 176 96 178" stroke="#3B82F6" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-title">Crying</div>
+          <p class="card-desc">Tears are a body signal: “I need comfort.”</p>
+        </div>
+
+        <div class="white-card">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EFF6FF"/>
+              <rect x="66" y="78" width="88" height="110" rx="30" fill="#93C5FD"/>
+              <path d="M78 116 L142 116" stroke="#1E3A8A" stroke-width="10" stroke-linecap="round" opacity="0.22"/>
+              <path d="M78 140 L126 140" stroke="#1E3A8A" stroke-width="10" stroke-linecap="round" opacity="0.18"/>
+              <circle cx="90" cy="100" r="7" fill="#0F172A" opacity="0.35"/>
+              <circle cx="110" cy="100" r="7" fill="#0F172A" opacity="0.35"/>
+            </svg>
+          </div>
+          <div class="card-title">Slow Body</div>
+          <p class="card-desc">Low energy, heavy shoulders, moving slowly.</p>
+        </div>
+
+        <div class="white-card">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EFF6FF"/>
+              <rect x="54" y="96" width="112" height="76" rx="22" fill="#60A5FA"/>
+              <path d="M72 134 Q110 108 148 134" fill="none" stroke="#0F172A" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="82" cy="120" r="7" fill="#0F172A"/>
+              <circle cx="138" cy="120" r="7" fill="#0F172A"/>
+            </svg>
+          </div>
+          <div class="card-title">Sad Thoughts</div>
+          <p class="card-desc">“Nothing will help.” “I’m alone.” “I can’t.”</p>
+        </div>
+      </div>
+
+      <div class="white-card" style="margin-top:28px; border-bottom-color:#3B82F6;">
+        <p style="font-weight:800; font-size:20px; color:#1D4ED8; margin:0 0 10px;">
+          Does this fix the sadness?
+        </p>
+        <button id="btn-to-consequences" class="btn btn-blue" style="width:auto;">See Consequences ➔</button>
+      </div>
+    </section>
+
+    <!-- VIEW: CONSEQUENCES -->
+    <section id="view-consequences" class="view hidden">
+      <button class="btn-back" id="btn-back-behavior">← Back</button>
+      <h1 class="title blue-title">What Happens Next?</h1>
+      <p style="text-align:center; color:#64748B; margin:0 0 28px;">
+        When sadness is alone too long, it can grow heavier.
+      </p>
+
+      <div class="grid-2">
+        <div class="white-card">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EEF2FF"/>
+              <circle cx="110" cy="112" r="60" fill="#93C5FD"/>
+              <path d="M86 138 C98 128 122 128 134 138" fill="none" stroke="#0F172A" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="92" cy="110" r="7" fill="#0F172A"/>
+              <circle cx="128" cy="110" r="7" fill="#0F172A"/>
+              <path d="M60 170 L160 170" stroke="#94A3B8" stroke-width="10" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="card-title">Lonely Feeling</div>
+          <p class="card-desc">We stop reaching out, so comfort feels far away.</p>
+        </div>
+
+        <div class="white-card">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EEF2FF"/>
+              <rect x="60" y="78" width="100" height="120" rx="28" fill="#A5B4FC"/>
+              <path d="M82 130 L138 130" stroke="#3730A3" stroke-width="12" stroke-linecap="round" opacity="0.25"/>
+              <path d="M82 156 L120 156" stroke="#3730A3" stroke-width="12" stroke-linecap="round" opacity="0.18"/>
+              <circle cx="110" cy="104" r="10" fill="#3730A3" opacity="0.22"/>
+            </svg>
+          </div>
+          <div class="card-title">Low Energy</div>
+          <p class="card-desc">Hard to start tasks, even small ones.</p>
+        </div>
+      </div>
+
+      <div class="white-card" style="margin-top:28px; border-bottom-color:#4F46E5;">
+        <p style="font-weight:800; font-size:20px; color:#3730A3; margin:0 0 10px;">
+          Now we use comfort tools.
+        </p>
+        <button id="btn-to-solutions-2" class="btn btn-indigo" style="width:auto;">Show Solutions ➔</button>
+      </div>
+    </section>
+
+    <!-- VIEW: SOLUTIONS -->
+    <section id="view-solutions" class="view hidden">
+      <button class="btn-back" id="btn-back-home-2">← Back to Start</button>
+      <h1 class="title indigo-title">Comfort Tools</h1>
+
+      <!-- 1) CO-REGULATION: Ask for comfort -->
+      <div class="white-card" id="comfortCard" style="text-align:left; border-bottom-color:#3B82F6;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220" aria-label="Ask for Comfort Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EFF6FF"/>
+              <g class="heartPulse">
+                <path d="M110 166 C110 166 68 142 68 110
+                         C68 92 82 80 98 80
+                         C106 80 112 84 110 88
+                         C108 84 114 80 122 80
+                         C138 80 152 92 152 110
+                         C152 142 110 166 110 166 Z"
+                      fill="#FB7185"/>
+                <path d="M110 166 C110 166 68 142 68 110
+                         C68 92 82 80 98 80
+                         C106 80 112 84 110 88
+                         C108 84 114 80 122 80
+                         C138 80 152 92 152 110
+                         C152 142 110 166 110 166 Z"
+                      fill="none" stroke="#E11D48" stroke-width="8" opacity="0.35"/>
+              </g>
+              <circle cx="92" cy="108" r="6" fill="#0F172A"/>
+              <circle cx="128" cy="108" r="6" fill="#0F172A"/>
+              <path d="M94 126 Q110 138 126 126" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#2563EB;">Ask for Comfort</div>
+        <p class="card-desc" style="text-align:center;">
+          When you’re sad, your brain feels safer with a kind person.
+        </p>
+        <div id="comfortBubble" class="hint-box">“I feel sad. Can I have a hug or sit with you?”</div>
+        <button id="btn-comfort" class="btn btn-blue">Practice Asking</button>
+      </div>
+
+      <!-- 2) AFFECT LABELING: Name the feeling -->
+      <div class="white-card" id="labelCard" style="text-align:left; border-bottom-color:#14B8A6;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220" aria-label="Name It Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#ECFEFF"/>
+              <g class="labelPop">
+                <path d="M72 86 H142 L166 110 L142 134 H72 Z" fill="#14B8A6"/>
+                <circle cx="86" cy="110" r="7" fill="#0F172A" opacity="0.35"/>
+              </g>
+              <rect x="62" y="148" width="96" height="36" rx="16" fill="#FFFFFF" opacity="0.92"/>
+              <path d="M76 166 H144" stroke="#0F172A" stroke-width="8" stroke-linecap="round" opacity="0.15"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#0D9488;">Name It</div>
+        <p class="card-desc" style="text-align:center;">
+          Putting the feeling into words helps the brain calm down.
+        </p>
+        <div style="text-align:center; font-size:22px; font-weight:900; color:#0F766E; margin-top:10px;" id="labelText">
+          I feel sad.
+        </div>
+        <div id="labelPrompt" class="hint-box" style="display:block;">
+          Tap to try a better sentence.
+        </div>
+        <button id="btn-label" class="btn btn-teal">Tap a New Sentence</button>
+      </div>
+
+      <!-- 3) BEHAVIORAL ACTIVATION: Tiny step -->
+      <div class="white-card" id="stepCard" style="text-align:left; border-bottom-color:#F59E0B;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220" aria-label="Tiny Step Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#FFFBEB"/>
+              <g class="stepBounce">
+                <path d="M84 150 C96 150 98 140 92 134 C86 128 74 132 74 142 C74 148 78 150 84 150 Z" fill="#F59E0B"/>
+                <path d="M118 150 C130 150 132 140 126 134 C120 128 108 132 108 142 C108 148 112 150 118 150 Z" fill="#F59E0B"/>
+                <path d="M100 120 C112 120 114 110 108 104 C102 98 90 102 90 112 C90 118 94 120 100 120 Z" fill="#D97706"/>
+              </g>
+              <path d="M60 168 L160 168" stroke="#94A3B8" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#D97706;">Tiny Step</div>
+        <p class="card-desc" style="text-align:center;">
+          Sadness says “don’t move.” A tiny step helps your brain restart.
+        </p>
+        <div style="text-align:center; font-size:30px; font-weight:900; color:#B45309; margin-top:10px;" id="step-timer"></div>
+        <button id="btn-step" class="btn btn-amber">Do a Tiny Step (20s)</button>
+      </div>
+
+      <!-- 4) DEEP PRESSURE / SOOTHING: Warm squeeze -->
+      <div class="white-card" id="squeezeCard" style="text-align:left; border-bottom-color:#FB7185;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220" aria-label="Warm Squeeze Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#FFF1F2"/>
+              <rect x="64" y="78" width="92" height="112" rx="30" fill="#FB7185" opacity="0.9"/>
+              <rect x="76" y="92" width="68" height="86" rx="26" fill="#FDA4AF" opacity="0.95"/>
+              <circle cx="96" cy="132" r="6" fill="#0F172A"/>
+              <circle cx="124" cy="132" r="6" fill="#0F172A"/>
+              <path d="M96 150 Q110 162 124 150" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+              <path d="M54 128 C64 120 70 118 76 120" stroke="#E11D48" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+              <path d="M166 128 C156 120 150 118 144 120" stroke="#E11D48" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#E11D48;">Warm Squeeze</div>
+        <p class="card-desc" style="text-align:center;">
+          A hug, blanket, or pillow squeeze can help the body feel safer.
+        </p>
+        <div class="meter"><div id="squeezeBar"></div></div>
+        <div style="text-align:center; font-size:30px; font-weight:900; color:#E11D48; margin-top:10px;" id="squeeze-timer"></div>
+        <button id="btn-squeeze" class="btn btn-rose">Squeeze (10s)</button>
+      </div>
+
+      <!-- 5) POSITIVE MEMORY / ATTENTION SHIFT: Sunrise -->
+      <div class="white-card" id="sunCard" style="text-align:left; border-bottom-color:#6366F1;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap sunrise-sticker" id="sunSticker" style="--p:0;">
+            <svg viewBox="0 0 220 220" aria-label="Sunrise Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EEF2FF"/>
+              <path d="M64 154 C80 138 90 134 110 134
+                       C130 134 140 138 156 154"
+                    fill="none" stroke="#94A3B8" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+              <g class="sun">
+                <circle cx="110" cy="134" r="34" fill="#FBBF24"/>
+                <circle cx="98" cy="132" r="6" fill="#0F172A"/>
+                <circle cx="122" cy="132" r="6" fill="#0F172A"/>
+                <path d="M98 148 Q110 158 122 148" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+              </g>
+              <g class="rays">
+                <path d="M110 76 L110 90" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+                <path d="M148 92 L136 104" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+                <path d="M72 92 L84 104" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#4F46E5;">Find One Bright Spot</div>
+        <p class="card-desc" style="text-align:center;">
+          Your brain can hold sadness and one tiny good thing at the same time.
+        </p>
+        <div id="sunPrompt" class="hint-box" style="display:block;">
+          Tap to get a “bright spot” prompt.
+        </div>
+        <button id="btn-sun" class="btn btn-indigo">Get a Bright Spot</button>
+      </div>
+
+      <!-- 6) DIFFERENT BREATH TOOL: Box breathing -->
+      <div class="white-card" id="boxCard" style="text-align:left; border-bottom-color:#3B82F6;">
+        <div style="text-align:center;">
+          <div class="sticker-wrap">
+            <svg viewBox="0 0 220 220" aria-label="Box Breathing Sticker">
+              <path d="M46 86 C28 42 74 18 112 26 C150 34 192 30 196 70
+                       C200 110 202 160 160 190 C118 218 62 204 44 172
+                       C28 144 58 126 46 86 Z" fill="#EFF6FF"/>
+              <rect x="66" y="66" width="88" height="88" rx="22" fill="#3B82F6" opacity="0.9"/>
+              <rect x="80" y="80" width="60" height="60" rx="18" fill="#93C5FD" opacity="0.95"/>
+              <path class="boxGlow" d="M66 66 H154 V154 H66 Z" fill="none" stroke="#1D4ED8" stroke-width="10" opacity="0.25"/>
+              <circle cx="98" cy="118" r="6" fill="#0F172A"/>
+              <circle cx="122" cy="118" r="6" fill="#0F172A"/>
+              <path d="M98 134 Q110 146 122 134" fill="none" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-title" style="text-align:center; color:#2563EB;">Box Breath</div>
+        <p class="card-desc" style="text-align:center;">
+          Follow 4 steps: In (4) → Hold (4) → Out (4) → Hold (4).
+        </p>
+        <div style="text-align:center; font-size:30px; font-weight:900; color:#2563EB; margin-top:10px;" id="boxStep">Ready</div>
+        <button id="btn-box" class="btn btn-blue">Start Box Breath</button>
+      </div>
+
+    </section>
+  </div>
+
+  <script>
+    // Show errors on-screen (no mystery black screens)
+    window.addEventListener('error', (e) => {
+      const box = document.createElement('div');
+      box.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;background:#fff;border:3px solid #e11d48;border-radius:14px;padding:12px;z-index:99999;font-family:system-ui;font-weight:800;';
+      box.textContent = 'SAD.html error: ' + (e.message || 'Unknown') + ' (check console)';
+      document.body.appendChild(box);
+    });
+
+    function showView(id){
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+      const el = document.getElementById(id);
+      if(el) el.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    // Nav buttons
+    document.getElementById('btn-see-behavior').addEventListener('click', () => showView('view-behavior'));
+    document.getElementById('btn-show-solutions').addEventListener('click', () => showView('view-solutions'));
+    document.getElementById('btn-back-home-1').addEventListener('click', () => showView('view-home'));
+    document.getElementById('btn-to-consequences').addEventListener('click', () => showView('view-consequences'));
+    document.getElementById('btn-back-behavior').addEventListener('click', () => showView('view-behavior'));
+    document.getElementById('btn-to-solutions-2').addEventListener('click', () => showView('view-solutions'));
+    document.getElementById('btn-back-home-2').addEventListener('click', () => showView('view-home'));
+
+    // 1) Comfort (co-regulation)
+    document.getElementById('btn-comfort').addEventListener('click', () => {
+      const bubble = document.getElementById('comfortBubble');
+      bubble.style.display = 'block';
+    });
+
+    // 2) Affect labeling (name it)
+    const labelSentences = [
+      "I feel sad.",
+      "I feel sad because something changed.",
+      "I feel sad because I miss someone or something.",
+      "I feel sad because I tried and it didn’t work.",
+      "I feel sad, and I need a little comfort."
+    ];
+    let labelIdx = 0;
+    document.getElementById('btn-label').addEventListener('click', () => {
+      labelIdx = (labelIdx + 1) % labelSentences.length;
+      document.getElementById('labelText').textContent = labelSentences[labelIdx];
+    });
+
+    // 3) Tiny step timer (behavioral activation)
+    let stepInterval = null;
+    document.getElementById('btn-step').addEventListener('click', () => {
+      const tEl = document.getElementById('step-timer');
+      if(stepInterval) clearInterval(stepInterval);
+
+      let t = 20;
+      tEl.textContent = t + "s";
+      stepInterval = setInterval(() => {
+        t--;
+        if(t > 0) tEl.textContent = t + "s";
+        else {
+          clearInterval(stepInterval);
+          stepInterval = null;
+          tEl.textContent = "Nice job!";
+        }
+      }, 1000);
+    });
+
+    // 4) Warm squeeze 10s with meter
+    let squeezeInterval = null;
+    document.getElementById('btn-squeeze').addEventListener('click', () => {
+      const bar = document.getElementById('squeezeBar');
+      const tEl = document.getElementById('squeeze-timer');
+      if(squeezeInterval) clearInterval(squeezeInterval);
+
+      let t = 10;
+      bar.style.width = "0%";
+      tEl.textContent = t + "s";
+
+      squeezeInterval = setInterval(() => {
+        t--;
+        const progress = (10 - t) / 10;
+        bar.style.width = Math.min(100, Math.max(0, progress * 100)) + "%";
+
+        if(t > 0) tEl.textContent = t + "s";
+        else {
+          clearInterval(squeezeInterval);
+          squeezeInterval = null;
+          bar.style.width = "100%";
+          tEl.textContent = "Safe & steady.";
+        }
+      }, 1000);
+    });
+
+    // 5) Bright spot + sunrise progress
+    const brightPrompts = [
+      "Name one person who is kind to you.",
+      "Name one small thing you did today (even tiny).",
+      "Think of one place that feels safe.",
+      "Name one thing you like (food, song, toy, game).",
+      "Remember one funny moment from this week."
+    ];
+    let sunP = 0;
+    function setSunProgress(p){
+      const sticker = document.getElementById('sunSticker');
+      p = Math.max(0, Math.min(1, p));
+      sticker.style.setProperty('--p', p.toFixed(3));
+    }
+    document.getElementById('btn-sun').addEventListener('click', () => {
+      const prompt = brightPrompts[Math.floor(Math.random()*brightPrompts.length)];
+      document.getElementById('sunPrompt').style.display = 'block';
+      document.getElementById('sunPrompt').textContent = prompt;
+
+      sunP = Math.min(1, sunP + 0.2);
+      setSunProgress(sunP);
+    });
+
+    // 6) Box breathing (4-4-4-4) — different from your Frustrated breathing tool
+    let boxInterval = null;
+    const boxSteps = [
+      { label: "In",   secs: 4 },
+      { label: "Hold", secs: 4 },
+      { label: "Out",  secs: 4 },
+      { label: "Hold", secs: 4 }
+    ];
+    document.getElementById('btn-box').addEventListener('click', () => {
+      const el = document.getElementById('boxStep');
+      if(boxInterval) clearInterval(boxInterval);
+
+      let step = 0;
+      let t = boxSteps[0].secs;
+
+      el.textContent = boxSteps[0].label + " " + t;
+      boxInterval = setInterval(() => {
+        t--;
+        if(t > 0){
+          el.textContent = boxSteps[step].label + " " + t;
+          return;
+        }
+        step = (step + 1) % boxSteps.length;
+        t = boxSteps[step].secs;
+        el.textContent = boxSteps[step].label + " " + t;
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
