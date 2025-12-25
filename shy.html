@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding Shyness</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body{
+      margin:0; padding:0;
+      background:#F4FAFF;
+      font-family:'Fredoka', sans-serif;
+      color:#1F2937;
+      display:flex; justify-content:center;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    #app-container{
+      width:100%;
+      max-width:860px;
+      padding:44px 18px;
+      position:relative;
+    }
+
+    .white-card{
+      background:white;
+      border-radius:26px;
+      padding:30px;
+      box-shadow:0 10px 26px rgba(0,0,0,0.06);
+      text-align:center;
+      margin-bottom:24px;
+      border-bottom:7px solid #E5E7EB;
+      position:relative;
+      overflow:visible;
+      transition:transform .18s ease;
+    }
+    .white-card:hover{ transform:translateY(-4px); }
+
+    .title{
+      font-size:40px;
+      font-weight:800;
+      text-align:center;
+      margin:0 0 8px 0;
+      letter-spacing:.2px;
+      color:#0F172A;
+    }
+    .subtitle{
+      text-align:center;
+      color:#64748B;
+      margin:0 0 34px 0;
+      font-size:18px;
+      line-height:1.45;
+    }
+    .accent-title{ color:#7C3AED; } /* violet */
+
+    .card-title{
+      font-size:22px;
+      font-weight:800;
+      margin:10px 0 6px 0;
+      color:#0F172A;
+    }
+    .card-desc{
+      font-size:16px;
+      color:#64748B;
+      line-height:1.55;
+      margin:0;
+    }
+
+    .btn{
+      padding:14px 22px;
+      border-radius:16px;
+      font-weight:800;
+      font-size:18px;
+      border:none;
+      cursor:pointer;
+      color:white;
+      transition:transform .2s ease, filter .2s ease;
+      width:100%;
+      margin-top:16px;
+      box-shadow:0 7px 16px rgba(0,0,0,0.12);
+    }
+    .btn:hover{ transform:scale(1.02); filter:brightness(1.06); }
+    .btn:disabled{ opacity:.75; cursor:not-allowed; transform:none; }
+
+    /* Shy palette (soft + brave): violet / sky / mint / amber */
+    .btn-violet { background:linear-gradient(135deg,#A78BFA,#7C3AED); }
+    .btn-indigo { background:linear-gradient(135deg,#818CF8,#4338CA); }
+    .btn-sky    { background:linear-gradient(135deg,#38BDF8,#0EA5E9); }
+    .btn-mint   { background:linear-gradient(135deg,#34D399,#10B981); }
+    .btn-amber  { background:linear-gradient(135deg,#FBBF24,#D97706); }
+    .btn-rose   { background:linear-gradient(135deg,#FB7185,#E11D48); }
+
+    .btn-back{
+      background:white;
+      border:2px solid #CBD5E1;
+      color:#334155;
+      padding:9px 16px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      margin-bottom:18px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+    @media (max-width:650px){ .grid-2{ grid-template-columns:1fr; } }
+
+    .sticker-img{
+      width:clamp(140px, 34vw, 210px);
+      height:clamp(96px, 22vw, 160px);
+      object-fit:contain;
+      filter:drop-shadow(0 16px 18px rgba(0,0,0,0.16));
+      user-select:none;
+      -webkit-user-drag:none;
+      border-radius:18px;
+      background:rgba(248,250,252,0.0);
+    }
+
+    @keyframes floaty { 0%,100%{ transform:translateY(0) scale(1); } 50%{ transform:translateY(-14px) scale(1.05); } }
+    @keyframes wobble { 0%{ transform:rotate(0deg) } 25%{ transform:rotate(6deg) } 50%{ transform:rotate(0deg) } 75%{ transform:rotate(-6deg) } 100%{ transform:rotate(0deg) } }
+    @keyframes boing  { 0%,100%{ transform:scale(1) } 50%{ transform:scale(1.18) } }
+    @keyframes pop    { 0%{ transform:scale(1) } 40%{ transform:scale(1.08) } 100%{ transform:scale(1) } }
+    .floaty{ animation:floaty 2.6s infinite ease-in-out; }
+    .wobble{ animation:wobble 0.9s infinite ease-in-out; }
+    .boing { animation:boing 1.1s infinite ease-in-out; }
+    .pop   { animation:pop .28s ease-out; }
+
+    .bubble{
+      display:none;
+      background:#F5F3FF;
+      border:2px solid #DDD6FE;
+      color:#5B21B6;
+      padding:14px 14px;
+      border-radius:18px;
+      font-weight:800;
+      margin-top:12px;
+      text-align:left;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      margin-top:10px;
+      background:#EDE9FE;
+      color:#5B21B6;
+    }
+
+    .mini-panel{
+      background:#F8FAFC;
+      border:2px dashed #CBD5E1;
+      border-radius:18px;
+      padding:14px;
+      margin-top:12px;
+      text-align:left;
+    }
+
+    .timer{
+      font-size:34px;
+      font-weight:900;
+      margin-top:10px;
+      color:#0F172A;
+      min-height:44px;
+      text-align:center;
+    }
+
+    .progressWrap{
+      width:100%;
+      background:#E2E8F0;
+      border-radius:999px;
+      overflow:hidden;
+      height:12px;
+      margin-top:12px;
+    }
+    .progressBar{
+      height:12px;
+      width:0%;
+      background:linear-gradient(90deg,#38BDF8,#A78BFA);
+      transition:width .2s linear;
+    }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:10px; }
+    .chip{
+      border:2px solid #E2E8F0;
+      background:#FFFFFF;
+      border-radius:999px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .15s ease, border-color .15s ease, background .15s ease;
+      user-select:none;
+    }
+    .chip:hover{ transform:translateY(-2px); }
+    .chip.on{
+      border-color:#7C3AED;
+      background:#EDE9FE;
+    }
+
+    .input, textarea, select{
+      width:100%;
+      font-family:'Fredoka', sans-serif;
+      font-weight:700;
+      border-radius:16px;
+      border:2px solid #E2E8F0;
+      padding:12px 14px;
+      outline:none;
+      font-size:15px;
+      box-sizing:border-box;
+    }
+    textarea{ min-height:92px; resize:vertical; }
+
+    .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media (max-width:650px){ .row-2{ grid-template-columns:1fr; } }
+
+    .note{
+      color:#64748B;
+      font-weight:800;
+      font-size:13px;
+      margin-top:8px;
+      text-align:center;
+    }
+
+    /* subtle dotted feel */
+    #app-container:before{
+      content:"";
+      position:absolute;
+      inset:-80px -30px -80px -30px;
+      background-image: radial-gradient(rgba(124,58,237,0.18) 1.6px, transparent 1.6px);
+      background-size: 28px 28px;
+      pointer-events:none;
+      opacity:.55;
+      mask-image: radial-gradient(circle at 40% 20%, rgba(0,0,0,1), rgba(0,0,0,0.15) 70%);
+    }
+
+    /* tiny speech bubble visual */
+    .speech-demo{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      align-items:flex-end;
+      margin-top:10px;
+    }
+    .bub{
+      background:#FFFFFF;
+      border:2px solid #E2E8F0;
+      border-radius:999px;
+      height:26px;
+      width:34px;
+      box-shadow:0 8px 16px rgba(0,0,0,0.08);
+      transform-origin:center;
+    }
+    .bub.small{ width:22px; height:18px; opacity:.7; }
+    .bub.med{ width:36px; height:26px; opacity:.85; }
+    .bub.big{ width:52px; height:34px; opacity:1; }
+    .bub.glow{
+      border-color:#A78BFA;
+      box-shadow:0 0 22px rgba(167,139,250,0.40), 0 10px 18px rgba(0,0,0,0.10);
+    }
+
+    /* highlight box */
+    .highlight{
+      background:#ECFDF5;
+      border:2px solid #A7F3D0;
+      color:#065F46;
+      border-radius:18px;
+      padding:12px 14px;
+      font-weight:900;
+      margin-top:12px;
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-container"></div>
+
+  <script>
+    const container = document.getElementById('app-container');
+
+    // ---- timer safety (clear all timeouts/intervals on navigation) ----
+    const ACTIVE = { t: [], i: [] };
+    function safeTimeout(fn, ms){ const id = setTimeout(fn, ms); ACTIVE.t.push(id); return id; }
+    function safeInterval(fn, ms){ const id = setInterval(fn, ms); ACTIVE.i.push(id); return id; }
+    function clearAllTimers(){
+      while(ACTIVE.t.length) clearTimeout(ACTIVE.t.pop());
+      while(ACTIVE.i.length) clearInterval(ACTIVE.i.pop());
+    }
+    function nav(renderFn){
+      clearAllTimers();
+      renderFn();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ---- illustration map (local) ----
+    // Put your 16 images here:
+    // assets/shy/shy_01.png ... shy_16.png
+    const IMG = {
+      homeHappening: "assets/shy/shy_01.png",
+      homeTools:     "assets/shy/shy_02.png",
+
+      // behaviors
+      bHide:   "assets/shy/shy_03.png",
+      bDown:   "assets/shy/shy_04.png",
+      bFreeze: "assets/shy/shy_05.png",
+      bBack:   "assets/shy/shy_06.png",
+
+      // consequences
+      cMiss:   "assets/shy/shy_07.png",
+      cIdeas:  "assets/shy/shy_08.png",
+      cNear:   "assets/shy/shy_09.png",
+      cTense:  "assets/shy/shy_10.png",
+
+      // tools
+      tWarm:   "assets/shy/shy_11.png",
+      tVoice:  "assets/shy/shy_12.png",
+      tOne:    "assets/shy/shy_13.png",
+      tBody:   "assets/shy/shy_14.png",
+      tPocket: "assets/shy/shy_15.png",
+      tExit:   "assets/shy/shy_16.png"
+    };
+
+    function safeImg(src, cls){
+      // Local-only, no external fallback. If missing, hide image so the page still works.
+      return `<img src="${src}" class="sticker-img ${cls || ""}"
+        alt=""
+        onerror="this.style.display='none';">`;
+    }
+
+    // ---------------- HOME ----------------
+    function showHome(){
+      container.innerHTML = `
+        <h1 class="title">Understanding Shyness</h1>
+        <p class="subtitle">Shy is when you want to join… but your body feels tight and your words hide.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#38BDF8;">
+            ${safeImg(IMG.homeHappening, "floaty")}
+            <div class="card-title">What’s happening?</div>
+            <p class="card-desc">Your brain is trying to stay safe. It slows you down before talking, joining, or being seen.</p>
+            <div class="pill">Body: warm face • tight chest • quiet voice</div><br>
+            <div class="pill">Triggers: new people • attention • speaking up</div>
+            <button class="btn btn-sky" onclick="nav(showReactions)">See Behaviors</button>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#7C3AED;">
+            ${safeImg(IMG.homeTools, "floaty")}
+            <div class="card-title">Comfort Tools</div>
+            <p class="card-desc">Gentle, science-backed ways to feel safer and braver—one tiny step at a time.</p>
+            <button class="btn btn-violet" onclick="nav(showSolutions)">Show Comfort Tools</button>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+        </div>
+      `;
+    }
+
+    // ---------------- BEHAVIORS ----------------
+    function showReactions(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="nav(showHome)">← Back</button>
+        <h1 class="title accent-title">How Do I Act When I’m Shy?</h1>
+        <p class="subtitle" style="color:#7C3AED; font-weight:800;">These are clues your brain is trying to stay safe.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${safeImg(IMG.bHide, "floaty")}
+            <div class="card-title">I Hide or Peek</div>
+            <p class="card-desc">I stay behind something or close to a safe spot.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${safeImg(IMG.bDown, "boing")}
+            <div class="card-title">I Look Down</div>
+            <p class="card-desc">Eye contact feels too big, so my eyes rest lower.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${safeImg(IMG.bFreeze, "wobble")}
+            <div class="card-title">I Freeze</div>
+            <p class="card-desc">I want to move… but my body feels stuck.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#A78BFA;">
+            ${safeImg(IMG.bBack, "floaty")}
+            <div class="card-title">I Hang Back</div>
+            <p class="card-desc">I stand far away even when I want to join.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#4338CA;">
+          <p style="font-weight:900; font-size:20px; color:#312E81; margin:0;">What happens if shyness stays in charge?</p>
+          <button class="btn btn-indigo" style="width:auto; margin-top:14px;" onclick="nav(showConsequences)">See Consequences ➔</button>
+        </div>
+      `;
+    }
+
+    // ---------------- CONSEQUENCES ----------------
+    function showConsequences(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="nav(showReactions)">← Back</button>
+        <h1 class="title accent-title">When Shyness Takes Over…</h1>
+        <p class="subtitle">It can block your voice, your ideas, and your chances—without meaning to.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cMiss, "floaty")}
+            <div class="card-title">I Miss Chances</div>
+            <p class="card-desc">I want to join, but I wait too long and the moment passes.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cIdeas, "boing")}
+            <div class="card-title">Ideas Stay Inside</div>
+            <p class="card-desc">My brain has words… but my mouth won’t send them out.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cNear, "floaty")}
+            <div class="card-title">I Feel Near—but Not In</div>
+            <p class="card-desc">I’m close to others, but it still feels hard to connect.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cTense, "wobble")}
+            <div class="card-title">My Body Stays Tight</div>
+            <p class="card-desc">Tension uses energy that could help me think and speak.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#10B981;">
+          <p style="font-weight:900; font-size:20px; color:#065F46; margin:0;">Good news: tiny steps train your brain to feel safe.</p>
+          <button class="btn btn-mint" style="width:auto; margin-top:14px;" onclick="nav(showSolutions)">Go to Comfort Tools ➔</button>
+        </div>
+      `;
+    }
+
+    // ---------------- TOOLS ----------------
+    // Tool states
+    let warmStep = 0;            // tool 1
+    let voiceLevel = 0;          // tool 2
+    let bodyTimer = null;        // tool 4
+    let bodyLeft = 0;            // tool 4
+    let pocketPick = "";         // tool 5
+
+    function showSolutions(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="nav(showHome)">← Back to Start</button>
+        <h1 class="title accent-title">Comfort Tools</h1>
+        <p class="subtitle">These tools teach your brain: “I can handle small steps.”</p>
+
+        <div style="display:flex; flex-direction:column; gap:26px; margin-top:18px;">
+
+          <!-- TOOL 1 -->
+          <div class="white-card" style="border-bottom-color:#0EA5E9;">
+            ${safeImg(IMG.tWarm, "floaty")}
+            <div class="card-title" style="color:#0EA5E9;">Safe Spot Warm-Up (3 Tiny Steps)</div>
+            <p class="card-desc">Why it helps: gentle exposure + safety cues train your brain to stay calm near people.</p>
+
+            <div class="mini-panel" id="warm-panel">
+              <div class="pill" id="warm-pill">Step 1</div>
+              <div style="font-weight:900; font-size:18px; margin-top:10px;" id="warm-line">Stand in your safe spot and breathe once.</div>
+              <div class="note" id="warm-note">Tiny is powerful.</div>
+              <div class="progressWrap"><div class="progressBar" id="warm-bar"></div></div>
+            </div>
+
+            <div class="row-2" style="margin-top:14px;">
+              <button class="btn btn-sky" onclick="warmNext()">Next Step</button>
+              <button class="btn btn-indigo" onclick="warmReset()">Reset</button>
+            </div>
+          </div>
+
+          <!-- TOOL 2 -->
+          <div class="white-card" style="border-bottom-color:#7C3AED;">
+            ${safeImg(IMG.tVoice, "boing")}
+            <div class="card-title" style="color:#7C3AED;">Tiny Voice First (Volume Builder)</div>
+            <p class="card-desc">Why it helps: your voice gets easier when you start small (shaping + practice).</p>
+
+            <div class="mini-panel" style="text-align:center;">
+              <div class="pill" id="voice-pill">Whisper</div>
+              <div class="speech-demo" id="speech-demo">
+                <div class="bub small glow" id="b1"></div>
+                <div class="bub small" id="b2"></div>
+                <div class="bub small" id="b3"></div>
+              </div>
+              <div style="font-weight:900; font-size:18px; margin-top:10px;" id="voice-line">Say: “Hi.”</div>
+              <div class="note" id="voice-note">You can practice to yourself first.</div>
+            </div>
+
+            <div class="row-2" style="margin-top:14px;">
+              <button class="btn btn-violet" onclick="voiceUp()">Level Up</button>
+              <button class="btn btn-indigo" onclick="voiceReset()">Reset</button>
+            </div>
+          </div>
+
+          <!-- TOOL 3 -->
+          <div class="white-card" style="border-bottom-color:#10B981;">
+            ${safeImg(IMG.tOne, "floaty")}
+            <div class="card-title" style="color:#10B981;">One-Person Practice (Mini Script)</div>
+            <p class="card-desc">Why it helps: starting with one safe person reduces pressure and builds confidence.</p>
+
+            <div class="mini-panel">
+              <div class="row-2">
+                <div>
+                  <div style="font-weight:900; margin-bottom:8px;">Who is your safe person?</div>
+                  <select id="one-who">
+                    <option value="">Choose one…</option>
+                    <option>Teacher</option>
+                    <option>Mom</option>
+                    <option>Dad</option>
+                    <option>Coach</option>
+                    <option>Friend</option>
+                    <option>Grandparent</option>
+                  </select>
+                  <div style="margin-top:10px; font-weight:900;">Or type a name:</div>
+                  <input class="input" id="one-name" placeholder="Example: Ms. Rivera" />
+                </div>
+                <div>
+                  <div style="font-weight:900; margin-bottom:8px;">What will you say?</div>
+                  <select id="one-what">
+                    <option value="">Choose one…</option>
+                    <option>“Hi.”</option>
+                    <option>“Can I play?”</option>
+                    <option>“Can you help me?”</option>
+                    <option>“I’m shy. Can we start small?”</option>
+                    <option>“Can I stand here for a minute?”</option>
+                  </select>
+                  <div style="margin-top:10px; font-weight:900;">Or type your line:</div>
+                  <input class="input" id="one-line" placeholder="Example: Can I sit here?" />
+                </div>
+              </div>
+
+              <div class="highlight" id="one-out">Your script will appear here.</div>
+            </div>
+
+            <div class="row-2" style="margin-top:14px;">
+              <button class="btn btn-mint" onclick="buildOne()">Build Script</button>
+              <button class="btn btn-indigo" onclick="clearOne()">Clear</button>
+            </div>
+          </div>
+
+          <!-- TOOL 4 -->
+          <div class="white-card" style="border-bottom-color:#F59E0B;">
+            ${safeImg(IMG.tBody, "floaty")}
+            <div class="card-title" style="color:#D97706;">Brave Body (30-Second Reset)</div>
+            <p class="card-desc">Why it helps: relaxed shoulders + steady breathing tells your brain “I’m safe.”</p>
+
+            <div class="mini-panel" style="text-align:center;">
+              <div class="pill" id="body-pill">Ready</div>
+              <div class="timer" id="body-timer"></div>
+              <div style="font-weight:900; font-size:18px;" id="body-line">Feet planted. Shoulders soft.</div>
+              <div class="note" id="body-note">Small posture shifts can change feelings.</div>
+              <div class="progressWrap"><div class="progressBar" id="body-bar"></div></div>
+            </div>
+
+            <div class="row-2" style="margin-top:14px;">
+              <button class="btn btn-amber" id="body-btn" onclick="toggleBody()">Start</button>
+              <button class="btn btn-indigo" onclick="resetBody()">Reset</button>
+            </div>
+          </div>
+
+          <!-- TOOL 5 -->
+          <div class="white-card" style="border-bottom-color:#4338CA;">
+            ${safeImg(IMG.tPocket, "boing")}
+            <div class="card-title" style="color:#4338CA;">Pocket Courage (Pick One)</div>
+            <p class="card-desc">Why it helps: a small “courage object” gives your hands a job and your brain a safety cue.</p>
+
+            <div class="mini-panel" style="text-align:center;">
+              <div class="pill" id="pocket-pill">Pick one</div>
+              <div class="chips" id="pocket-chips">
+                <div class="chip" onclick="pickPocket(this,'Smooth Stone')">Smooth Stone</div>
+                <div class="chip" onclick="pickPocket(this,'Tiny Star')">Tiny Star</div>
+                <div class="chip" onclick="pickPocket(this,'Bracelet')">Bracelet</div>
+                <div class="chip" onclick="pickPocket(this,'Sticker')">Sticker</div>
+                <div class="chip" onclick="pickPocket(this,'Keychain')">Keychain</div>
+                <div class="chip" onclick="pickPocket(this,'Lucky Leaf')">Lucky Leaf</div>
+              </div>
+              <div class="highlight" id="pocket-out">My pocket courage: ________</div>
+              <div class="note">Touch it once. Breathe once. Then try one tiny step.</div>
+            </div>
+
+            <div class="row-2" style="margin-top:14px;">
+              <button class="btn btn-indigo" onclick="resetPocket()">Clear Choice</button>
+              <button class="btn btn-violet" onclick="pocketTry()">Try a Tiny Step</button>
+            </div>
+
+            <div id="pocket-bubble" class="bubble">Tiny step idea: walk 3 steps closer… or say “Hi” to one person.</div>
+          </div>
+
+          <!-- TOOL 6 -->
+          <div class="white-card" style="border-bottom-color:#E11D48;">
+            ${safeImg(IMG.tExit, "floaty")}
+            <div class="card-title" style="color:#E11D48;">Exit Plan (Feel In Control)</div>
+            <p class="card-desc">Why it helps: having a plan lowers fear and reduces “stuck” feelings.</p>
+
+            <div class="mini-panel">
+              <div class="row-2">
+                <div>
+                  <div style="font-weight:900; margin-bottom:8px;">Where can you reset?</div>
+                  <select id="exit-where">
+                    <option value="">Choose one…</option>
+                    <option>Quiet corner</option>
+                    <option>Bathroom break</option>
+                    <option>Water station</option>
+                    <option>Library / calm spot</option>
+                    <option>Near the teacher</option>
+                    <option>Outside air (with adult)</option>
+                  </select>
+                  <div style="margin-top:10px; font-weight:900;">Or type your place:</div>
+                  <input class="input" id="exit-where2" placeholder="Example: hallway bench" />
+                </div>
+                <div>
+                  <div style="font-weight:900; margin-bottom:8px;">Who is your helper?</div>
+                  <select id="exit-who">
+                    <option value="">Choose one…</option>
+                    <option>Teacher</option>
+                    <option>Mom</option>
+                    <option>Dad</option>
+                    <option>Coach</option>
+                    <option>Friend</option>
+                    <option>Grandparent</option>
+                  </select>
+                  <div style="margin-top:10px; font-weight:900;">Or type a name:</div>
+                  <input class="input" id="exit-who2" placeholder="Example: Ms. Lee" />
+                </div>
+              </div>
+
+              <div class="highlight" id="exit-out">My exit plan will appear here.</div>
+            </div>
+
+            <div class="row-2" style="margin-top:14px;">
+              <button class="btn btn-rose" onclick="buildExit()">Build Exit Plan</button>
+              <button class="btn btn-indigo" onclick="clearExit()">Clear</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+        </div>
+      `;
+
+      resetStates();
+      warmRender();     // tool 1 initial
+      voiceRender();    // tool 2 initial
+      bodyRender();     // tool 4 initial
+    }
+
+    // ---------- TOOL 1: Safe Spot Warm-Up ----------
+    const warmSteps = [
+      { pill:"Step 1", line:"Stand in your safe spot and breathe once.", note:"Tiny is powerful." },
+      { pill:"Step 2", line:"Take 2 slow steps closer… then pause.", note:"Your brain is learning safety." },
+      { pill:"Step 3", line:"Say one tiny word: “Hi.” (or just smile).", note:"Small voice counts." }
+    ];
+    function warmRender(){
+      const pill = document.getElementById('warm-pill');
+      const line = document.getElementById('warm-line');
+      const note = document.getElementById('warm-note');
+      const bar  = document.getElementById('warm-bar');
+      if(!pill || !line || !note || !bar) return;
+
+      const s = warmSteps[warmStep];
+      pill.textContent = s.pill;
+      line.textContent = s.line;
+      note.textContent = s.note;
+
+      const pct = Math.round(((warmStep + 1) / warmSteps.length) * 100);
+      bar.style.width = pct + "%";
+      line.classList.remove('pop'); void line.offsetWidth; line.classList.add('pop');
+    }
+    function warmNext(){
+      warmStep = (warmStep + 1) % warmSteps.length;
+      warmRender();
+    }
+    function warmReset(){
+      warmStep = 0;
+      warmRender();
+    }
+
+    // ---------- TOOL 2: Tiny Voice First ----------
+    const voiceLevels = [
+      { pill:"Whisper", line:"Say: “Hi.”", note:"Practice to yourself first.", bubbles:["small","small","small"], glow:0 },
+      { pill:"Small",   line:"Say: “Hi, I’m ___.”", note:"One sentence is enough.", bubbles:["small","med","small"], glow:1 },
+      { pill:"Normal",  line:"Say: “Can I join?”", note:"Short is brave.", bubbles:["med","big","med"], glow:2 }
+    ];
+    function voiceRender(){
+      const pill = document.getElementById('voice-pill');
+      const line = document.getElementById('voice-line');
+      const note = document.getElementById('voice-note');
+      const b1 = document.getElementById('b1');
+      const b2 = document.getElementById('b2');
+      const b3 = document.getElementById('b3');
+      if(!pill || !line || !note || !b1 || !b2 || !b3) return;
+
+      const v = voiceLevels[voiceLevel];
+      pill.textContent = v.pill;
+      line.textContent = v.line;
+      note.textContent = v.note;
+
+      const arr = [b1,b2,b3];
+      arr.forEach((el, idx) => {
+        el.className = "bub " + v.bubbles[idx] + (idx === v.glow ? " glow" : "");
+      });
+
+      line.classList.remove('pop'); void line.offsetWidth; line.classList.add('pop');
+    }
+    function voiceUp(){
+      voiceLevel = Math.min(voiceLevel + 1, voiceLevels.length - 1);
+      voiceRender();
+    }
+    function voiceReset(){
+      voiceLevel = 0;
+      voiceRender();
+    }
+
+    // ---------- TOOL 3: One-Person Practice ----------
+    function buildOne(){
+      const whoSel = document.getElementById('one-who');
+      const name   = document.getElementById('one-name');
+      const whatSel= document.getElementById('one-what');
+      const lineIn = document.getElementById('one-line');
+      const out    = document.getElementById('one-out');
+      if(!out) return;
+
+      const who = (name && name.value.trim()) || (whoSel && whoSel.value) || "someone safe";
+      const what = (lineIn && lineIn.value.trim()) || (whatSel && whatSel.value) || "Hi.";
+      out.textContent = `Script: “Hi ${who}. ${what}”`;
+      out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop');
+    }
+    function clearOne(){
+      const ids = ['one-who','one-name','one-what','one-line'];
+      ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
+      const out = document.getElementById('one-out');
+      if(out) out.textContent = "Your script will appear here.";
+    }
+
+    // ---------- TOOL 4: Brave Body (30s) ----------
+    function bodyRender(){
+      const pill = document.getElementById('body-pill');
+      const timer= document.getElementById('body-timer');
+      const line = document.getElementById('body-line');
+      const note = document.getElementById('body-note');
+      const bar  = document.getElementById('body-bar');
+      const btn  = document.getElementById('body-btn');
+      if(!pill || !timer || !line || !note || !bar || !btn) return;
+
+      if(bodyLeft <= 0){
+        pill.textContent = "Ready";
+        timer.textContent = "";
+        line.textContent = "Feet planted. Shoulders soft.";
+        note.textContent = "Small posture shifts can change feelings.";
+        bar.style.width = "0%";
+        btn.textContent = "Start";
+        btn.disabled = false;
+      } else {
+        timer.textContent = bodyLeft;
+        const pct = Math.round(((30 - bodyLeft) / 30) * 100);
+        bar.style.width = pct + "%";
+      }
+    }
+
+    function toggleBody(){
+      const btn  = document.getElementById('body-btn');
+      const pill = document.getElementById('body-pill');
+      const line = document.getElementById('body-line');
+      const note = document.getElementById('body-note');
+      if(!btn || !pill || !line || !note) return;
+
+      // If running, stop
+      if(bodyTimer){
+        clearAllTimers();
+        bodyTimer = null;
+        bodyLeft = 0;
+        bodyRender();
+        return;
+      }
+
+      // Start
+      bodyLeft = 30;
+      pill.textContent = "Doing it";
+      btn.textContent = "Stop";
+      line.textContent = "Drop shoulders… unclench hands… soft face.";
+      note.textContent = "Breathe slow. Count down with me.";
+      line.classList.remove('pop'); void line.offsetWidth; line.classList.add('pop');
+
+      bodyRender();
+      bodyTimer = safeInterval(() => {
+        bodyLeft--;
+        bodyRender();
+        if(bodyLeft <= 0){
+          clearAllTimers();
+          bodyTimer = null;
+          const pill2 = document.getElementById('body-pill');
+          const line2 = document.getElementById('body-line');
+          const note2 = document.getElementById('body-note');
+          if(pill2) pill2.textContent = "Nice!";
+          if(line2) line2.textContent = "You did it. One brave step is enough for today.";
+          if(note2) note2.textContent = "Your brain learns: “I can handle this.”";
+          bodyRender();
+        }
+      }, 1000);
+    }
+
+    function resetBody(){
+      clearAllTimers();
+      bodyTimer = null;
+      bodyLeft = 0;
+      bodyRender();
+    }
+
+    // ---------- TOOL 5: Pocket Courage ----------
+    function pickPocket(el, label){
+      const chips = document.querySelectorAll('#pocket-chips .chip');
+      chips.forEach(c => c.classList.remove('on'));
+      el.classList.add('on');
+      pocketPick = label;
+
+      const out = document.getElementById('pocket-out');
+      const pill = document.getElementById('pocket-pill');
+      if(out) out.textContent = `My pocket courage: ${label}`;
+      if(pill) pill.textContent = "Chosen";
+      if(out){ out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop'); }
+    }
+
+    function resetPocket(){
+      pocketPick = "";
+      const chips = document.querySelectorAll('#pocket-chips .chip');
+      chips.forEach(c => c.classList.remove('on'));
+      const out = document.getElementById('pocket-out');
+      const pill = document.getElementById('pocket-pill');
+      const bub  = document.getElementById('pocket-bubble');
+      if(out) out.textContent = "My pocket courage: ________";
+      if(pill) pill.textContent = "Pick one";
+      if(bub) bub.style.display = "none";
+    }
+
+    function pocketTry(){
+      const bub = document.getElementById('pocket-bubble');
+      if(!bub) return;
+      if(!pocketPick){
+        bub.textContent = "Pick one courage object first. Two seconds is enough.";
+        bub.style.display = "block";
+        safeTimeout(() => { bub.style.display = "none"; }, 2200);
+        return;
+      }
+      const ideas = [
+        "Tiny step idea: look up and smile at one person.",
+        "Tiny step idea: stand 3 steps closer, then pause.",
+        "Tiny step idea: say one word: “Hi.”",
+        "Tiny step idea: ask one small question: “Can I sit here?”",
+        "Tiny step idea: wave once. That counts."
+      ];
+      bub.textContent = ideas[Math.floor(Math.random() * ideas.length)];
+      bub.style.display = "block";
+      safeTimeout(() => { bub.style.display = "none"; }, 2600);
+    }
+
+    // ---------- TOOL 6: Exit Plan ----------
+    function buildExit(){
+      const whereSel = document.getElementById('exit-where');
+      const where2   = document.getElementById('exit-where2');
+      const whoSel   = document.getElementById('exit-who');
+      const who2     = document.getElementById('exit-who2');
+      const out      = document.getElementById('exit-out');
+      if(!out) return;
+
+      const where = (where2 && where2.value.trim()) || (whereSel && whereSel.value) || "a quiet spot";
+      const who   = (who2 && who2.value.trim()) || (whoSel && whoSel.value) || "a helper";
+
+      out.textContent = `Plan: If I feel too shy, I can go to ${where} and tell ${who}: “I need a quick reset.”`;
+      out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop');
+    }
+
+    function clearExit(){
+      const ids = ['exit-where','exit-where2','exit-who','exit-who2'];
+      ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
+      const out = document.getElementById('exit-out');
+      if(out) out.textContent = "My exit plan will appear here.";
+    }
+
+    function resetStates(){
+      warmStep = 0;
+      voiceLevel = 0;
+      pocketPick = "";
+      bodyLeft = 0;
+      bodyTimer = null;
+      clearAllTimers();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      try { showHome(); }
+      catch (e) {
+        container.innerHTML = `
+          <div class="white-card" style="border-bottom-color:#E11D48;">
+            <div class="card-title" style="color:#E11D48;">Shy page error</div>
+            <p class="card-desc">Copy the message below and paste it to ChatGPT.</p>
+            <pre style="white-space:pre-wrap; text-align:left; font-weight:800; color:#991B1B; margin-top:10px;">${e && e.stack ? e.stack : e}</pre>
+          </div>
+          <div style="text-align:center; margin-top:18px;">
+            <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+          </div>
+        `;
+        console.error(e);
+      }
+    });
+  </script>
+</body>
+</html>
