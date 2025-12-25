@@ -419,6 +419,28 @@
       text-decoration:none;
       font-weight:900;
     }
+    <style>
+  body { ... }
+  .white-card { ... }
+  .btn { ... }
+  /* other CSS already here ... */
+
+  /* ✅ PASTE THIS BLOCK RIGHT HERE (near the bottom is fine) */
+  /* Make the Tools card clickable */
+  .clickable-card { cursor: pointer; }
+
+  /* Decorative emoji-scene layers should NOT steal clicks */
+  .sceneWrap, .sceneWrap * ,
+  .sceneBox, .sceneBox * ,
+  .scene, .scene * {
+    pointer-events: none;
+  }
+
+  /* Buttons/links should still receive clicks */
+  button, .btn, a { pointer-events: auto; }
+
+</style>
+
   </style>
 </head>
 
