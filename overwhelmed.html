@@ -568,9 +568,9 @@
             </div>
           </div>
 
-          <!-- TOOL 2 -->
+          <!-- TOOL 2 (CHANGED ILLUSTRATION: NO TRASH CAN) -->
           <div class="white-card" style="border-bottom-color:#4338CA;">
-            ${emojiScene("🗑️", ["💭","📥","📝"], "floaty")}
+            ${emojiScene("📥", ["📝","💭","🧠"], "floaty")}
             <div class="card-title" style="color:#4338CA;">Brain Dump Box (Unload It)</div>
             <p class="card-desc">Why it helps: writing thoughts outside your head reduces brain-load and makes plans feel smaller.</p>
 
@@ -667,9 +667,9 @@
             <div class="mini-panel" id="pickOut" style="font-weight:900; font-size:18px;">Today I only need: ______ and ______.</div>
           </div>
 
-          <!-- TOOL 6 -->
+          <!-- TOOL 6 (CHANGED ILLUSTRATION: NO PEOPLE HOLDING HANDS) -->
           <div class="white-card" style="border-bottom-color:#6366F1;">
-            ${emojiScene("🧑‍🤝‍🧑", ["💬","✋","🧩"], "floaty")}
+            ${emojiScene("🛟", ["📣","💬","👂"], "floaty glow")}
             <div class="card-title" style="color:#4338CA;">Help Signal Script (Ask-for-Help Builder)</div>
             <p class="card-desc">Why it helps: co-regulation + clear words can turn overwhelm into a doable plan.</p>
 
@@ -1048,12 +1048,13 @@
       const clearScript = document.getElementById('clearScript');
       const scriptOut = document.getElementById('scriptOut');
 
+      function cleanText2(s){ return (s || "").replace(/\s+/g, " ").trim(); }
       function currentWho(){
-        const c = cleanText(helpWhoCustom ? helpWhoCustom.value : "");
+        const c = cleanText2(helpWhoCustom ? helpWhoCustom.value : "");
         return c || (helpWho && helpWho.value) || "____";
       }
       function currentNeed(){
-        const c = cleanText(helpNeedCustom ? helpNeedCustom.value : "");
+        const c = cleanText2(helpNeedCustom ? helpNeedCustom.value : "");
         return c || (helpNeed && helpNeed.value) || "____";
       }
       function build(){
@@ -1102,3 +1103,4 @@
   </script>
 </body>
 </html>
+
