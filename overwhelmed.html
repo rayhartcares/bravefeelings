@@ -95,6 +95,7 @@
       width: 100%;
       margin-top: 16px;
       box-shadow: 0 7px 16px rgba(0,0,0,0.12);
+      pointer-events: auto;
     }
     .btn:hover { transform: scale(1.02); filter: brightness(1.06); }
     .btn:disabled { opacity: .75; cursor: not-allowed; transform: none; }
@@ -114,6 +115,7 @@
       font-weight: 800;
       cursor: pointer;
       margin-bottom: 18px;
+      pointer-events: auto;
     }
 
     .grid-2 {
@@ -160,18 +162,6 @@
     .wobble { animation: wobble 0.9s infinite ease-in-out; }
     .boing  { animation: boing 1.1s infinite ease-in-out; }
     .glow   { animation: glow 1.6s infinite ease-in-out; }
-
-    .bubble {
-      display: none;
-      background: #E0F2FE;
-      border: 2px solid #BAE6FD;
-      color: #075985;
-      padding: 14px 14px;
-      border-radius: 18px;
-      font-weight: 800;
-      margin-top: 12px;
-      line-height: 1.45;
-    }
 
     /* Pills (home signals/triggers + tool phase) */
     .pillRow {
@@ -352,7 +342,6 @@
     }
     .warn.show { display: block; }
 
-    /* Copy feedback */
     .tinyNote {
       margin-top: 10px;
       color: #64748B;
@@ -361,8 +350,11 @@
       line-height: 1.35;
     }
 
-    /* Clickable whole card for Tools on home (matches your earlier standard) */
+    /* Clickable whole card for Tools on home */
     .clickable-card { cursor: pointer; }
+
+    /* Ensure buttons/links remain clickable even with scene layers */
+    a { pointer-events: auto; }
   </style>
 </head>
 
@@ -409,26 +401,26 @@
 
         <div class="grid-2">
           <div class="white-card" style="border-bottom-color:#0EA5E9;">
-            ${emojiScene("🤯", ["📚","⏰","🔔"], "floaty glow")}
+            ${emojiScene("🐙", ["📚","⏰","📣"], "floaty glow")}
             <div class="card-title">What’s happening?</div>
             <p class="card-desc">When your brain gets too many jobs, noises, choices, or feelings, it can freeze or burst into tears.</p>
 
             <div class="pillRow" aria-label="Signals and triggers">
               <span class="pillTag">fast breathing</span>
               <span class="pillTag">tight shoulders</span>
-              <span class="pillTag">tummy flutter</span>
+              <span class="pillTag">head pressure</span>
               <span class="pillTag trig">too many instructions</span>
+              <span class="pillTag trig">messy room / clutter</span>
               <span class="pillTag trig">time pressure</span>
-              <span class="pillTag trig">loud noise / crowds</span>
             </div>
 
             <button class="btn btn-sky" onclick="showReactions()">See Behaviors</button>
           </div>
 
           <div class="white-card clickable-card" id="toolsHomeCard" style="border-bottom-color:#4338CA;">
-            ${emojiScene("🗂️", ["🧠","🤝","✋"], "floaty glow")}
+            ${emojiScene("🧺", ["🧩","🧠","✅"], "floaty glow")}
             <div class="card-title">Tools</div>
-            <p class="card-desc">Sort the storm. Calm the body. Pick one tiny step. You don’t have to carry everything at once.</p>
+            <p class="card-desc">Sort the pile, calm the body, and pick just one tiny step. Your brain loves small.</p>
             <button class="btn btn-indigo" onclick="showSolutions()">Show Comfort Tools</button>
           </div>
         </div>
@@ -438,11 +430,9 @@
         </div>
       `;
 
-      // Whole Tools card is clickable (but emojis never block clicks)
       const toolsCard = document.getElementById('toolsHomeCard');
       if(toolsCard){
         toolsCard.addEventListener('click', (e) => {
-          // Let the button do its normal job too
           if(e.target && e.target.tagName === 'BUTTON') return;
           showSolutions();
         });
@@ -458,25 +448,25 @@
 
         <div class="grid-2">
           <div class="white-card" style="border-bottom-color:#38BDF8;">
-            ${emojiScene("🧊", ["😶","⏸️","🧠"], "floaty")}
+            ${emojiScene("🧊", ["⏸️","😶","🛑"], "floaty")}
             <div class="card-title">I Freeze</div>
             <p class="card-desc">I stare, stop moving, or can’t start.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#F59E0B;">
-            ${emojiScene("🌋", ["😢","⚡","💥"], "boing")}
+            ${emojiScene("🌪️", ["⚡","😵‍💫","💥"], "boing")}
             <div class="card-title">I Melt Down</div>
             <p class="card-desc">I cry, yell, or feel panicky.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#6366F1;">
-            ${emojiScene("🏃‍➡️", ["🚪","🙈","🫥"], "floaty")}
+            ${emojiScene("🕳️", ["🏃‍➡️","🙈","🚪"], "floaty")}
             <div class="card-title">I Avoid</div>
             <p class="card-desc">I run away, hide, or say “I can’t!”</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#0EA5E9;">
-            ${emojiScene("😤", ["🗯️","🤏","💢"], "wobble")}
+            ${emojiScene("🦔", ["😤","💢","🗯️"], "wobble")}
             <div class="card-title">I Get Snappy</div>
             <p class="card-desc">Small things feel huge, and I get mean or impatient.</p>
           </div>
@@ -502,7 +492,7 @@
 
         <div class="grid-2">
           <div class="white-card" style="border-bottom-color:#F59E0B;">
-            ${emojiScene("🧩", ["❌","📝","😵‍💫"], "wobble")}
+            ${emojiScene("🧾", ["❌","🔁","🌀"], "wobble")}
             <div class="card-title">Mistakes Multiply</div>
             <p class="card-desc">Your brain can’t organize, so errors happen.</p>
           </div>
@@ -514,13 +504,13 @@
           </div>
 
           <div class="white-card" style="border-bottom-color:#6366F1;">
-            ${emojiScene("🫤", ["👀","🗣️","❓"], "floaty")}
+            ${emojiScene("🧩", ["🔲","🕳️","🤔"], "floaty")}
             <div class="card-title">People Misunderstand Me</div>
             <p class="card-desc">Adults or friends may think I’m being “difficult.”</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#22C55E;">
-            ${emojiScene("🧱", ["🛑","📉","😔"], "floaty")}
+            ${emojiScene("🪫", ["📉","🛑","😔"], "floaty")}
             <div class="card-title">I Stop Trying</div>
             <p class="card-desc">Quitting can make me feel smaller next time.</p>
           </div>
@@ -558,7 +548,7 @@
 
           <!-- TOOL 1 -->
           <div class="white-card" style="border-bottom-color:#0EA5E9;">
-            ${emojiScene("🌬️", ["🫁","⏱️","🧊"], "floaty glow")}
+            ${emojiScene("🫧", ["⏱️","🫁","❄️"], "floaty glow")}
             <div class="card-title" style="color:#0EA5E9;">1-Minute Nervous System Reset (60s)</div>
             <p class="card-desc">Why it helps: slowing your breath can lower the stress alarm so thinking can come back.</p>
 
@@ -580,7 +570,7 @@
 
           <!-- TOOL 2 -->
           <div class="white-card" style="border-bottom-color:#4338CA;">
-            ${emojiScene("📦", ["📝","🧠","🪶"], "floaty")}
+            ${emojiScene("🗑️", ["💭","📥","📝"], "floaty")}
             <div class="card-title" style="color:#4338CA;">Brain Dump Box (Unload It)</div>
             <p class="card-desc">Why it helps: writing thoughts outside your head reduces brain-load and makes plans feel smaller.</p>
 
@@ -612,7 +602,7 @@
 
           <!-- TOOL 3 -->
           <div class="white-card" style="border-bottom-color:#22C55E;">
-            ${emojiScene("🪜", ["🤏","⏲️","✅"], "boing")}
+            ${emojiScene("🪜", ["🤏","🔽","✅"], "boing")}
             <div class="card-title" style="color:#16A34A;">Tiny Next Step (Step Shrinker)</div>
             <p class="card-desc">Why it helps: task chunking + tiny action gets you unstuck without needing “all the energy.”</p>
 
@@ -632,7 +622,7 @@
 
           <!-- TOOL 4 -->
           <div class="white-card" style="border-bottom-color:#F59E0B;">
-            ${emojiScene("🧭", ["👀","👂","✋"], "floaty glow")}
+            ${emojiScene("📡", ["👀","👂","✋"], "floaty glow")}
             <div class="card-title" style="color:#D97706;">5-4-3-2-1 Grounding (Sense Scanner)</div>
             <p class="card-desc">Why it helps: focusing on senses anchors attention and slows the panic spiral.</p>
 
@@ -650,7 +640,7 @@
 
           <!-- TOOL 5 -->
           <div class="white-card" style="border-bottom-color:#0EA5E9;">
-            ${emojiScene("🎯", ["1️⃣","2️⃣","🧠"], "wobble")}
+            ${emojiScene("🧲", ["1️⃣","2️⃣","📌"], "wobble")}
             <div class="card-title" style="color:#0EA5E9;">Priority Picker (Only 1–2 Things)</div>
             <p class="card-desc">Why it helps: limiting choices reduces overload and supports your planning brain.</p>
 
@@ -679,7 +669,7 @@
 
           <!-- TOOL 6 -->
           <div class="white-card" style="border-bottom-color:#6366F1;">
-            ${emojiScene("📣", ["🤝","💬","🧩"], "floaty")}
+            ${emojiScene("🧑‍🤝‍🧑", ["💬","✋","🧩"], "floaty")}
             <div class="card-title" style="color:#4338CA;">Help Signal Script (Ask-for-Help Builder)</div>
             <p class="card-desc">Why it helps: co-regulation + clear words can turn overwhelm into a doable plan.</p>
 
@@ -736,17 +726,12 @@
       bindTools();
     }
 
-    // ---- Tool helpers ----
+    // ---- Tool state ----
     function resetToolStates(){
-      // Tool 1
       t1Running = false;
       t1Remain = 60;
       if(t1Interval){ clearInterval(t1Interval); t1Interval = null; }
-
-      // Tool 4
       groundingIndex = -1;
-
-      // Tool 5
       picked = [];
       if(pickWarnTimer){ clearTimeout(pickWarnTimer); pickWarnTimer = null; }
     }
@@ -775,8 +760,8 @@
         t1Running = false;
         if(t1Interval){ clearInterval(t1Interval); t1Interval = null; }
         t1Status.textContent = "Done";
-        t1Hint.textContent = "Nice. Your body got the message. Now pick one tiny next step.";
-        t1Fill.style.width = "100%";
+        if(t1Hint) t1Hint.textContent = "Nice. Your body got the message. Now pick one tiny next step.";
+        if(t1Fill) t1Fill.style.width = "100%";
       }
 
       if(bStart){
@@ -784,7 +769,7 @@
           if(t1Running) return;
           if(t1Remain === 0) t1Remain = 60;
           t1Running = true;
-          t1Hint.textContent = "Breathe out a little longer than you breathe in.";
+          if(t1Hint) t1Hint.textContent = "Breathe out a little longer than you breathe in.";
           t1Update();
           if(!t1Interval){
             t1Interval = SafeTimers.setI(() => {
@@ -805,12 +790,12 @@
       if(bPause){
         bPause.addEventListener('click', () => {
           if(!t1Running){
-            t1Hint.textContent = "Paused is okay. Press Start when you’re ready.";
+            if(t1Hint) t1Hint.textContent = "Paused is okay. Press Start when you’re ready.";
             return;
           }
           t1Running = false;
           t1Update();
-          t1Hint.textContent = "Paused. Keep shoulders soft.";
+          if(t1Hint) t1Hint.textContent = "Paused. Let your shoulders drop.";
         });
       }
 
@@ -818,7 +803,7 @@
         bReset.addEventListener('click', () => {
           t1Running = false;
           t1Remain = 60;
-          t1Hint.textContent = "Breathe out a little longer than you breathe in.";
+          if(t1Hint) t1Hint.textContent = "Breathe out a little longer than you breathe in.";
           t1Update();
         });
       }
@@ -909,9 +894,11 @@
           }
           if(stepList){
             stepList.style.display = "block";
-            stepList.innerHTML = "<div style='font-weight:900; font-size:18px; color:#0F172A;'>5 micro-steps</div><div style='margin-top:10px; color:#475569; font-weight:800; line-height:1.5; text-align:left; max-width:560px; margin-left:auto; margin-right:auto;'>" +
+            stepList.innerHTML =
+              "<div style='font-weight:900; font-size:18px; color:#0F172A;'>5 micro-steps</div>" +
+              "<div style='margin-top:10px; color:#475569; font-weight:800; line-height:1.5; text-align:left; max-width:560px; margin-left:auto; margin-right:auto;'>" +
               steps.map((s,i)=> (i+1)+". "+s).join("<br>") +
-            "</div>";
+              "</div>";
           }
         });
       }
@@ -977,8 +964,9 @@
       const pickWarn = document.getElementById('pickWarn');
       const pickOut = document.getElementById('pickOut');
 
-      function showPickWarn(){
+      function showPickWarn(msg){
         if(!pickWarn) return;
+        pickWarn.textContent = msg || "Two is enough. Your brain likes small.";
         pickWarn.classList.add('show');
         if(pickWarnTimer) clearTimeout(pickWarnTimer);
         pickWarnTimer = SafeTimers.setT(() => pickWarn.classList.remove('show'), 1600);
@@ -1014,7 +1002,7 @@
           }
 
           if(picked.length >= 2){
-            showPickWarn();
+            showPickWarn("Two is enough. Your brain likes small.");
             return;
           }
 
@@ -1027,15 +1015,7 @@
       if(addTask){
         addTask.addEventListener('click', () => {
           const t = cleanText(customTask ? customTask.value : "");
-          if(!t){
-            if(pickWarn){
-              pickWarn.textContent = "Type a task first, then press Add.";
-              showPickWarn();
-              SafeTimers.setT(() => { pickWarn.textContent = "Two is enough. Your brain likes small."; }, 900);
-            }
-            return;
-          }
-
+          if(!t){ showPickWarn("Type a task first, then press Add."); return; }
           if(!chipWrap) return;
           const div = document.createElement('div');
           div.className = 'chip';
@@ -1112,7 +1092,7 @@
       }
     }
 
-    // Expose navigation (matches your pattern across pages)
+    // Expose navigation (matches your standard)
     window.showHome = showHome;
     window.showReactions = showReactions;
     window.showConsequences = showConsequences;
