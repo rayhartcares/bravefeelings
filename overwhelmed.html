@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Understanding Overwhelmed</title>
+  <style>
+    :root{
+      --primary:#0EA5E9;      /* sky */
+      --secondary:#6366F1;    /* indigo */
+      --accent:#22C55E;       /* green */
+      --warning:#F59E0B;      /* amber */
+
+      --ink:#0f172a;
+      --muted:#475569;
+      --card:#ffffff;
+      --shadow: 0 14px 30px rgba(2, 6, 23, .12);
+      --shadowSoft: 0 10px 22px rgba(2, 6, 23, .10);
+
+      --radius: 22px;
+      --radius2: 16px;
+      --maxw: 860px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family: ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(circle at 18px 18px, rgba(14,165,233,.16) 2px, transparent 2.5px) 0 0/36px 36px,
+        radial-gradient(circle at 18px 18px, rgba(99,102,241,.12) 2px, transparent 2.5px) 18px 18px/36px 36px,
+        linear-gradient(135deg, rgba(14,165,233,.14), rgba(99,102,241,.12), rgba(34,197,94,.10));
+      background-attachment: fixed;
+    }
+
+    /* Critical click safety */
+    .scene, .scene * { pointer-events:none; }
+    button, .btn, a { pointer-events:auto; }
+
+    .wrap{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 18px 14px 42px;
+    }
+
+    .top{
+      text-align:center;
+      padding: 18px 0 12px;
+    }
+    .title{
+      margin: 6px 0 6px;
+      font-size: clamp(28px, 4.2vw, 44px);
+      line-height: 1.05;
+      letter-spacing: .2px;
+      font-weight: 900;
+    }
+    .subtitle{
+      margin: 0 auto;
+      max-width: 46ch;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 15.5px;
+    }
+    .support{
+      margin: 10px auto 0;
+      max-width: 58ch;
+      color: rgba(15, 23, 42, .82);
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 760px){
+      .grid2{ grid-template-columns: 1fr; }
+    }
+
+    .white-card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadowSoft);
+      padding: 14px 14px 14px;
+      position:relative;
+      overflow:hidden;
+      border: 1px solid rgba(2,6,23,.06);
+    }
+    .white-card.large{ padding: 14px 14px 16px; }
+    .white-card::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height: 8px;
+      background: var(--border, linear-gradient(90deg, var(--primary), var(--secondary)));
+      opacity:.95;
+    }
+
+    .cardHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .cardTitle{
+      font-size: 18px;
+      font-weight: 1000;
+      margin: 0;
+      letter-spacing: .2px;
+    }
+    .cardText{
+      margin: 8px 0 10px;
+      color: rgba(15,23,42,.84);
+      font-weight: 800;
+      line-height: 1.35;
+      font-size: 14.8px;
+    }
+
+    .pillRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+    .pill{
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(2,6,23,.04);
+      border: 1px solid rgba(2,6,23,.06);
+      font-weight: 900;
+      color: rgba(15,23,42,.82);
+      font-size: 12.5px;
+      white-space:nowrap;
+    }
+    .pill.body{ background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.20); }
+    .pill.trig{ background: rgba(99,102,241,.10); border-color: rgba(99,102,241,.18); }
+
+    .btnRow{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .btn{
+      appearance:none;
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 12px;
+      font-weight: 1000;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(2,6,23,.12);
+      transform: translateY(0);
+      transition: transform .12s ease, filter .12s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      user-select:none;
+      line-height:1;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .btn.primary{
+      color:white;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+    .btn.secondary{
+      color:white;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+    }
+    .btn.good{
+      color:white;
+      background: linear-gradient(135deg, var(--accent), rgba(14,165,233,.95));
+    }
+    .btn.warn{
+      color: rgba(15,23,42,.94);
+      background: linear-gradient(135deg, rgba(245,158,11,.92), rgba(14,165,233,.30));
+      box-shadow: 0 10px 18px rgba(245,158,11,.18);
+    }
+
+    .clickable-card{ cursor:pointer; }
+    .clickable-card:hover{ filter: brightness(1.01); }
+
+    /* Scene block (emoji header) */
+    .scene{
+      width: 100%;
+      border-radius: 18px;
+      background:
+        radial-gradient(120px 80px at 25% 15%, rgba(14,165,233,.20), transparent 60%),
+        radial-gradient(120px 80px at 75% 0%, rgba(99,102,241,.18), transparent 60%),
+        radial-gradient(120px 80px at 60% 95%, rgba(34,197,94,.12), transparent 60%),
+        rgba(2,6,23,.04);
+      border: 1px solid rgba(2,6,23,.06);
+      padding: 12px 12px;
+      position: relative;
+      overflow:hidden;
+      min-height: 96px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom: 10px;
+    }
+    .scene--home{ min-height: 96px; }
+    .scene--tool{ min-height: 120px; border-radius: 20px; }
+    .sceneBig{
+      font-size: 92px;
+      line-height: 1;
+      filter: drop-shadow(0 8px 10px rgba(2,6,23,.12));
+    }
+    .scene--tool .sceneBig{ font-size: 128px; }
+
+    .sceneMini{
+      position:absolute;
+      font-size: 30px;
+      opacity: .92;
+      filter: drop-shadow(0 7px 10px rgba(2,6,23,.10));
+    }
+    .sceneMini.m1{ left: 12px; bottom: 10px; transform: rotate(-10deg); }
+    .sceneMini.m2{ right: 14px; top: 12px; transform: rotate(10deg); }
+    .sceneMini.m3{ right: 18px; bottom: 10px; transform: rotate(-6deg); }
+    .scene--tool .sceneMini{ font-size: 34px; }
+
+    /* Section headings */
+    .sectionTop{
+      text-align:center;
+      margin: 6px 0 12px;
+    }
+    .h2{
+      margin: 10px 0 6px;
+      font-size: 26px;
+      font-weight: 1000;
+      letter-spacing: .2px;
+    }
+    .h2sub{
+      margin:0 auto;
+      max-width: 58ch;
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 14.8px;
+      line-height: 1.3;
+    }
+
+    /* Small cards grid */
+    .gridCards{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    @media (max-width: 760px){
+      .gridCards{ grid-template-columns: 1fr; }
+    }
+
+    .miniCardTitle{
+      margin: 0 0 6px;
+      font-weight: 1000;
+      font-size: 17px;
+    }
+    .miniCardText{
+      margin: 0;
+      color: rgba(15,23,42,.84);
+      font-weight: 850;
+      line-height: 1.35;
+      font-size: 14.6px;
+    }
+
+    .ctaCard{
+      margin-top: 14px;
+      padding-bottom: 18px;
+    }
+    .ctaInner{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    /* Tools big layout */
+    .toolsBig{
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .toolTitle{
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 1000;
+    }
+    .toolWhy{
+      margin: 0 0 10px;
+      color: rgba(15,23,42,.82);
+      font-weight: 850;
+      line-height: 1.35;
+      font-size: 14.6px;
+    }
+
+    .toolControls{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      margin-top: 8px;
+    }
+    .field{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .label{
+      font-weight: 1000;
+      color: rgba(15,23,42,.86);
+      font-size: 13px;
+      letter-spacing: .2px;
+    }
+    input[type="text"], textarea, select{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid rgba(2,6,23,.10);
+      background: rgba(255,255,255,.92);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-weight: 850;
+      color: rgba(15,23,42,.92);
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    textarea{ min-height: 88px; resize: vertical; }
+
+    .panel{
+      width:100%;
+      background: rgba(2,6,23,.03);
+      border: 1px dashed rgba(2,6,23,.14);
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 10px;
+      color: rgba(15,23,42,.86);
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .split3{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    @media (max-width: 760px){
+      .split3{ grid-template-columns: 1fr; }
+    }
+    .miniPanel{
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(2,6,23,.10);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 8px 14px rgba(2,6,23,.08);
+    }
+    .miniPanel h4{
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 1000;
+      letter-spacing: .2px;
+    }
+    .miniPanel p{
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 900;
+      color: rgba(15,23,42,.82);
+      line-height: 1.35;
+      white-space: pre-wrap;
+    }
+
+    /* Timer bar */
+    .timerRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      width:100%;
+      margin-top: 8px;
+    }
+    .timerChip{
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(14,165,233,.12);
+      border: 1px solid rgba(14,165,233,.22);
+      font-weight: 1000;
+      font-size: 12.8px;
+      color: rgba(15,23,42,.88);
+      white-space:nowrap;
+    }
+    .bar{
+      flex: 1;
+      height: 12px;
+      background: rgba(2,6,23,.06);
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(2,6,23,.06);
+    }
+    .barFill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 999px;
+      transition: width .18s ease;
+    }
+
+    /* Chips picker */
+    .chipWrap{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .chip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(2,6,23,.12);
+      background: rgba(255,255,255,.86);
+      font-weight: 1000;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .chip:active{ transform: scale(.99); }
+    .chip.on{
+      background: rgba(34,197,94,.14);
+      border-color: rgba(34,197,94,.30);
+    }
+    .hint{
+      margin-top: 8px;
+      color: rgba(71,85,105,.95);
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .warnMsg{
+      margin-top: 8px;
+      color: rgba(15,23,42,.90);
+      font-weight: 1000;
+      background: rgba(245,158,11,.18);
+      border: 1px solid rgba(245,158,11,.25);
+      padding: 8px 10px;
+      border-radius: 14px;
+      display:none;
+    }
+    .warnMsg.show{ display:block; }
+
+    /* Footer link */
+    .footer{
+      margin-top: 18px;
+      text-align:center;
+    }
+    .backLink{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(2,6,23,.10);
+      color: rgba(15,23,42,.86);
+      font-weight: 1000;
+      text-decoration:none;
+      box-shadow: 0 10px 18px rgba(2,6,23,.08);
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .backLink:active{ transform: translateY(1px); }
+
+    /* Animations */
+    .pop{ animation: pop .26s ease; }
+    @keyframes pop{
+      0%{ transform: scale(1); }
+      55%{ transform: scale(1.04); }
+      100%{ transform: scale(1); }
+    }
+    .shake{ animation: shake .32s ease; }
+    @keyframes shake{
+      0%{ transform: translateX(0); }
+      22%{ transform: translateX(-4px); }
+      44%{ transform: translateX(4px); }
+      66%{ transform: translateX(-3px); }
+      88%{ transform: translateX(3px); }
+      100%{ transform: translateX(0); }
+    }
+
+    /* Tiny helper */
+    .sr{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="app"></div>
+  </div>
+
+  <script>
+    // ===== Robust timer safety (clear all intervals/timeouts/raf when switching screens) =====
+    const TimerSafe = (() => {
+      const intervals = new Set();
+      const timeouts  = new Set();
+      const rafs      = new Set();
+
+      function tSetInterval(fn, ms){
+        const id = setInterval(fn, ms);
+        intervals.add(id);
+        return id;
+      }
+      function tSetTimeout(fn, ms){
+        const id = setTimeout(fn, ms);
+        timeouts.add(id);
+        return id;
+      }
+      function tRequestAnimationFrame(fn){
+        const id = requestAnimationFrame(fn);
+        rafs.add(id);
+        return id;
+      }
+      function clearAll(){
+        intervals.forEach(id => clearInterval(id));
+        timeouts.forEach(id => clearTimeout(id));
+        rafs.forEach(id => cancelAnimationFrame(id));
+        intervals.clear();
+        timeouts.clear();
+        rafs.clear();
+      }
+      return { tSetInterval, tSetTimeout, tRequestAnimationFrame, clearAll };
+    })();
+
+    const app = document.getElementById('app');
+
+    function elPop(node){
+      if(!node) return;
+      node.classList.remove('pop');
+      void node.offsetWidth;
+      node.classList.add('pop');
+    }
+    function elShake(node){
+      if(!node) return;
+      node.classList.remove('shake');
+      void node.offsetWidth;
+      node.classList.add('shake');
+    }
+
+    function setScreen(name){
+      TimerSafe.clearAll();
+      app.innerHTML = screens[name]();
+      binders[name] && binders[name]();
+      // small entrance pop
+      const firstCard = app.querySelector('.white-card');
+      if(firstCard) elPop(firstCard);
+    }
+
+    // ===== Navigation functions (must exist and work) =====
+    function showHome(){ setScreen('home'); }
+    function showReactions(){ setScreen('reactions'); }
+    function showConsequences(){ setScreen('consequences'); }
+    function showSolutions(){ setScreen('solutions'); }
+
+    window.showHome = showHome;
+    window.showReactions = showReactions;
+    window.showConsequences = showConsequences;
+    window.showSolutions = showSolutions;
+
+    // ===== Screen templates =====
+    const screens = {
+      home: () => `
+        <div class="top">
+          <div class="title">Understanding Overwhelmed</div>
+          <div class="subtitle">Overwhelmed is when too much happens at once and your brain says, “I can’t handle it!”</div>
+          <div class="support">It doesn’t mean you’re weak—it means your brain needs smaller steps and a reset.</div>
+        </div>
+
+        <div class="grid2">
+          <div class="white-card large" style="--border: linear-gradient(90deg, var(--primary), var(--secondary));">
+            <div class="scene scene--home">
+              <div class="sceneBig">🤯</div>
+              <div class="sceneMini m1">📚</div>
+              <div class="sceneMini m2">⏰</div>
+              <div class="sceneMini m3">🔔</div>
+            </div>
+
+            <div class="cardHead">
+              <h3 class="cardTitle">What’s happening?</h3>
+            </div>
+
+            <p class="cardText">
+              When your brain gets too many jobs, noises, choices, or feelings, it can freeze—or burst into tears.
+            </p>
+
+            <div class="pillRow">
+              <span class="pill body">fast breathing</span>
+              <span class="pill body">tight shoulders</span>
+              <span class="pill body">tummy flutter</span>
+              <span class="pill trig">too many instructions</span>
+              <span class="pill trig">time pressure</span>
+              <span class="pill trig">loud noise / crowds</span>
+            </div>
+
+            <div class="btnRow">
+              <button class="btn primary" onclick="showReactions()">See Behaviors</button>
+            </div>
+          </div>
+
+          <div class="white-card large clickable-card" id="toolsCard" style="--border: linear-gradient(90deg, var(--secondary), var(--accent));">
+            <div class="scene scene--home">
+              <div class="sceneBig">🗂️</div>
+              <div class="sceneMini m1">🧠</div>
+              <div class="sceneMini m2">🤝</div>
+              <div class="sceneMini m3">✋</div>
+            </div>
+
+            <div class="cardHead">
+              <h3 class="cardTitle">Tools</h3>
+            </div>
+
+            <p class="cardText">
+              Sort the storm. Calm the body. Pick one tiny step. You don’t have to carry everything at once.
+            </p>
+
+            <div class="btnRow">
+              <button class="btn secondary" onclick="showSolutions()">Show Comfort Tools</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <a class="backLink" href="index.html">Back to Menu</a>
+        </div>
+      `,
+
+      reactions: () => `
+        <div class="sectionTop">
+          <div class="h2">How Do I Act When I’m Overwhelmed?</div>
+          <div class="h2sub">These are clues your brain has too much at once.</div>
+        </div>
+
+        <div class="gridCards">
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--primary), rgba(245,158,11,.9));">
+            <div class="scene">
+              <div class="sceneBig">🧊</div>
+              <div class="sceneMini m1">😶</div>
+              <div class="sceneMini m2">⏸️</div>
+              <div class="sceneMini m3">🧠</div>
+            </div>
+            <h3 class="miniCardTitle">I Freeze</h3>
+            <p class="miniCardText">I stare, stop moving, or can’t start.</p>
+          </div>
+
+          <div class="white-card" style="--border: linear-gradient(90deg, rgba(245,158,11,.95), var(--secondary));">
+            <div class="scene">
+              <div class="sceneBig">🌋</div>
+              <div class="sceneMini m1">😢</div>
+              <div class="sceneMini m2">⚡</div>
+              <div class="sceneMini m3">💥</div>
+            </div>
+            <h3 class="miniCardTitle">I Melt Down</h3>
+            <p class="miniCardText">I cry, yell, or feel panicky.</p>
+          </div>
+
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--secondary), rgba(14,165,233,.95));">
+            <div class="scene">
+              <div class="sceneBig">🏃‍➡️</div>
+              <div class="sceneMini m1">🚪</div>
+              <div class="sceneMini m2">🙈</div>
+              <div class="sceneMini m3">🫥</div>
+            </div>
+            <h3 class="miniCardTitle">I Avoid</h3>
+            <p class="miniCardText">I run away, hide, or say “I can’t!”</p>
+          </div>
+
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--primary), var(--secondary));">
+            <div class="scene">
+              <div class="sceneBig">😤</div>
+              <div class="sceneMini m1">🗯️</div>
+              <div class="sceneMini m2">🤏</div>
+              <div class="sceneMini m3">💢</div>
+            </div>
+            <h3 class="miniCardTitle">I Get Snappy</h3>
+            <p class="miniCardText">Small things feel huge, and I get mean or impatient.</p>
+          </div>
+        </div>
+
+        <div class="white-card ctaCard" style="--border: linear-gradient(90deg, var(--warning), var(--secondary));">
+          <div class="ctaInner">
+            <div>
+              <div class="miniCardTitle" style="margin:0 0 6px;">Ready for the “why”?</div>
+              <div class="miniCardText">See what can happen when overwhelm stays in charge.</div>
+            </div>
+            <div class="btnRow" style="margin:0;">
+              <button class="btn warn" onclick="showConsequences()">See Consequences</button>
+              <button class="btn secondary" onclick="showHome()">Back</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <a class="backLink" href="index.html">Back to Menu</a>
+        </div>
+      `,
+
+      consequences: () => `
+        <div class="sectionTop">
+          <div class="h2">When Overwhelmed Takes Over…</div>
+          <div class="h2sub">Too much pressure makes everything harder.</div>
+        </div>
+
+        <div class="gridCards">
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--warning), var(--primary));">
+            <div class="scene">
+              <div class="sceneBig">🧩</div>
+              <div class="sceneMini m1">❌</div>
+              <div class="sceneMini m2">📝</div>
+              <div class="sceneMini m3">😵‍💫</div>
+            </div>
+            <h3 class="miniCardTitle">Mistakes Multiply</h3>
+            <p class="miniCardText">Your brain can’t organize, so errors happen.</p>
+          </div>
+
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--primary), rgba(245,158,11,.95));">
+            <div class="scene">
+              <div class="sceneBig">🚨</div>
+              <div class="sceneMini m1">💓</div>
+              <div class="sceneMini m2">🫁</div>
+              <div class="sceneMini m3">⚠️</div>
+            </div>
+            <h3 class="miniCardTitle">Body Alarm Stays On</h3>
+            <p class="miniCardText">The “stress alarm” keeps ringing, even when you want it to stop.</p>
+          </div>
+
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--secondary), rgba(14,165,233,.95));">
+            <div class="scene">
+              <div class="sceneBig">🫤</div>
+              <div class="sceneMini m1">👀</div>
+              <div class="sceneMini m2">🗣️</div>
+              <div class="sceneMini m3">❓</div>
+            </div>
+            <h3 class="miniCardTitle">People Misunderstand Me</h3>
+            <p class="miniCardText">Adults or friends may think I’m being “difficult.”</p>
+          </div>
+
+          <div class="white-card" style="--border: linear-gradient(90deg, rgba(34,197,94,.95), var(--secondary));">
+            <div class="scene">
+              <div class="sceneBig">🧱</div>
+              <div class="sceneMini m1">🛑</div>
+              <div class="sceneMini m2">📉</div>
+              <div class="sceneMini m3">😔</div>
+            </div>
+            <h3 class="miniCardTitle">I Stop Trying</h3>
+            <p class="miniCardText">Quitting can make me feel smaller next time.</p>
+          </div>
+        </div>
+
+        <div class="white-card ctaCard" style="--border: linear-gradient(90deg, var(--accent), var(--primary));">
+          <div class="ctaInner">
+            <div>
+              <div class="miniCardTitle" style="margin:0 0 6px;">Let’s switch the direction.</div>
+              <div class="miniCardText">Use comfort tools that calm your body and shrink the task.</div>
+            </div>
+            <div class="btnRow" style="margin:0;">
+              <button class="btn good" onclick="showSolutions()">Go to Comfort Tools</button>
+              <button class="btn secondary" onclick="showReactions()">Back</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <a class="backLink" href="index.html">Back to Menu</a>
+        </div>
+      `,
+
+      solutions: () => `
+        <div class="sectionTop">
+          <div class="h2">Comfort Tools</div>
+          <div class="h2sub">Choose one tool. Small steps help your brain feel safe again.</div>
+        </div>
+
+        <div class="toolsBig">
+          <!-- TOOL 1 -->
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--primary), var(--secondary));">
+            <div class="scene scene--tool">
+              <div class="sceneBig">🌬️</div>
+              <div class="sceneMini m1">🫁</div>
+              <div class="sceneMini m2">⏱️</div>
+              <div class="sceneMini m3">🧊</div>
+            </div>
+            <h3 class="toolTitle">1-Minute Nervous System Reset (60s)</h3>
+            <p class="toolWhy">Why it helps: slow breathing cues your body to lower the stress alarm so thinking can return.</p>
+
+            <div class="timerRow">
+              <span class="timerChip" id="t1Label">60s ready</span>
+              <div class="bar" aria-label="Progress">
+                <div class="barFill" id="t1Bar"></div>
+              </div>
+            </div>
+
+            <div class="toolControls">
+              <button class="btn primary" id="t1Start">Start</button>
+              <button class="btn secondary" id="t1Pause">Pause</button>
+              <button class="btn warn" id="t1Reset">Reset</button>
+            </div>
+
+            <div class="panel" id="t1Panel">Tip: Breathe in gently… breathe out a little longer. You’re teaching your body: “I’m safe.”</div>
+          </div>
+
+          <!-- TOOL 2 -->
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--secondary), rgba(245,158,11,.95));">
+            <div class="scene scene--tool">
+              <div class="sceneBig">📦</div>
+              <div class="sceneMini m1">📝</div>
+              <div class="sceneMini m2">🧠</div>
+              <div class="sceneMini m3">🪶</div>
+            </div>
+            <h3 class="toolTitle">Brain Dump Box (Unload It)</h3>
+            <p class="toolWhy">Why it helps: putting thoughts outside your head reduces brain-load and makes choices easier.</p>
+
+            <div class="field">
+              <div class="label">What feels like too much?</div>
+              <textarea id="dumpText" placeholder="Type it here…"></textarea>
+            </div>
+
+            <div class="toolControls">
+              <button class="btn primary" id="dumpBtn">Dump It</button>
+              <button class="btn secondary" id="dumpClear">Clear</button>
+            </div>
+
+            <div class="split3" id="dumpOut" style="display:none;">
+              <div class="miniPanel">
+                <h4>Now</h4>
+                <p id="dumpNow"></p>
+              </div>
+              <div class="miniPanel">
+                <h4>Later</h4>
+                <p id="dumpLater"></p>
+              </div>
+              <div class="miniPanel">
+                <h4>Ask for help</h4>
+                <p id="dumpHelp"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 3 -->
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--accent), var(--secondary));">
+            <div class="scene scene--tool">
+              <div class="sceneBig">🪜</div>
+              <div class="sceneMini m1">🤏</div>
+              <div class="sceneMini m2">⏲️</div>
+              <div class="sceneMini m3">✅</div>
+            </div>
+            <h3 class="toolTitle">Tiny Next Step (Step Shrinker)</h3>
+            <p class="toolWhy">Why it helps: breaking a task into micro-steps helps your brain start moving instead of freezing.</p>
+
+            <div class="field">
+              <div class="label">What’s the big task?</div>
+              <input type="text" id="bigTask" placeholder="Example: finish homework / clean my room / get ready for school" />
+            </div>
+
+            <div class="toolControls">
+              <button class="btn good" id="stepBtn">Shrink It</button>
+              <button class="btn secondary" id="stepClear">Clear</button>
+            </div>
+
+            <div class="panel" id="stepNext" style="display:none;"></div>
+            <div class="panel" id="stepList" style="display:none;"></div>
+          </div>
+
+          <!-- TOOL 4 -->
+          <div class="white-card" style="--border: linear-gradient(90deg, rgba(245,158,11,.95), var(--primary));">
+            <div class="scene scene--tool">
+              <div class="sceneBig">🧭</div>
+              <div class="sceneMini m1">👀</div>
+              <div class="sceneMini m2">👂</div>
+              <div class="sceneMini m3">✋</div>
+            </div>
+            <h3 class="toolTitle">5-4-3-2-1 Grounding (Sense Scanner)</h3>
+            <p class="toolWhy">Why it helps: focusing on senses anchors attention and slows the panic spiral.</p>
+
+            <div class="toolControls">
+              <button class="btn primary" id="gNext">Next Step</button>
+              <button class="btn secondary" id="gRestart">Restart</button>
+            </div>
+
+            <div class="panel" id="gPanel">Press “Next Step” to begin.</div>
+          </div>
+
+          <!-- TOOL 5 -->
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--primary), var(--accent));">
+            <div class="scene scene--tool">
+              <div class="sceneBig">🎯</div>
+              <div class="sceneMini m1">1️⃣</div>
+              <div class="sceneMini m2">2️⃣</div>
+              <div class="sceneMini m3">🧠</div>
+            </div>
+            <h3 class="toolTitle">Priority Picker (Only 1–2 Things)</h3>
+            <p class="toolWhy">Why it helps: limiting choices reduces overload and supports your “planning brain.”</p>
+
+            <div class="chipWrap" id="pickChips">
+              <div class="chip" data-task="Homework">Homework</div>
+              <div class="chip" data-task="Clean one area">Clean one area</div>
+              <div class="chip" data-task="Get dressed">Get dressed</div>
+              <div class="chip" data-task="Pack my bag">Pack my bag</div>
+              <div class="chip" data-task="Message someone">Message someone</div>
+              <div class="chip" data-task="Snack & water">Snack & water</div>
+            </div>
+
+            <div class="field">
+              <div class="label">Add a custom task (optional)</div>
+              <input type="text" id="customTask" placeholder="Type a task and press Add" />
+            </div>
+
+            <div class="toolControls">
+              <button class="btn good" id="addTask">Add</button>
+              <button class="btn warn" id="clearPick">Clear Picks</button>
+            </div>
+
+            <div class="warnMsg" id="pickWarn">Two is enough. Your brain likes small.</div>
+            <div class="panel" id="pickOut">Today I only need: ______ and ______.</div>
+          </div>
+
+          <!-- TOOL 6 -->
+          <div class="white-card" style="--border: linear-gradient(90deg, var(--secondary), var(--primary));">
+            <div class="scene scene--tool">
+              <div class="sceneBig">📣</div>
+              <div class="sceneMini m1">🤝</div>
+              <div class="sceneMini m2">🧩</div>
+              <div class="sceneMini m3">💬</div>
+            </div>
+            <h3 class="toolTitle">Help Signal Script (Ask-for-Help Builder)</h3>
+            <p class="toolWhy">Why it helps: asking for help invites co-regulation and makes big feelings manageable.</p>
+
+            <div class="grid2" style="margin-top:10px;">
+              <div class="white-card" style="box-shadow:none; border-radius:16px; padding:12px; --border: linear-gradient(90deg, rgba(2,6,23,.06), rgba(2,6,23,.06));">
+                <div class="label">Who can help?</div>
+                <select id="helpWho">
+                  <option value="">Choose one…</option>
+                  <option>Mom</option>
+                  <option>Dad</option>
+                  <option>Teacher</option>
+                  <option>Coach</option>
+                  <option>Friend</option>
+                  <option>Grandparent</option>
+                </select>
+                <div class="hint">Or type a name:</div>
+                <input type="text" id="helpWhoCustom" placeholder="Example: Ms. Rivera" />
+              </div>
+
+              <div class="white-card" style="box-shadow:none; border-radius:16px; padding:12px; --border: linear-gradient(90deg, rgba(2,6,23,.06), rgba(2,6,23,.06));">
+                <div class="label">What do you need?</div>
+                <select id="helpNeed">
+                  <option value="">Choose one…</option>
+                  <option>more time</option>
+                  <option>help with one step</option>
+                  <option>a quiet spot</option>
+                  <option>someone to sit with me</option>
+                  <option>help choosing what to do first</option>
+                </select>
+                <div class="hint">Or type your need:</div>
+                <input type="text" id="helpNeedCustom" placeholder="Example: a 5-minute break" />
+              </div>
+            </div>
+
+            <div class="toolControls">
+              <button class="btn primary" id="buildScript">Build Script</button>
+              <button class="btn secondary" id="copyScript">Copy</button>
+              <button class="btn warn" id="clearScript">Clear</button>
+            </div>
+
+            <div class="panel" id="scriptOut">Hi ____. I feel overwhelmed. Can you help me by ____?</div>
+          </div>
+        </div>
+
+        <div class="white-card ctaCard" style="--border: linear-gradient(90deg, var(--accent), var(--secondary));">
+          <div class="ctaInner">
+            <div>
+              <div class="miniCardTitle" style="margin:0 0 6px;">Remember:</div>
+              <div class="miniCardText">One tool. One tiny step. Your brain will feel stronger again.</div>
+            </div>
+            <div class="btnRow" style="margin:0;">
+              <button class="btn secondary" onclick="showHome()">Back</button>
+              <button class="btn good" onclick="showReactions()">Review Behaviors</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <a class="backLink" href="index.html">Back to Menu</a>
+        </div>
+      `
+    };
+
+    // ===== Screen binders =====
+    const binders = {
+      home: () => {
+        const toolsCard = document.getElementById('toolsCard');
+        if(toolsCard){
+          toolsCard.addEventListener('click', (e) => {
+            // If they clicked the button, it already navigates; still safe.
+            elPop(toolsCard);
+            showSolutions();
+          });
+        }
+      },
+
+      reactions: () => {},
+
+      consequences: () => {},
+
+      solutions: () => {
+        // TOOL 1: 60s timer
+        const t1Label = document.getElementById('t1Label');
+        const t1Bar   = document.getElementById('t1Bar');
+        const t1Panel = document.getElementById('t1Panel');
+        const t1Start = document.getElementById('t1Start');
+        const t1Pause = document.getElementById('t1Pause');
+        const t1Reset = document.getElementById('t1Reset');
+
+        const t1 = {
+          total: 60,
+          remaining: 60,
+          running: false,
+          intervalId: null
+        };
+
+        function fmt(s){
+          const m = Math.floor(s/60);
+          const r = s % 60;
+          return (m>0 ? (m + ":" + String(r).padStart(2,'0')) : (s + "s"));
+        }
+
+        function t1UpdateUI(){
+          const done = t1.total - t1.remaining;
+          const pct = Math.max(0, Math.min(100, (done / t1.total) * 100));
+          t1Bar.style.width = pct + "%";
+
+          if(t1.remaining === t1.total && !t1.running){
+            t1Label.textContent = "60s ready";
+          } else if(t1.running){
+            t1Label.textContent = fmt(t1.remaining) + " left";
+          } else {
+            t1Label.textContent = "Paused • " + fmt(t1.remaining) + " left";
+          }
+        }
+
+        function t1Tick(){
+          if(!t1.running) return;
+          t1.remaining = Math.max(0, t1.remaining - 1);
+          t1UpdateUI();
+          if(t1.remaining === 0){
+            t1.running = false;
+            if(t1.intervalId){ clearInterval(t1.intervalId); t1.intervalId = null; }
+            t1Panel.textContent = "Nice. Your body got the message. Now pick one tiny next step.";
+            elPop(t1Panel);
+            elPop(t1Bar);
+          }
+        }
+
+        t1Start.addEventListener('click', () => {
+          elPop(t1Start);
+          if(t1.remaining === 0){
+            t1.remaining = t1.total;
+          }
+          if(!t1.running){
+            t1.running = true;
+            t1Panel.textContent = "Breathe out a little longer than you breathe in. Slow and steady.";
+            elPop(t1Panel);
+            if(!t1.intervalId){
+              t1.intervalId = TimerSafe.tSetInterval(t1Tick, 1000);
+            }
+            t1UpdateUI();
+          }
+        });
+
+        t1Pause.addEventListener('click', () => {
+          elPop(t1Pause);
+          if(t1.running){
+            t1.running = false;
+            t1UpdateUI();
+          } else {
+            // gentle nudge
+            elShake(t1Panel);
+            t1Panel.textContent = "Paused is okay. When you’re ready, press Start again.";
+          }
+        });
+
+        t1Reset.addEventListener('click', () => {
+          elPop(t1Reset);
+          t1.running = false;
+          t1.remaining = t1.total;
+          t1Panel.textContent = "Tip: Breathe in gently… breathe out a little longer. You’re teaching your body: “I’m safe.”";
+          t1UpdateUI();
+          elPop(t1Panel);
+        });
+
+        t1UpdateUI();
+
+        // TOOL 2: Brain Dump Box
+        const dumpText = document.getElementById('dumpText');
+        const dumpBtn = document.getElementById('dumpBtn');
+        const dumpClear = document.getElementById('dumpClear');
+        const dumpOut = document.getElementById('dumpOut');
+        const dumpNow = document.getElementById('dumpNow');
+        const dumpLater = document.getElementById('dumpLater');
+        const dumpHelp = document.getElementById('dumpHelp');
+
+        function cleanText(s){
+          return (s || "").replace(/\s+/g, " ").trim();
+        }
+        function splitSentences(s){
+          const raw = (s || "").trim();
+          if(!raw) return [];
+          const parts = raw.match(/[^.!?]+[.!?]?/g) || [raw];
+          return parts.map(x => cleanText(x)).filter(Boolean);
+        }
+        function makePlan(text){
+          const t = cleanText(text);
+          const sents = splitSentences(t);
+
+          let now = "";
+          let later = "";
+          let help = "";
+
+          if(sents.length >= 3){
+            now = sents[0];
+            later = sents.slice(1, -1).join(" ");
+            help = sents[sents.length - 1];
+          } else if(sents.length === 2){
+            now = sents[0];
+            later = sents[1];
+            help = "Tell someone: “I have too much at once. Can you help me pick the first step?”";
+          } else if(sents.length === 1){
+            const short = sents[0];
+            now = "Do 60 seconds of slow breathing, then choose the smallest piece of: " + short;
+            later = "Anything else can wait until after one tiny step.";
+            help = "Ask: “Can you help me break this into smaller steps?”";
+          } else {
+            now = "Start with one slow breath.";
+            later = "Then choose one tiny step.";
+            help = "Ask a grown-up or friend for help.";
+          }
+
+          // Make them kid-friendly and short-ish
+          now = now || "Pick one tiny step.";
+          later = later || "The rest can wait.";
+          help = help || "Ask for help choosing the first step.";
+
+          return { now, later, help };
+        }
+
+        dumpBtn.addEventListener('click', () => {
+          elPop(dumpBtn);
+          const plan = makePlan(dumpText.value);
+          dumpNow.textContent = plan.now;
+          dumpLater.textContent = plan.later;
+          dumpHelp.textContent = plan.help;
+          dumpOut.style.display = "grid";
+          elPop(dumpOut);
+        });
+
+        dumpClear.addEventListener('click', () => {
+          elPop(dumpClear);
+          dumpText.value = "";
+          dumpOut.style.display = "none";
+        });
+
+        // TOOL 3: Tiny Next Step
+        const bigTask = document.getElementById('bigTask');
+        const stepBtn = document.getElementById('stepBtn');
+        const stepClear = document.getElementById('stepClear');
+        const stepNext = document.getElementById('stepNext');
+        const stepList = document.getElementById('stepList');
+
+        function buildMicroSteps(task){
+          const t = cleanText(task) || "this task";
+          return [
+            "Look at " + t + " and circle just one small part.",
+            "Set a 2-minute timer and start that one part.",
+            "Stop and check: “What’s the next tiny piece?”",
+            "Do one more 2-minute round (or one item).",
+            "Put a check mark, then take a short reset break."
+          ];
+        }
+
+        stepBtn.addEventListener('click', () => {
+          elPop(stepBtn);
+          const t = cleanText(bigTask.value);
+          const steps = buildMicroSteps(t);
+
+          stepNext.style.display = "block";
+          stepList.style.display = "block";
+
+          stepNext.innerHTML = "<strong>Next Step:</strong> " + steps[0];
+          stepList.innerHTML = "<strong>5 micro-steps:</strong><br>" + steps.map((s,i)=> (i+1)+". "+s).join("<br>");
+
+          elPop(stepNext);
+        });
+
+        stepClear.addEventListener('click', () => {
+          elPop(stepClear);
+          bigTask.value = "";
+          stepNext.style.display = "none";
+          stepList.style.display = "none";
+        });
+
+        // TOOL 4: 5-4-3-2-1 Grounding
+        const gPanel = document.getElementById('gPanel');
+        const gNext  = document.getElementById('gNext');
+        const gRestart = document.getElementById('gRestart');
+
+        const groundingSteps = [
+          { n: 1, text: "5 things you see. Name them slowly." },
+          { n: 2, text: "4 things you feel/touch. Describe one." },
+          { n: 3, text: "3 things you hear. Even tiny sounds count." },
+          { n: 4, text: "2 things you smell. If none, think of a favorite smell." },
+          { n: 5, text: "1 thing you taste. Or sip water and notice it." }
+        ];
+        let gIndex = -1;
+
+        function gShow(){
+          if(gIndex < 0){
+            gPanel.textContent = "Press “Next Step” to begin.";
+            return;
+          }
+          const step = groundingSteps[gIndex];
+          gPanel.innerHTML = "<strong>Step " + step.n + " / 5:</strong> " + step.text;
+          elPop(gPanel);
+        }
+
+        gNext.addEventListener('click', () => {
+          elPop(gNext);
+          gIndex = Math.min(groundingSteps.length - 1, gIndex + 1);
+          gShow();
+          if(gIndex === groundingSteps.length - 1){
+            TimerSafe.tSetTimeout(() => {
+              gPanel.innerHTML = "<strong>Done.</strong> Your brain is back in the room. Now choose one tiny step.";
+              elPop(gPanel);
+            }, 250);
+          }
+        });
+
+        gRestart.addEventListener('click', () => {
+          elPop(gRestart);
+          gIndex = -1;
+          gShow();
+        });
+
+        gShow();
+
+        // TOOL 5: Priority Picker (max 2)
+        const pickWrap = document.getElementById('pickChips');
+        const pickOut = document.getElementById('pickOut');
+        const pickWarn = document.getElementById('pickWarn');
+        const addTask = document.getElementById('addTask');
+        const customTask = document.getElementById('customTask');
+        const clearPick = document.getElementById('clearPick');
+
+        let picked = [];
+
+        function updatePickOut(){
+          const a = picked[0] || "______";
+          const b = picked[1] || "______";
+          pickOut.textContent = "Today I only need: " + a + " and " + b + ".";
+          elPop(pickOut);
+        }
+        updatePickOut();
+
+        function toggleChip(chip){
+          const task = chip.getAttribute('data-task');
+          const on = chip.classList.contains('on');
+
+          if(on){
+            chip.classList.remove('on');
+            picked = picked.filter(x => x !== task);
+            pickWarn.classList.remove('show');
+            updatePickOut();
+            return;
+          }
+
+          if(picked.length >= 2){
+            pickWarn.classList.add('show');
+            elShake(pickWarn);
+            return;
+          }
+
+          chip.classList.add('on');
+          picked.push(task);
+          pickWarn.classList.remove('show');
+          updatePickOut();
+        }
+
+        pickWrap.addEventListener('click', (e) => {
+          const chip = e.target.closest('.chip');
+          if(!chip) return;
+          elPop(chip);
+          toggleChip(chip);
+        });
+
+        addTask.addEventListener('click', () => {
+          elPop(addTask);
+          const t = cleanText(customTask.value);
+          if(!t){
+            pickWarn.textContent = "Type a task first, then press Add.";
+            pickWarn.classList.add('show');
+            elShake(pickWarn);
+            TimerSafe.tSetTimeout(()=> {
+              pickWarn.textContent = "Two is enough. Your brain likes small.";
+            }, 900);
+            return;
+          }
+
+          // Add a new chip
+          const div = document.createElement('div');
+          div.className = 'chip';
+          div.setAttribute('data-task', t);
+          div.textContent = t;
+          pickWrap.appendChild(div);
+          customTask.value = "";
+          elPop(pickWrap);
+        });
+
+        clearPick.addEventListener('click', () => {
+          elPop(clearPick);
+          picked = [];
+          pickWarn.classList.remove('show');
+          // turn off all chips
+          pickWrap.querySelectorAll('.chip.on').forEach(c => c.classList.remove('on'));
+          updatePickOut();
+        });
+
+        // TOOL 6: Help Signal Script
+        const helpWho = document.getElementById('helpWho');
+        const helpWhoCustom = document.getElementById('helpWhoCustom');
+        const helpNeed = document.getElementById('helpNeed');
+        const helpNeedCustom = document.getElementById('helpNeedCustom');
+        const buildScript = document.getElementById('buildScript');
+        const copyScript = document.getElementById('copyScript');
+        const clearScript = document.getElementById('clearScript');
+        const scriptOut = document.getElementById('scriptOut');
+
+        function currentWho(){
+          const custom = cleanText(helpWhoCustom.value);
+          return custom || (helpWho.value || "____");
+        }
+        function currentNeed(){
+          const custom = cleanText(helpNeedCustom.value);
+          return custom || (helpNeed.value || "____");
+        }
+        function build(){
+          const who = currentWho();
+          const need = currentNeed();
+          return "Hi " + who + ". I feel overwhelmed. Can you help me by " + need + "?";
+        }
+
+        buildScript.addEventListener('click', () => {
+          elPop(buildScript);
+          const s = build();
+          scriptOut.textContent = s;
+          elPop(scriptOut);
+        });
+
+        copyScript.addEventListener('click', async () => {
+          elPop(copyScript);
+          const s = scriptOut.textContent || build();
+          try{
+            await navigator.clipboard.writeText(s);
+            scriptOut.textContent = s + " (Copied!)";
+            elPop(scriptOut);
+            TimerSafe.tSetTimeout(() => {
+              scriptOut.textContent = s;
+            }, 900);
+          }catch(err){
+            elShake(scriptOut);
+            scriptOut.textContent = s + " (Copy not available here—select and copy.)";
+          }
+        });
+
+        clearScript.addEventListener('click', () => {
+          elPop(clearScript);
+          helpWho.value = "";
+          helpWhoCustom.value = "";
+          helpNeed.value = "";
+          helpNeedCustom.value = "";
+          scriptOut.textContent = "Hi ____. I feel overwhelmed. Can you help me by ____?";
+          elPop(scriptOut);
+        });
+      }
+    };
+
+    // Start on Home
+    showHome();
+  </script>
+</body>
+</html>
