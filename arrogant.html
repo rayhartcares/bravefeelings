@@ -231,9 +231,7 @@
     .m1{ left:16px; top:16px; transform: rotate(-10deg); animation-delay:.05s; }
     .m2{ right:18px; top:14px; transform: rotate(10deg);  animation-delay:.18s; }
     .m3{ right:22px; bottom:16px; transform: rotate(-8deg); animation-delay:.28s; }
-    .m4{ left:18px; bottom:16px; transform: rotate(8deg);  animation-delay:.35s; display:none; }
 
-    /* ===== Bigger emoji scenes ONLY on Comfort Tools view ===== */
     .toolsBig .scene{ height:210px; }
     .toolsBig .mainEmoji{ font-size:132px; }
     .toolsBig .miniEmoji{ font-size:56px; }
@@ -243,7 +241,6 @@
       .toolsBig .miniEmoji{ font-size:52px; }
     }
 
-    /* tool press animations */
     @keyframes pop{
       0%{ transform: translate(-50%,-50%) scale(1); }
       45%{ transform: translate(-50%,-50%) scale(1.18); }
@@ -268,11 +265,6 @@
       50%{ transform: rotate(6deg) translateY(-3px); }
       100%{ transform: rotate(-6deg) translateY(0px); }
     }
-    @keyframes boing{
-      0%,100%{ transform: translate(-50%,-50%) scale(1); }
-      50%{ transform: translate(-50%,-50%) scale(1.22); }
-    }
-    .boingMain{ animation: boing 1.05s infinite ease-in-out; }
 
     .mini-panel{
       background:#F8FAFC;
@@ -283,17 +275,6 @@
       text-align:center;
       color:#334155;
       font-weight:900;
-    }
-
-    .bubble{
-      display:none;
-      background:#EFF6FF;
-      border:2px solid #BFDBFE;
-      color:#1E40AF;
-      padding:14px 14px;
-      border-radius:18px;
-      font-weight:900;
-      margin-top:12px;
     }
 
     .timer{
@@ -419,28 +400,15 @@
       text-decoration:none;
       font-weight:900;
     }
-    <style>
-  body { ... }
-  .white-card { ... }
-  .btn { ... }
-  /* other CSS already here ... */
 
-  /* ✅ PASTE THIS BLOCK RIGHT HERE (near the bottom is fine) */
-  /* Make the Tools card clickable */
-  .clickable-card { cursor: pointer; }
+    /* ✅ Make the Tools card clickable */
+    .clickable-card{ cursor:pointer; }
 
-  /* Decorative emoji-scene layers should NOT steal clicks */
-  .sceneWrap, .sceneWrap * ,
-  .sceneBox, .sceneBox * ,
-  .scene, .scene * {
-    pointer-events: none;
-  }
+    /* ✅ Decorative emoji scene should NOT steal clicks */
+    .scene, .scene * { pointer-events:none; }
 
-  /* Buttons/links should still receive clicks */
-  button, .btn, a { pointer-events: auto; }
-
-</style>
-
+    /* ✅ Buttons/links should still receive clicks */
+    button, .btn, a { pointer-events:auto; }
   </style>
 </head>
 
@@ -450,24 +418,17 @@
   <script>
     const app = document.getElementById('app');
 
-    // ===== Robust helpers =====
+    // ---------- Timer cleanup ----------
     const _intervals = [];
     const _timeouts  = [];
-
     function addInterval(id){ _intervals.push(id); return id; }
     function addTimeout(id){ _timeouts.push(id); return id; }
-
-    function clearAllIntervals(){
-      while(_intervals.length){
-        const id = _intervals.pop();
-        try{ clearInterval(id); }catch(e){}
-      }
-      while(_timeouts.length){
-        const id = _timeouts.pop();
-        try{ clearTimeout(id); }catch(e){}
-      }
+    function clearAllTimers(){
+      while(_intervals.length){ try{ clearInterval(_intervals.pop()); }catch(e){} }
+      while(_timeouts.length){ try{ clearTimeout(_timeouts.pop()); }catch(e){} }
     }
 
+    // ---------- Scene helpers ----------
     function animateScene(sceneId, kind){
       const el = document.getElementById(sceneId);
       if(!el) return;
@@ -477,11 +438,10 @@
       addTimeout(setTimeout(()=> el.classList.remove(kind), 650));
     }
 
-    function sceneHTML(id, main, m1, m2, m3, variant, extraClass){
+    function sceneHTML(id, main, m1, m2, m3, variant){
       const v = variant ? ` ${variant}` : '';
-      const c = extraClass ? ` ${extraClass}` : '';
       return `
-        <div class="scene${v}${c}" id="${id}" aria-hidden="true">
+        <div class="scene${v}" id="${id}" aria-hidden="true">
           <div class="mainEmoji">${main}</div>
           <div class="miniEmoji m1">${m1}</div>
           <div class="miniEmoji m2">${m2}</div>
@@ -490,12 +450,10 @@
       `;
     }
 
-    // ===== State =====
-    // Tool 1 timer
+    // ---------- State ----------
     let calmSecs = 60;
     let calmRunning = false;
 
-    // Tool 3 listening checklist
     function listeningCount(){
       const a = (document.getElementById('l1')||{}).checked ? 1:0;
       const b = (document.getElementById('l2')||{}).checked ? 1:0;
@@ -503,18 +461,20 @@
       return a+b+c;
     }
 
-    // ===== Views =====
+    // ---------- Views ----------
     function showHome(){
-      clearAllIntervals();
+      clearAllTimers();
+
       app.innerHTML = `
         <h1 class="title">Understanding Arrogance</h1>
         <p class="subtitle">Arrogance is when the “I’m the best!” feeling gets too big and pushes kindness out. Let’s shrink it back to friendly size.</p>
 
         <div class="grid-2">
           <div class="white-card" style="border-bottom-color:#38BDF8;">
-            ${sceneHTML('sc-home', '😏', '👑', '✨', '🙃', 'altA', '')}
+            ${sceneHTML('sc-home', '😏', '👑', '✨', '🙃', 'altA')}
             <div class="card-title" style="color:#0EA5E9;">What’s happening?</div>
             <p class="card-desc">It can feel like you need the spotlight all the time, and other people’s ideas feel “small.”</p>
+
             <div class="pillRow" aria-label="Body signals and triggers">
               <span class="pill"><small>Body:</small> loud voice</span>
               <span class="pill"><small>Body:</small> chin up</span>
@@ -523,18 +483,18 @@
               <span class="pill"><small>Triggers:</small> winning</span>
               <span class="pill"><small>Triggers:</small> wanting attention</span>
             </div>
+
             <button class="btn btn-sky" onclick="showReactions()">See Behaviors</button>
           </div>
 
-          <div class="white-card" style="border-bottom-color:#2563EB;">
-            ${sceneHTML('sc-tools-home', '🧰', '🧠', '👂', '🤝', 'altD', '')}
+          <div class="white-card clickable-card" style="border-bottom-color:#2563EB;" onclick="showSolutions()">
+            ${sceneHTML('sc-tools-home', '🧰', '🧠', '👂', '🤝', 'altD')}
             <div class="card-title" style="color:#2563EB;">Tools</div>
-            <p class="card-desc>
+            <p class="card-desc">
               These tools help your body calm down, share the spotlight, listen better,
               and use strong words that build friendships. You can still feel proud—without pushing others down.
             </p>
-            <button class="btn btn-blue" onclick="showSolutions()">Show Comfort Tools</button>
-
+            <button class="btn btn-blue" onclick="showSolutions(); event.stopPropagation();">Show Comfort Tools</button>
           </div>
         </div>
 
@@ -542,11 +502,13 @@
           <a class="menuLink" href="index.html">← Back to Menu</a>
         </div>
       `;
+
       window.scrollTo({top:0, behavior:'instant'});
     }
 
     function showReactions(){
-      clearAllIntervals();
+      clearAllTimers();
+
       app.innerHTML = `
         <button class="btn-back" onclick="showHome()">← Back</button>
         <h1 class="title" style="color:#0EA5E9;">How Do I Act When I’m Arrogant?</h1>
@@ -554,25 +516,25 @@
 
         <div class="grid-2">
           <div class="white-card" style="border-bottom-color:#93C5FD;">
-            ${sceneHTML('sc-r1','🎤','😏','✨','👀','altA','')}
+            ${sceneHTML('sc-r1','🎤','😏','✨','👀','altA')}
             <div class="card-title">I Take Over</div>
             <p class="card-desc">I talk the most, interrupt, or try to be the boss.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#93C5FD;">
-            ${sceneHTML('sc-r2','🧱','🙅','😤','📣','altD','')}
+            ${sceneHTML('sc-r2','🧱','🙅','😤','📣','altD')}
             <div class="card-title">I Don’t Listen</div>
             <p class="card-desc">I ignore ideas because I think mine is always right.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#93C5FD;">
-            ${sceneHTML('sc-r3','👑','😎','🏆','🙃','altB','')}
+            ${sceneHTML('sc-r3','👑','😎','🏆','🙃','altB')}
             <div class="card-title">I Brag</div>
             <p class="card-desc">I show off so people notice me.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#93C5FD;">
-            ${sceneHTML('sc-r4','🫸','😒','🚫','🧍','altC','')}
+            ${sceneHTML('sc-r4','🫸','😒','🚫','🧍','altC')}
             <div class="card-title">I Put Others Down</div>
             <p class="card-desc">I tease, roll my eyes, or act like someone is “small.”</p>
           </div>
@@ -583,11 +545,13 @@
           <button class="btn btn-blue" style="width:auto; margin-top:14px;" onclick="showConsequences()">See Consequences ➔</button>
         </div>
       `;
+
       window.scrollTo({top:0, behavior:'instant'});
     }
 
     function showConsequences(){
-      clearAllIntervals();
+      clearAllTimers();
+
       app.innerHTML = `
         <button class="btn-back" onclick="showReactions()">← Back</button>
         <h1 class="title" style="color:#2563EB;">When Arrogance Takes Over…</h1>
@@ -595,25 +559,25 @@
 
         <div class="grid-2">
           <div class="white-card" style="border-bottom-color:#60A5FA;">
-            ${sceneHTML('sc-c1','💔','👫','🧊','📏','altD','')}
+            ${sceneHTML('sc-c1','💔','👫','🧊','📏','altD')}
             <div class="card-title">Friends Pull Away</div>
             <p class="card-desc">People don’t feel safe or respected around me.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#60A5FA;">
-            ${sceneHTML('sc-c2','🧠','🚪','📚','😵‍💫','altA','')}
+            ${sceneHTML('sc-c2','🧠','🚪','📚','😵‍💫','altA')}
             <div class="card-title">I Learn Less</div>
             <p class="card-desc">If I think I already know everything, I miss new ideas.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#60A5FA;">
-            ${sceneHTML('sc-c3','⚡','😡','🔥','💥','altB','')}
+            ${sceneHTML('sc-c3','⚡','😡','🔥','💥','altB')}
             <div class="card-title">More Fights</div>
             <p class="card-desc">Big pride can turn small problems into big battles.</p>
           </div>
 
           <div class="white-card" style="border-bottom-color:#60A5FA;">
-            ${sceneHTML('sc-c4','😟','🙈','🌀','🌧️','altC','')}
+            ${sceneHTML('sc-c4','😟','🙈','🌀','🌧️','altC')}
             <div class="card-title">Lonely Inside</div>
             <p class="card-desc">Even if I look “big,” my heart can feel empty or worried.</p>
           </div>
@@ -624,14 +588,13 @@
           <button class="btn btn-green" style="width:auto; margin-top:14px;" onclick="showSolutions()">Go to Comfort Tools ➔</button>
         </div>
       `;
+
       window.scrollTo({top:0, behavior:'instant'});
     }
 
-    /* ============================
-       UPDATED: Comfort Tools visuals + BIGGER
-       ============================ */
     function showSolutions(){
-      clearAllIntervals();
+      clearAllTimers();
+
       app.innerHTML = `
         <button class="btn-back" onclick="showHome()">← Back to Start</button>
         <h1 class="title" style="color:#2563EB;">Comfort Tools</h1>
@@ -639,23 +602,21 @@
 
         <div class="toolsBig" style="display:flex; flex-direction:column; gap:26px; margin-top:18px;">
 
-          <!-- TOOL 1: 60s timer (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#2563EB;">
-            ${sceneHTML('sc-timer','🧊','🔥','⏱️','💨','altD','')}
+            ${sceneHTML('sc-timer','🧊','🔥','⏱️','💨','altD')}
             <div class="card-title" style="color:#2563EB;">Calm-Down Minute (60 seconds)</div>
             <p class="card-desc">One quiet minute helps your body cool down so your thinking brain can choose kind actions.</p>
 
             <div class="timer" id="calmTimer">01:00</div>
-            <div class="bar" aria-label="timer progress"><div id="calmBar"></div></div>
+            <div class="bar"><div id="calmBar"></div></div>
 
-            <button class="btn btn-blue" id="calmStartBtn" onclick="startCalmMinute()">Start</button>
+            <button class="btn btn-blue" onclick="startCalmMinute()">Start</button>
             <button class="btn btn-sky" onclick="pauseCalmMinute()">Pause</button>
-            <button class="btn btn-indigo" onclick="resetCalmMinute()">Reset</button>
+            <button class="btn btn-indigo" onclick="resetCalmMinute(false)">Reset</button>
           </div>
 
-          <!-- TOOL 2: Spotlight Share Spinner (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#0EA5E9;">
-            ${sceneHTML('sc-spin','🎠','🔄','👫','✨','altA','')}
+            ${sceneHTML('sc-spin','🎠','🔄','👫','✨','altA')}
             <div class="card-title" style="color:#0EA5E9;">Spotlight Share Spinner</div>
             <p class="card-desc">Sharing turns helps friendships grow. This gives you one “spotlight share” idea.</p>
 
@@ -663,13 +624,12 @@
             <button class="btn btn-sky" onclick="spinShare()">Spin</button>
           </div>
 
-          <!-- TOOL 3: Listening Laser checklist (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#0D9488;">
-            ${sceneHTML('sc-listen','👂','👀','🤐','💬','altC','')}
+            ${sceneHTML('sc-listen','👂','👀','🤐','💬','altC')}
             <div class="card-title" style="color:#0D9488;">Listening Laser</div>
             <p class="card-desc">Listening is a superpower. Check these while someone else is talking.</p>
 
-            <div class="checklist" aria-label="Listening checklist">
+            <div class="checklist">
               <div class="checkItem">
                 <input id="l1" type="checkbox" onchange="updateListening()" />
                 <label for="l1">My mouth is closed while they talk.</label>
@@ -687,9 +647,8 @@
             <div class="mini-panel" id="listenScore">Listening Score: 0 / 3</div>
           </div>
 
-          <!-- TOOL 4: Bridge Builder Script (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#D97706;">
-            ${sceneHTML('sc-bridge','🧩','📝','🤝','💬','altB','')}
+            ${sceneHTML('sc-bridge','🧩','📝','🤝','💬','altB')}
             <div class="card-title" style="color:#D97706;">Bridge Builder Script</div>
             <p class="card-desc">Strong words don’t have to be mean. Build a bridge with a calm sentence.</p>
 
@@ -704,13 +663,12 @@
             <div class="resultBox" id="bridgeOut"></div>
           </div>
 
-          <!-- TOOL 5: Humility practice (NEW EMOJIS, no bowing/prayer vibe) -->
           <div class="white-card" style="border-bottom-color:#E11D48;">
-            ${sceneHTML('sc-humble','🌱','🫶','⭐','🙂','altD','')}
+            ${sceneHTML('sc-humble','🌱','🫶','⭐','🙂','altD')}
             <div class="card-title" style="color:#E11D48;">Humility Seed</div>
             <p class="card-desc">Humility means “I matter, and you matter too.” Pick a sentence to practice.</p>
 
-            <div class="choiceGrid" role="group" aria-label="Humble sentences">
+            <div class="choiceGrid">
               <button class="choiceBtn" onclick="pickHumble(0)">“That’s a good idea. Let’s try it.”</button>
               <button class="choiceBtn" onclick="pickHumble(1)">“You go first. I’ll take my turn next.”</button>
               <button class="choiceBtn" onclick="pickHumble(2)">“I can be proud and still be kind.”</button>
@@ -719,11 +677,10 @@
             <div class="resultBox" id="humbleOut"></div>
           </div>
 
-          <!-- TOOL 6: Body Tool (NEW EMOJIS) -->
           <div class="white-card" style="border-bottom-color:#16A34A;">
-            ${sceneHTML('sc-hifive','🤜🤛','💓','🌬️','🏁','altC','')}
+            ${sceneHTML('sc-hifive','🤜🤛','💓','🌬️','🏁','altC')}
             <div class="card-title" style="color:#16A34A;">Kindness High-Five Practice</div>
-            <p class="card-desc">Do a quick body reset: breathe out, soften shoulders, then “high-five kindness.”</p>
+            <p class="card-desc">Do a quick body reset: exhale, soften shoulders, then “high-five kindness.”</p>
 
             <div class="mini-panel" id="hiPanel">Count: <span id="hiCount">0</span> / 8</div>
             <button class="btn btn-green" onclick="doHighFive()">High-Five Kindness</button>
@@ -737,12 +694,13 @@
         </div>
       `;
 
-      // reset tool states
+      // reset tool states for fresh view
       resetCalmMinute(true);
+      resetHighFive(true);
       window.scrollTo({top:0, behavior:'instant'});
     }
 
-    // ===== TOOL 1: Calm minute timer =====
+    // ---------- Tool logic ----------
     function renderCalm(){
       const t = document.getElementById('calmTimer');
       const b = document.getElementById('calmBar');
@@ -789,25 +747,22 @@
       if(!silent) animateScene('sc-timer','pop');
     }
 
-    // ===== TOOL 2: Spotlight Share Spinner =====
     const shareMoves = [
-      "Ask a friend a question: “What do you think?”",
-      "Give a turn: “You can go first.”",
+      "Ask a friend: “What do you think?”",
+      "Give a turn: “You go first.”",
       "Say one compliment: “Nice try!”",
       "Invite someone in: “Want to play with us?”",
       "Repeat their idea: “So you mean ____.”",
-      "Share the spotlight: “Let’s do it together.”"
+      "Share it: “Let’s do it together.”"
     ];
 
     function spinShare(){
       animateScene('sc-spin','pop');
       const panel = document.getElementById('spinPanel');
       if(!panel) return;
-      const pick = shareMoves[Math.floor(Math.random()*shareMoves.length)];
-      panel.textContent = pick;
+      panel.textContent = shareMoves[Math.floor(Math.random()*shareMoves.length)];
     }
 
-    // ===== TOOL 3: Listening Laser =====
     function updateListening(){
       const n = listeningCount();
       const score = document.getElementById('listenScore');
@@ -816,7 +771,6 @@
       if(n === 3) animateScene('sc-listen','shake');
     }
 
-    // ===== TOOL 4: Bridge Builder =====
     function makeBridgeScript(){
       animateScene('sc-bridge','pop');
       const who = ((document.getElementById('bbWho')||{}).value || '').trim();
@@ -846,7 +800,6 @@
       if(out){ out.style.display='none'; out.textContent=''; }
     }
 
-    // ===== TOOL 5: Humility picker =====
     const humbleLines = [
       "Try this: “That’s a good idea. Let’s try it.”",
       "Try this: “You go first. I’ll take my turn next.”",
@@ -863,13 +816,10 @@
         <small>Why it helps: Humility keeps your heart strong and your friendships safe.</small>`;
     }
 
-    // ===== TOOL 6: High-five kindness =====
     let hiCount = 0;
     function doHighFive(){
       animateScene('sc-hifive','shake');
       hiCount = Math.min(8, hiCount + 1);
-      const c = document.getElementById('hiCount');
-      if(c) c.textContent = String(hiCount);
 
       const panel = document.getElementById('hiPanel');
       if(panel){
@@ -881,16 +831,14 @@
       }
     }
 
-    function resetHighFive(){
-      animateScene('sc-hifive','pop');
+    function resetHighFive(silent){
       hiCount = 0;
-      const c = document.getElementById('hiCount');
-      if(c) c.textContent = '0';
       const panel = document.getElementById('hiPanel');
       if(panel) panel.innerHTML = `Count: <span id="hiCount">0</span> / 8`;
+      if(!silent) animateScene('sc-hifive','pop');
     }
 
-    // ===== Start =====
+    // ---------- Start ----------
     showHome();
   </script>
 </body>
