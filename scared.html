@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding Scared</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body{
+      margin:0; padding:0;
+      background:#F4FAFF;
+      font-family:'Fredoka',sans-serif;
+      color:#1F2937;
+      display:flex; justify-content:center;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    #app-container{
+      width:100%;
+      max-width:860px;
+      padding:44px 18px;
+      position:relative;
+    }
+
+    .white-card{
+      background:#fff;
+      border-radius:26px;
+      padding:30px;
+      box-shadow:0 10px 26px rgba(0,0,0,0.06);
+      text-align:center;
+      margin-bottom:24px;
+      border-bottom:7px solid #E5E7EB;
+      position:relative;
+      overflow:visible;
+      transition:transform .18s ease;
+    }
+    .white-card:hover{ transform:translateY(-4px); }
+
+    .title{
+      font-size:40px;
+      font-weight:800;
+      text-align:center;
+      margin:0 0 8px 0;
+      letter-spacing:.2px;
+      color:#0F172A;
+    }
+    .subtitle{
+      text-align:center;
+      color:#64748B;
+      margin:0 0 34px 0;
+      font-size:18px;
+      line-height:1.45;
+    }
+
+    .accent-title{ color:#0EA5E9; } /* sky-500 */
+    .deep-title{ color:#1D4ED8; }   /* blue-700 */
+
+    .card-title{
+      font-size:22px;
+      font-weight:800;
+      margin:10px 0 6px 0;
+      color:#0F172A;
+    }
+    .card-desc{
+      font-size:16px;
+      color:#64748B;
+      line-height:1.55;
+      margin:0;
+    }
+
+    .btn{
+      padding:14px 22px;
+      border-radius:16px;
+      font-weight:800;
+      font-size:18px;
+      border:none;
+      cursor:pointer;
+      color:#fff;
+      transition:transform .2s ease, filter .2s ease;
+      width:100%;
+      margin-top:16px;
+      box-shadow:0 7px 16px rgba(0,0,0,0.12);
+    }
+    .btn:hover{ transform:scale(1.02); filter:brightness(1.06); }
+    .btn:disabled{ opacity:.75; cursor:not-allowed; transform:none; }
+
+    /* Scared palette (storm -> safe) */
+    .btn-blue   { background:linear-gradient(135deg,#38BDF8,#0EA5E9); }
+    .btn-deep   { background:linear-gradient(135deg,#60A5FA,#1D4ED8); }
+    .btn-amber  { background:linear-gradient(135deg,#FBBF24,#D97706); }
+    .btn-green  { background:linear-gradient(135deg,#34D399,#16A34A); }
+    .btn-violet { background:linear-gradient(135deg,#A78BFA,#7C3AED); }
+    .btn-slate  { background:linear-gradient(135deg,#94A3B8,#475569); }
+
+    .btn-back{
+      background:#fff;
+      border:2px solid #CBD5E1;
+      color:#334155;
+      padding:9px 16px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      margin-bottom:18px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+    @media (max-width:650px){ .grid-2{ grid-template-columns:1fr; } }
+
+    .sticker-img{
+      width:clamp(140px, 34vw, 210px);
+      height:clamp(96px, 22vw, 160px);
+      object-fit:contain;
+      filter:drop-shadow(0 16px 18px rgba(0,0,0,0.16));
+      user-select:none;
+      -webkit-user-drag:none;
+      border-radius:18px;
+      background:rgba(248,250,252,0.0);
+    }
+
+    @keyframes floaty { 0%,100%{ transform: translateY(0) scale(1);} 50%{ transform: translateY(-14px) scale(1.05);} }
+    @keyframes wobble { 0%{ transform: rotate(0deg);} 25%{ transform: rotate(6deg);} 50%{ transform: rotate(0deg);} 75%{ transform: rotate(-6deg);} 100%{ transform: rotate(0deg);} }
+    @keyframes boing  { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.18);} }
+    @keyframes pop    { 0%{ transform: scale(1);} 40%{ transform: scale(1.08);} 100%{ transform: scale(1);} }
+    .floaty{ animation: floaty 2.6s infinite ease-in-out; }
+    .wobble{ animation: wobble 0.9s infinite ease-in-out; }
+    .boing{ animation: boing 1.1s infinite ease-in-out; }
+    .pop{ animation: pop .28s ease-out; }
+
+    .bubble{
+      display:none;
+      background:#E0F2FE;
+      border:2px solid #BAE6FD;
+      color:#075985;
+      padding:14px 14px;
+      border-radius:18px;
+      font-weight:800;
+      margin-top:12px;
+      text-align:left;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      margin-top:10px;
+      background:#E0F2FE;
+      color:#075985;
+    }
+
+    .mini-panel{
+      background:#F8FAFC;
+      border:2px dashed #CBD5E1;
+      border-radius:18px;
+      padding:14px;
+      margin-top:12px;
+      text-align:left;
+    }
+
+    .timer{
+      font-size:34px;
+      font-weight:900;
+      margin-top:10px;
+      color:#0F172A;
+      min-height:44px;
+      text-align:center;
+    }
+
+    .progressWrap{
+      width:100%;
+      background:#E2E8F0;
+      border-radius:999px;
+      overflow:hidden;
+      height:12px;
+      margin-top:12px;
+    }
+    .progressBar{
+      height:12px;
+      width:0%;
+      background:linear-gradient(90deg,#38BDF8,#A78BFA);
+      transition:width .2s linear;
+    }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:10px; }
+    .chip{
+      border:2px solid #E2E8F0;
+      background:#fff;
+      border-radius:999px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .15s ease, border-color .15s ease, background .15s ease;
+      user-select:none;
+    }
+    .chip:hover{ transform:translateY(-2px); }
+    .chip.on{
+      border-color:#0EA5E9;
+      background:#E0F2FE;
+    }
+
+    .input, textarea, select{
+      width:100%;
+      font-family:'Fredoka',sans-serif;
+      font-weight:700;
+      border-radius:16px;
+      border:2px solid #E2E8F0;
+      padding:12px 14px;
+      outline:none;
+      font-size:15px;
+      box-sizing:border-box;
+    }
+    textarea{ min-height:92px; resize:vertical; }
+
+    .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media (max-width:650px){ .row-2{ grid-template-columns:1fr; } }
+
+    .note{
+      color:#64748B;
+      font-weight:800;
+      font-size:13px;
+      margin-top:8px;
+      text-align:center;
+    }
+
+    /* dotted aura */
+    #app-container:before{
+      content:"";
+      position:absolute;
+      inset:-80px -30px -80px -30px;
+      background-image:radial-gradient(rgba(14,165,233,0.18) 1.6px, transparent 1.6px);
+      background-size:28px 28px;
+      pointer-events:none;
+      opacity:.55;
+      mask-image:radial-gradient(circle at 40% 20%, rgba(0,0,0,1), rgba(0,0,0,0.15) 70%);
+    }
+
+    .btn-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:12px;
+    }
+    .btn-small{
+      width:auto;
+      margin-top:0;
+      padding:12px 16px;
+      border-radius:14px;
+      font-size:16px;
+      box-shadow:0 7px 14px rgba(0,0,0,0.12);
+    }
+    .output{
+      background:#F1F5F9;
+      border:2px solid #E2E8F0;
+      border-radius:18px;
+      padding:14px;
+      margin-top:12px;
+      font-weight:900;
+      color:#0F172A;
+      line-height:1.4;
+    }
+    .subtle{
+      font-weight:800;
+      color:#64748B;
+      margin-top:6px;
+      font-size:13px;
+    }
+    .divider{
+      height:1px;
+      background:#E2E8F0;
+      margin:12px 0;
+      border-radius:999px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-container"></div>
+
+  <script>
+    const container = document.getElementById('app-container');
+
+    // ---- timer safety (clear all timeouts/intervals on navigation) ----
+    const ACTIVE = { t: [], i: [] };
+    function safeTimeout(fn, ms){ const id = setTimeout(fn, ms); ACTIVE.t.push(id); return id; }
+    function safeInterval(fn, ms){ const id = setInterval(fn, ms); ACTIVE.i.push(id); return id; }
+    function clearAllTimers(){
+      while(ACTIVE.t.length) clearTimeout(ACTIVE.t.pop());
+      while(ACTIVE.i.length) clearInterval(ACTIVE.i.pop());
+    }
+    function nav(renderFn){
+      clearAllTimers();
+      renderFn();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ---- illustrations (place these files in: assets/scared/) ----
+    const IMG = {
+      // home
+      homeHappening: "assets/scared/sc_01.png",
+      homeTools:     "assets/scared/sc_02.png",
+
+      // behaviors
+      bFreeze: "assets/scared/sc_03.png",
+      bEscape: "assets/scared/sc_04.png",
+      bHide:   "assets/scared/sc_05.png",
+      bSafe:   "assets/scared/sc_06.png",
+
+      // consequences
+      cSleep:  "assets/scared/sc_07.png",
+      cThink:  "assets/scared/sc_08.png",
+      cFun:    "assets/scared/sc_09.png",
+      cSpill:  "assets/scared/sc_10.png",
+
+      // tools
+      tBreath: "assets/scared/sc_11.png",
+      tLabel:  "assets/scared/sc_12.png",
+      tLadder: "assets/scared/sc_13.png",
+      tBody:   "assets/scared/sc_14.png",
+      tBox:    "assets/scared/sc_15.png",
+      tHelp:   "assets/scared/sc_16.png"
+    };
+
+    function safeImg(src, cls, fallback){
+      const fb = fallback || IMG.homeTools;
+      return `<img src="${src}" class="sticker-img ${cls || ""}" onerror="this.onerror=null; this.src='${fb}';">`;
+    }
+
+    // ---------- HOME ----------
+    function showHome(){
+      container.innerHTML = `
+        <h1 class="title">Understanding Scared</h1>
+        <p class="subtitle">
+          Scared is your brain saying, “Watch out!” even when you’re not sure you’re in danger.
+          <br><span style="font-weight:900; color:#475569;">It doesn’t mean you’re weak—it means your body is trying to protect you.</span>
+        </p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#0EA5E9;">
+            ${safeImg(IMG.homeHappening, "floaty")}
+            <div class="card-title">What’s happening?</div>
+            <p class="card-desc">When something feels uncertain, your body can go into “alarm mode” fast—heart pounding, tummy tight, thoughts racing.</p>
+            <div class="chips" style="margin-top:10px;">
+              <span class="pill">fast heartbeat</span>
+              <span class="pill">tight tummy</span>
+              <span class="pill">shaky legs</span>
+              <span class="pill">loud sounds</span>
+              <span class="pill">new places</span>
+              <span class="pill">being alone</span>
+            </div>
+            <button class="btn btn-blue" onclick="nav(showReactions)">See Behaviors</button>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#1D4ED8;">
+            ${safeImg(IMG.homeTools, "floaty")}
+            <div class="card-title">Comfort Tools</div>
+            <p class="card-desc">Science-backed ways to help your body feel safe again—so your brave brain can come back online.</p>
+            <button class="btn btn-deep" onclick="nav(showSolutions)">Show Comfort Tools</button>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+        </div>
+      `;
+    }
+
+    // ---------- BEHAVIORS ----------
+    function showReactions(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="nav(showHome)">← Back</button>
+        <h1 class="title accent-title">How Do I Act When I’m Scared?</h1>
+        <p class="subtitle" style="color:#0EA5E9; font-weight:800;">These are clues your alarm system is turned up.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#93C5FD;">
+            ${safeImg(IMG.bFreeze, "floaty")}
+            <div class="card-title">I Freeze</div>
+            <p class="card-desc">I get stuck. My body feels stiff and my brain can’t pick a plan.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#93C5FD;">
+            ${safeImg(IMG.bEscape, "wobble")}
+            <div class="card-title">I Escape</div>
+            <p class="card-desc">I back up, run away, or leave fast to feel safe again.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#93C5FD;">
+            ${safeImg(IMG.bHide, "boing")}
+            <div class="card-title">I Hide</div>
+            <p class="card-desc">I want to disappear, cover up, or stay where no one sees me.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#93C5FD;">
+            ${safeImg(IMG.bSafe, "floaty")}
+            <div class="card-title">I Need a Safe Person</div>
+            <p class="card-desc">I stay close to a trusted adult because my body calms faster with support.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#1D4ED8;">
+          <p style="font-weight:900; font-size:20px; color:#1D4ED8; margin:0;">What happens if fear stays in charge?</p>
+          <button class="btn btn-deep btn-small" style="margin-top:14px;" onclick="nav(showConsequences)">See Consequences ➔</button>
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+        </div>
+      `;
+    }
+
+    // ---------- CONSEQUENCES ----------
+    function showConsequences(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="nav(showReactions)">← Back</button>
+        <h1 class="title deep-title">When Fear Takes Over…</h1>
+        <p class="subtitle">Too much alarm can make thinking, sleep, and fun feel harder.</p>
+
+        <div class="grid-2">
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cSleep, "wobble")}
+            <div class="card-title">Sleep Gets Bumpy</div>
+            <p class="card-desc">My brain keeps saying “What if?” so rest feels tricky.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cThink, "floaty")}
+            <div class="card-title">Thinking Gets Hard</div>
+            <p class="card-desc">When alarm is loud, focus and memory can shrink.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cFun, "boing")}
+            <div class="card-title">I Avoid Fun</div>
+            <p class="card-desc">I skip games or new things because my body expects danger.</p>
+          </div>
+
+          <div class="white-card" style="border-bottom-color:#60A5FA;">
+            ${safeImg(IMG.cSpill, "wobble")}
+            <div class="card-title">Big Reactions</div>
+            <p class="card-desc">Small surprises can cause jumps, tears, or mistakes.</p>
+          </div>
+        </div>
+
+        <div class="white-card" style="margin-top:26px; border-bottom-color:#16A34A;">
+          <p style="font-weight:900; font-size:20px; color:#166534; margin:0;">Good news: you can train your body to feel safe again.</p>
+          <button class="btn btn-green btn-small" style="margin-top:14px;" onclick="nav(showSolutions)">Go to Comfort Tools ➔</button>
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+        </div>
+      `;
+    }
+
+    // ---------- TOOLS ----------
+    function showSolutions(){
+      container.innerHTML = `
+        <button class="btn-back" onclick="nav(showHome)">← Back to Start</button>
+        <h1 class="title accent-title">Comfort Tools</h1>
+        <p class="subtitle">Each tool helps your alarm system settle—so brave choices feel possible.</p>
+
+        <div style="display:flex; flex-direction:column; gap:26px; margin-top:18px;">
+
+          <!-- TOOL 1: 60s Brave Breath -->
+          <div class="white-card" style="border-bottom-color:#0EA5E9;">
+            ${safeImg(IMG.tBreath, "floaty")}
+            <div class="card-title" style="color:#0EA5E9;">1-Minute Brave Breath (60s)</div>
+            <p class="card-desc">Why it helps: slow breathing tells your body “I’m safe,” which turns down the alarm.</p>
+
+            <div class="mini-panel" style="text-align:center;">
+              <div class="pill" id="breath-phase">Ready</div>
+              <div class="timer" id="breath-timer">60</div>
+              <div class="progressWrap"><div class="progressBar" id="breath-bar"></div></div>
+              <div class="subtle" id="breath-help">Press Start. Breathe in for 4… out for 6.</div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-blue btn-small" id="breath-start" onclick="toggleBreath()">Start</button>
+              <button class="btn btn-slate btn-small" onclick="resetBreath()">Reset</button>
+            </div>
+          </div>
+
+          <!-- TOOL 2: Name the Fear -->
+          <div class="white-card" style="border-bottom-color:#7C3AED;">
+            ${safeImg(IMG.tLabel, "boing")}
+            <div class="card-title" style="color:#7C3AED;">Name the Scare (Label It)</div>
+            <p class="card-desc">Why it helps: naming a feeling can calm the brain and make it less huge.</p>
+
+            <div class="mini-panel">
+              <label style="font-weight:900;">What kind of scared is it?</label>
+              <select id="fear-kind" class="input" style="margin-top:10px;">
+                <option value="startled">Startled (a sudden surprise)</option>
+                <option value="worried">Worried (my brain says “what if?”)</option>
+                <option value="nervous">Nervous (new thing / new people)</option>
+                <option value="unsafe">Unsafe (I need a grown-up now)</option>
+              </select>
+
+              <div class="divider"></div>
+
+              <label style="font-weight:900;">Where do you feel it in your body?</label>
+              <select id="fear-body" class="input" style="margin-top:10px;">
+                <option value="heart">My heart (fast beat)</option>
+                <option value="tummy">My tummy (tight / flip-flop)</option>
+                <option value="hands">My hands (shaky / sweaty)</option>
+                <option value="head">My head (racing thoughts)</option>
+              </select>
+
+              <div class="output" id="label-out">“I feel scared.”</div>
+              <div class="subtle" id="label-help">Press Build to make a clear sentence.</div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-violet btn-small" onclick="buildLabel()">Build</button>
+              <button class="btn btn-slate btn-small" onclick="clearLabel()">Clear</button>
+            </div>
+          </div>
+
+          <!-- TOOL 3: Safety Check -->
+          <div class="white-card" style="border-bottom-color:#1D4ED8;">
+            ${safeImg(IMG.tBody, "floaty")}
+            <div class="card-title" style="color:#1D4ED8;">Safety Check (Real Danger or False Alarm?)</div>
+            <p class="card-desc">Why it helps: your brain learns the difference between “danger” and “uncomfortable.”</p>
+
+            <div class="mini-panel">
+              <div style="font-weight:900;">Tap what is true right now:</div>
+              <div class="chips" id="safety-chips">
+                <div class="chip" data-k="hurt">Someone might hurt me</div>
+                <div class="chip" data-k="lost">I’m lost / alone with no adult</div>
+                <div class="chip" data-k="unsafePlace">This place feels unsafe</div>
+                <div class="chip" data-k="newThing">This is just new</div>
+                <div class="chip" data-k="loud">It’s loud / surprising</div>
+                <div class="chip" data-k="embarrass">I’m afraid of messing up</div>
+              </div>
+
+              <div class="output" id="safety-out">Tap 1–3 chips, then press Check.</div>
+              <div class="subtle">Rule: If “hurt / lost / unsafePlace” is on, ask an adult right away.</div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-deep btn-small" onclick="runSafety()">Check</button>
+              <button class="btn btn-slate btn-small" onclick="resetSafety()">Reset</button>
+            </div>
+          </div>
+
+          <!-- TOOL 4: Tiny Brave Ladder -->
+          <div class="white-card" style="border-bottom-color:#F59E0B;">
+            ${safeImg(IMG.tLadder, "boing")}
+            <div class="card-title" style="color:#D97706;">Tiny Brave Step Ladder</div>
+            <p class="card-desc">Why it helps: small safe practice teaches your brain “I can handle this.”</p>
+
+            <div class="mini-panel">
+              <label style="font-weight:900;">What feels scary?</label>
+              <input id="ladder-input" class="input" placeholder="Example: raising my hand in class">
+              <div class="output" id="ladder-out">Press Build Ladder.</div>
+              <div class="subtle">This is gentle practice, not forcing. One step is enough today.</div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-amber btn-small" onclick="buildLadder()">Build Ladder</button>
+              <button class="btn btn-slate btn-small" onclick="clearLadder()">Clear</button>
+            </div>
+          </div>
+
+          <!-- TOOL 5: 5-4-3-2-1 Grounding -->
+          <div class="white-card" style="border-bottom-color:#16A34A;">
+            ${safeImg(IMG.tBreath, "floaty", IMG.tBreath)}
+            <div class="card-title" style="color:#16A34A;">5-4-3-2-1 Grounding (Sense Scanner)</div>
+            <p class="card-desc">Why it helps: focusing on senses pulls your brain out of panic thoughts and into “right now.”</p>
+
+            <div class="mini-panel" style="text-align:center;">
+              <div class="pill" id="g-phase">Ready</div>
+              <div style="font-weight:900; font-size:22px; margin-top:10px;" id="g-line">Press Start.</div>
+              <div class="subtle" id="g-help">You can point and whisper answers in your head.</div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-green btn-small" onclick="toggleGrounding()" id="g-btn">Start</button>
+              <button class="btn btn-slate btn-small" onclick="resetGrounding()">Reset</button>
+            </div>
+          </div>
+
+          <!-- TOOL 6: Ask-for-Help Script -->
+          <div class="white-card" style="border-bottom-color:#475569;">
+            ${safeImg(IMG.tHelp, "floaty")}
+            <div class="card-title" style="color:#334155;">Help Script Builder</div>
+            <p class="card-desc">Why it helps: clear words help grown-ups support you faster (co-regulation).</p>
+
+            <div class="mini-panel">
+              <div class="row-2">
+                <div>
+                  <div style="font-weight:900;">Who can help?</div>
+                  <select id="help-who" class="input" style="margin-top:10px;">
+                    <option value="Mom">Mom</option>
+                    <option value="Dad">Dad</option>
+                    <option value="Teacher">Teacher</option>
+                    <option value="Coach">Coach</option>
+                    <option value="Grandma">Grandma</option>
+                    <option value="A safe adult">A safe adult</option>
+                  </select>
+                  <div class="subtle">Or type a name:</div>
+                  <input id="help-who2" class="input" placeholder="Example: Ms. Rivera">
+                </div>
+
+                <div>
+                  <div style="font-weight:900;">What do you need?</div>
+                  <select id="help-need" class="input" style="margin-top:10px;">
+                    <option value="a quiet break for 2 minutes">a quiet break for 2 minutes</option>
+                    <option value="to stand near you">to stand near you</option>
+                    <option value="help with the first step">help with the first step</option>
+                    <option value="to go to a calmer place">to go to a calmer place</option>
+                    <option value="a drink of water">a drink of water</option>
+                    <option value="a simple plan">a simple plan</option>
+                  </select>
+                  <div class="subtle">Or type your need:</div>
+                  <input id="help-need2" class="input" placeholder="Example: walk with me to the office">
+                </div>
+              </div>
+
+              <div class="output" id="help-out">Hi ____. I feel scared. Can you help me by ____?</div>
+              <div class="subtle" id="help-msg">Press Build Script.</div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-slate btn-small" onclick="buildHelp()">Build Script</button>
+              <button class="btn btn-blue btn-small" onclick="copyHelp()">Copy</button>
+              <button class="btn btn-slate btn-small" onclick="clearHelp()">Clear</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="text-align:center; margin-top:26px;">
+          <a href="index.html" style="color:#94A3B8; text-decoration:none; font-weight:800;">← Back to Menu</a>
+        </div>
+      `;
+
+      resetStates();
+      wireSafetyChips();
+    }
+
+    // ---------------- TOOL LOGIC ----------------
+
+    // TOOL 1: Brave Breath (60s)
+    let breathRunning=false;
+    let breathTimer=null;
+    let breathLeft=60;
+    function setBreathUI(phase, help){
+      const p=document.getElementById('breath-phase');
+      const h=document.getElementById('breath-help');
+      if(p) p.textContent=phase;
+      if(h) h.textContent=help;
+    }
+    function renderBreath(){
+      const t=document.getElementById('breath-timer');
+      const bar=document.getElementById('breath-bar');
+      if(t) t.textContent = breathLeft;
+      if(bar) bar.style.width = `${Math.round(((60-breathLeft)/60)*100)}%`;
+    }
+    function toggleBreath(){
+      const btn=document.getElementById('breath-start');
+      if(!btn) return;
+
+      if(breathRunning){
+        clearInterval(breathTimer); breathTimer=null; breathRunning=false;
+        btn.textContent="Start";
+        setBreathUI("Paused","Press Start to continue. In for 4… out for 6.");
+        return;
+      }
+
+      breathRunning=true;
+      btn.textContent="Pause";
+      setBreathUI("Go","In for 4… out for 6.");
+      renderBreath();
+
+      let cycle = 0; // 0..9 repeating (4 in, 6 out)
+      breathTimer = safeInterval(()=>{
+        breathLeft--;
+        cycle = (cycle+1)%10;
+
+        if(breathLeft <= 0){
+          clearInterval(breathTimer); breathTimer=null; breathRunning=false;
+          if(btn) btn.textContent="Start";
+          breathLeft = 0;
+          renderBreath();
+          setBreathUI("Done","Nice. Your body just practiced safety.");
+          return;
+        }
+
+        // update phase hints
+        if(cycle === 0) setBreathUI("In","Breathe in slowly (4).");
+        if(cycle === 4) setBreathUI("Out","Breathe out slowly (6).");
+        renderBreath();
+      }, 1000);
+    }
+    function resetBreath(){
+      const btn=document.getElementById('breath-start');
+      if(breathTimer){ clearInterval(breathTimer); breathTimer=null; }
+      breathRunning=false;
+      breathLeft=60;
+      if(btn) btn.textContent="Start";
+      setBreathUI("Ready","Press Start. Breathe in for 4… out for 6.");
+      renderBreath();
+    }
+
+    // TOOL 2: Label it
+    function buildLabel(){
+      const kind=document.getElementById('fear-kind');
+      const body=document.getElementById('fear-body');
+      const out=document.getElementById('label-out');
+      const help=document.getElementById('label-help');
+      if(!kind || !body || !out) return;
+
+      const kindText = {
+        startled:"startled",
+        worried:"worried",
+        nervous:"nervous",
+        unsafe:"unsafe"
+      }[kind.value] || "scared";
+
+      const bodyText = {
+        heart:"my heart is beating fast",
+        tummy:"my tummy feels tight",
+        hands:"my hands feel shaky",
+        head:"my thoughts feel loud"
+      }[body.value] || "my body feels scared";
+
+      out.textContent = `“I feel ${kindText}. ${bodyText}. I can use a tool.”`;
+      if(help) help.textContent = "Good job naming it. Now pick one small tool.";
+      out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop');
+    }
+    function clearLabel(){
+      const out=document.getElementById('label-out');
+      const help=document.getElementById('label-help');
+      if(out) out.textContent = `“I feel scared.”`;
+      if(help) help.textContent = "Press Build to make a clear sentence.";
+    }
+
+    // TOOL 3: Safety Check chips
+    let safetySelected = new Set();
+    function wireSafetyChips(){
+      const wrap=document.getElementById('safety-chips');
+      if(!wrap) return;
+      wrap.querySelectorAll('.chip').forEach(ch=>{
+        ch.onclick = ()=>{
+          const k = ch.getAttribute('data-k');
+          if(!k) return;
+          if(safetySelected.has(k)){
+            safetySelected.delete(k);
+            ch.classList.remove('on');
+          }else{
+            safetySelected.add(k);
+            ch.classList.add('on');
+          }
+        };
+      });
+    }
+    function runSafety(){
+      const out=document.getElementById('safety-out');
+      if(!out) return;
+
+      const real = safetySelected.has('hurt') || safetySelected.has('lost') || safetySelected.has('unsafePlace');
+      if(real){
+        out.innerHTML = `✅ <b>Real safety need.</b><br>Find a trusted adult now and say: “I don’t feel safe.”`;
+      }else if(safetySelected.size === 0){
+        out.textContent = "Tap 1–3 chips first, then press Check.";
+      }else{
+        out.innerHTML = `🌤️ <b>Likely a false alarm.</b><br>Your body is loud, but you can use tools: Brave Breath + Tiny Step Ladder.`;
+      }
+      out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop');
+    }
+    function resetSafety(){
+      safetySelected.clear();
+      const wrap=document.getElementById('safety-chips');
+      if(wrap) wrap.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('on'));
+      const out=document.getElementById('safety-out');
+      if(out) out.textContent = "Tap 1–3 chips, then press Check.";
+    }
+
+    // TOOL 4: Ladder
+    function buildLadder(){
+      const input=document.getElementById('ladder-input');
+      const out=document.getElementById('ladder-out');
+      if(!input || !out) return;
+      const task = (input.value || "").trim();
+      const thing = task ? task : "the scary thing";
+
+      const steps = [
+        `Step 1 (tiny): Look at ${thing} for 5 seconds.`,
+        `Step 2 (small): Try ${thing} for 10 seconds with a safe adult nearby.`,
+        `Step 3 (braver): Try ${thing} one more time and stop to celebrate.`
+      ];
+
+      out.innerHTML = `<div style="font-weight:900;">Your Ladder:</div>
+        <div class="divider"></div>
+        <div>🪜 ${steps[0]}</div>
+        <div style="margin-top:8px;">🪜 ${steps[1]}</div>
+        <div style="margin-top:8px;">🪜 ${steps[2]}</div>
+        <div class="divider"></div>
+        <div style="font-weight:900; color:#0F172A;">Today’s Next Step: <span style="color:#D97706;">${steps[0]}</span></div>
+      `;
+      out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop');
+    }
+    function clearLadder(){
+      const input=document.getElementById('ladder-input');
+      const out=document.getElementById('ladder-out');
+      if(input) input.value="";
+      if(out) out.textContent="Press Build Ladder.";
+    }
+
+    // TOOL 5: Grounding
+    const groundingSteps = [
+      { n:5, label:"5 things you see" },
+      { n:4, label:"4 things you feel/touch" },
+      { n:3, label:"3 things you hear" },
+      { n:2, label:"2 things you smell" },
+      { n:1, label:"1 thing you taste" }
+    ];
+    let gRunning=false;
+    let gIndex=0;
+
+    function showGroundingStep(){
+      const p=document.getElementById('g-phase');
+      const line=document.getElementById('g-line');
+      const help=document.getElementById('g-help');
+      if(!p || !line || !help) return;
+
+      if(gIndex >= groundingSteps.length){
+        p.textContent="Done";
+        line.textContent="Nice. Your brain is back in the room.";
+        help.textContent="Now pick one tiny brave step.";
+        return;
+      }
+
+      const s = groundingSteps[gIndex];
+      p.textContent = `Step ${gIndex+1}/5`;
+      line.textContent = s.label;
+      help.textContent = `Find ${s.n}. You can whisper them in your head.`;
+    }
+
+    function toggleGrounding(){
+      const btn=document.getElementById('g-btn');
+      if(!btn) return;
+
+      if(!gRunning){
+        gRunning=true;
+        gIndex=0;
+        btn.textContent="Next";
+        showGroundingStep();
+        return;
+      }
+
+      gIndex++;
+      showGroundingStep();
+
+      if(gIndex >= groundingSteps.length){
+        btn.textContent="Restart";
+        gRunning=false;
+      }
+    }
+    function resetGrounding(){
+      const btn=document.getElementById('g-btn');
+      gRunning=false;
+      gIndex=0;
+      const p=document.getElementById('g-phase');
+      const line=document.getElementById('g-line');
+      const help=document.getElementById('g-help');
+      if(p) p.textContent="Ready";
+      if(line) line.textContent="Press Start.";
+      if(help) help.textContent="You can point and whisper answers in your head.";
+      if(btn) btn.textContent="Start";
+    }
+
+    // TOOL 6: Help script
+    function buildHelp(){
+      const who=document.getElementById('help-who');
+      const who2=document.getElementById('help-who2');
+      const need=document.getElementById('help-need');
+      const need2=document.getElementById('help-need2');
+      const out=document.getElementById('help-out');
+      const msg=document.getElementById('help-msg');
+      if(!who || !need || !out) return;
+
+      const W = (who2 && who2.value.trim()) ? who2.value.trim() : who.value;
+      const N = (need2 && need2.value.trim()) ? need2.value.trim() : need.value;
+
+      out.textContent = `Hi ${W}. I feel scared. Can you help me by ${N}?`;
+      if(msg) msg.textContent = "Great. Now you can say it out loud.";
+      out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop');
+    }
+    function copyHelp(){
+      const out=document.getElementById('help-out');
+      const msg=document.getElementById('help-msg');
+      if(!out) return;
+      const text = out.textContent || "";
+      if(!text.trim()) return;
+
+      navigator.clipboard?.writeText(text).then(()=>{
+        if(msg) msg.textContent = "Copied!";
+        safeTimeout(()=>{ if(msg) msg.textContent=""; }, 1200);
+      }).catch(()=>{
+        if(msg) msg.textContent = "Copy not available here—just highlight and copy.";
+      });
+    }
+    function clearHelp(){
+      const who2=document.getElementById('help-who2');
+      const need2=document.getElementById('help-need2');
+      const out=document.getElementById('help-out');
+      const msg=document.getElementById('help-msg');
+      if(who2) who2.value="";
+      if(need2) need2.value="";
+      if(out) out.textContent = "Hi ____. I feel scared. Can you help me by ____?";
+      if(msg) msg.textContent = "Press Build Script.";
+    }
+
+    function resetStates(){
+      // clear tool states that might carry over
+      resetBreath();
+      resetGrounding();
+      safetySelected.clear();
+      breathLeft = 60;
+      breathRunning = false;
+      if(breathTimer){ clearInterval(breathTimer); breathTimer=null; }
+    }
+
+    showHome();
+  </script>
+</body>
+</html>
