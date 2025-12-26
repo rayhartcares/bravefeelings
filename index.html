@@ -17,6 +17,90 @@
 </head>
 
 <body class="min-h-screen hero-bg flex flex-col items-center justify-center p-6">
+<body class="min-h-screen hero-bg flex flex-col items-center justify-center p-6">
+
+  <!-- PASSWORD LOCK SCREEN (PASTE THIS RIGHT HERE) -->
+  <div id="lockScreen" style="
+    position: fixed;
+    inset: 0;
+    background: #F0F9FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  ">
+    <div style="
+      background: white;
+      padding: 36px;
+      border-radius: 26px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      font-family: 'Fredoka', sans-serif;
+    ">
+      <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 10px;">
+        Welcome to Brave Feelings 💛
+      </h2>
+      <p style="color:#64748B; font-size:16px; margin-bottom: 22px;">
+        Enter your access code to open the Calm-Down App.
+      </p>
+
+      <input
+        id="accessInput"
+        type="password"
+        placeholder="Enter access code"
+        style="
+          width: 100%;
+          padding: 14px;
+          font-size: 16px;
+          border-radius: 14px;
+          border: 2px solid #E2E8F0;
+          margin-bottom: 16px;
+          font-family: 'Fredoka', sans-serif;
+        "
+      >
+
+      <button
+        onclick="unlockApp()"
+        style="
+          width: 100%;
+          padding: 14px;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+          color: white;
+          font-size: 18px;
+          font-weight: 800;
+          border: none;
+          cursor: pointer;
+        "
+      >
+        Open App
+      </button>
+
+      <p id="lockError" style="
+        color:#DC2626;
+        font-weight:800;
+        margin-top:14px;
+        display:none;
+      ">
+        Incorrect code. Please check your PDF.
+      </p>
+    </div>
+  </div>
+  <!-- END LOCK SCREEN -->
+
+  <div class="text-center max-w-2xl mx-auto mb-12">
+    ...
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full px-4">
+    ...
+  </div>
+
+  <div class="mt-16 text-slate-400 font-extrabold text-sm text-center">
+    Brave Feelings Lab © 2025
+  </div>
 
   <div class="text-center max-w-2xl mx-auto mb-12">
     <div class="w-32 h-32 mx-auto mb-6 bg-white rounded-full p-1 shadow-xl">
@@ -132,6 +216,62 @@
   <div class="mt-16 text-slate-400 font-extrabold text-sm text-center">
     Brave Feelings Lab © 2025
   </div>
+  <script>
+    const ACCESS_CODE = "BRAVE-CALM";
+
+    function unlockApp() {
+      const input = document.getElementById("accessInput");
+      const error = document.getElementById("lockError");
+
+      if (input.value.trim() === ACCESS_CODE) {
+        localStorage.setItem("bf_access_granted", "yes");
+        document.getElementById("lockScreen").style.display = "none";
+      } else {
+        error.style.display = "block";
+      }
+    }
+
+    // Auto-unlock if already granted
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("bf_access_granted") === "yes") {
+        const lock = document.getElementById("lockScreen");
+        if (lock) lock.style.display = "none";
+      }
+    });
+ <script>
+  const ACCESS_CODE = "BRAVE-CALM";
+
+  function unlockApp() {
+    const input = document.getElementById("accessInput");
+    const error = document.getElementById("lockError");
+    if (input.value.trim() === ACCESS_CODE) {
+      localStorage.setItem("bf_access_granted", "yes");
+      document.getElementById("lockScreen").style.display = "none";
+    } else {
+      error.style.display = "block";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // auto-unlock
+    if (localStorage.getItem("bf_access_granted") === "yes") {
+      const lock = document.getElementById("lockScreen");
+      if (lock) lock.style.display = "none";
+    }
+
+    // press Enter to unlock
+    const input = document.getElementById("accessInput");
+    if (input) {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") unlockApp();
+      });
+    }
+  });
+</script>
+
+  </script>
+
+</body>
 
 </body>
 </html>
