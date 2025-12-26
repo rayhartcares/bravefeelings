@@ -13,13 +13,26 @@
     .hero-bg { background-image: radial-gradient(#bae6fd 2px, transparent 2px); background-size: 30px 30px; }
     .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
     .card-hover:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12); }
+
+    /* Lock screen shake */
+    @keyframes shakeX {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-7px); }
+      40% { transform: translateX(7px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+      100% { transform: translateX(0); }
+    }
+    .shake { animation: shakeX 0.22s ease-in-out; }
   </style>
 </head>
 
 <body class="min-h-screen hero-bg flex flex-col items-center justify-center p-6">
-<body class="min-h-screen hero-bg flex flex-col items-center justify-center p-6">
 
-  <!-- PASSWORD LOCK SCREEN (PASTE THIS RIGHT HERE) -->
+  <!-- =======================
+       PASSWORD LOCK SCREEN
+       Paste starts here
+       ======================= -->
   <div id="lockScreen" style="
     position: fixed;
     inset: 0;
@@ -28,51 +41,62 @@
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    padding: 18px;
   ">
-    <div style="
+    <div id="lockCard" style="
       background: white;
-      padding: 36px;
+      padding: 34px 28px;
       border-radius: 26px;
-      max-width: 420px;
-      width: 90%;
+      max-width: 440px;
+      width: 100%;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.12);
       font-family: 'Fredoka', sans-serif;
+      border-bottom: 8px solid #38BDF8;
     ">
-      <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 10px;">
-        Welcome to Brave Feelings 💛
+      <div style="font-size:54px; margin-bottom: 6px;">🧸</div>
+
+      <h2 style="font-size: 28px; font-weight: 900; margin: 0 0 8px 0; color:#0F172A;">
+        Welcome to Brave Feelings
       </h2>
-      <p style="color:#64748B; font-size:16px; margin-bottom: 22px;">
+      <p style="color:#64748B; font-size:16px; margin: 0 0 18px 0; line-height:1.4;">
         Enter your access code to open the Calm-Down App.
       </p>
 
       <input
         id="accessInput"
-        type="password"
-        placeholder="Enter access code"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        placeholder="Access code"
         style="
           width: 100%;
-          padding: 14px;
-          font-size: 16px;
-          border-radius: 14px;
+          padding: 14px 14px;
+          font-size: 18px;
+          border-radius: 16px;
           border: 2px solid #E2E8F0;
-          margin-bottom: 16px;
+          margin-bottom: 14px;
           font-family: 'Fredoka', sans-serif;
+          font-weight: 800;
+          outline: none;
+          text-align: center;
+          letter-spacing: 2px;
         "
-      >
+      />
 
       <button
+        id="unlockBtn"
         onclick="unlockApp()"
         style="
           width: 100%;
-          padding: 14px;
-          border-radius: 16px;
+          padding: 14px 16px;
+          border-radius: 18px;
           background: linear-gradient(135deg, #38BDF8, #0EA5E9);
           color: white;
           font-size: 18px;
-          font-weight: 800;
+          font-weight: 900;
           border: none;
           cursor: pointer;
+          box-shadow: 0 10px 20px rgba(2,132,199,0.22);
         "
       >
         Open App
@@ -80,35 +104,30 @@
 
       <p id="lockError" style="
         color:#DC2626;
-        font-weight:800;
+        font-weight:900;
         margin-top:14px;
         display:none;
       ">
-        Incorrect code. Please check your PDF.
+        Wrong access code. Please check your PDF and try again.
+      </p>
+
+      <p style="color:#94A3B8; font-weight:800; margin-top:14px; font-size:13px;">
+        Tip: Press Enter after typing your code.
       </p>
     </div>
   </div>
-  <!-- END LOCK SCREEN -->
+  <!-- =======================
+       END PASSWORD LOCK SCREEN
+       ======================= -->
 
-  <div class="text-center max-w-2xl mx-auto mb-12">
-    ...
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full px-4">
-    ...
-  </div>
-
-  <div class="mt-16 text-slate-400 font-extrabold text-sm text-center">
-    Brave Feelings Lab © 2025
-  </div>
-
+  <!-- MAIN MENU CONTENT -->
   <div class="text-center max-w-2xl mx-auto mb-12">
     <div class="w-32 h-32 mx-auto mb-6 bg-white rounded-full p-1 shadow-xl">
       <img
         src="assets/benne-hart-avatar.png"
         alt="Benne Hart"
         class="w-full h-full object-cover rounded-full"
-        onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Benne'"
+        onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Benne';"
       >
     </div>
 
@@ -153,7 +172,7 @@
         <span class="bg-purple-100 text-purple-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
       <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Worried</h2>
-      <p class="text-slate-500 text-lg">I have butterflies in my tummy.</p>
+      <p class="text-slate-500 text-slate-500 text-lg">I have butterflies in my tummy.</p>
     </a>
 
     <a href="./envious.html" class="block bg-white rounded-3xl p-8 border-b-8 border-green-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
@@ -183,95 +202,129 @@
       <p class="text-slate-500 text-lg">Too much at once—my brain needs smaller steps.</p>
     </a>
 
-    <!-- NEW: EMBARRASSED -->
     <a href="./embarrassed.html" class="block bg-white rounded-3xl p-8 border-b-8 border-pink-400 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
       <div class="flex justify-between items-start mb-4">
         <span class="text-6xl group-hover:scale-110 transition-transform">😳</span>
         <span class="bg-pink-100 text-pink-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
       </div>
       <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Embarrassed</h2>
-      <p class="text-slate-500 text-lg">My cheeks get hot and I want to disappear.</p>
+      <p class="text-slate-500 text-lg">My cheeks get hot and I want to hide.</p>
     </a>
-<!-- NEW: SHY -->
-<a href="./shy.html" class="block bg-white rounded-3xl p-8 border-b-8 border-violet-400 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
-  <div class="flex justify-between items-start mb-4">
-    <span class="text-6xl group-hover:scale-110 transition-transform">😳</span>
-    <span class="bg-violet-100 text-violet-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
-  </div>
-  <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Shy</h2>
-  <p class="text-slate-500 text-lg">I want to join, but my words hide.</p>
-</a>
-<!-- NEW: SCARED -->
-<a href="./scared.html" class="block bg-white rounded-3xl p-8 border-b-8 border-indigo-400 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
-  <div class="flex justify-between items-start mb-4">
-    <span class="text-6xl group-hover:scale-110 transition-transform">😱</span>
-    <span class="bg-indigo-100 text-indigo-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
-  </div>
-  <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Scared</h2>
-  <p class="text-slate-500 text-lg">My body is in alarm mode—I need to feel safe.</p>
-</a>
+
+    <a href="./shy.html" class="block bg-white rounded-3xl p-8 border-b-8 border-indigo-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
+      <div class="flex justify-between items-start mb-4">
+        <span class="text-6xl group-hover:scale-110 transition-transform">😊</span>
+        <span class="bg-indigo-100 text-indigo-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Shy</h2>
+      <p class="text-slate-500 text-lg">I want to talk, but my body feels nervous.</p>
+    </a>
+
+    <a href="./scared.html" class="block bg-white rounded-3xl p-8 border-b-8 border-violet-300 card-hover cursor-pointer shadow-lg relative overflow-hidden group">
+      <div class="flex justify-between items-start mb-4">
+        <span class="text-6xl group-hover:scale-110 transition-transform">😨</span>
+        <span class="bg-violet-100 text-violet-800 px-4 py-1 rounded-full text-sm font-extrabold uppercase tracking-wide">Start</span>
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-800 mb-2">I am Scared</h2>
+      <p class="text-slate-500 text-lg">My body thinks something bad might happen.</p>
+    </a>
 
   </div>
 
-  <div class="mt-16 text-slate-400 font-extrabold text-sm text-center">
+  <div class="mt-10 text-center">
+    <button
+      id="clearAccessBtn"
+      class="text-slate-500 font-extrabold text-sm underline decoration-slate-300 hover:text-slate-700"
+      onclick="clearSavedAccess()"
+      type="button"
+    >
+      Clear Saved Access (force password prompt)
+    </button>
+  </div>
+
+  <div class="mt-10 text-slate-400 font-extrabold text-sm text-center">
     Brave Feelings Lab © 2025
   </div>
+
   <script>
-    const ACCESS_CODE = "3729";
+    /* ============================
+       PASSWORD SETTINGS
+       ============================ */
+    const ACCESS_CODE = "3729";         // <-- CHANGE THE PASSWORD HERE
+    const ACCESS_KEY  = "bf_access_v1"; // storage key (leave as-is)
 
-    function unlockApp() {
+    function normalizeCode(s){
+      // Keep digits only (so spaces/dashes won't matter)
+      return (s || "").toString().replace(/\D+/g, "");
+    }
+
+    function showError(show){
+      const err = document.getElementById("lockError");
+      if (!err) return;
+      err.style.display = show ? "block" : "none";
+    }
+
+    function shakeCard(){
+      const card = document.getElementById("lockCard");
+      if(!card) return;
+      card.classList.remove("shake");
+      // reflow to restart animation
+      void card.offsetWidth;
+      card.classList.add("shake");
+      setTimeout(() => card.classList.remove("shake"), 260);
+    }
+
+    function unlockApp(){
       const input = document.getElementById("accessInput");
-      const error = document.getElementById("lockError");
+      const typed = normalizeCode(input?.value);
+      const expected = normalizeCode(ACCESS_CODE);
 
-      if (input.value.trim() === ACCESS_CODE) {
-        localStorage.setItem("bf_access_granted", "yes");
-        document.getElementById("lockScreen").style.display = "none";
+      if (typed && typed === expected) {
+        localStorage.setItem(ACCESS_KEY, "yes");
+        const lock = document.getElementById("lockScreen");
+        if (lock) lock.style.display = "none";
+        showError(false);
       } else {
-        error.style.display = "block";
+        showError(true);
+        shakeCard();
       }
     }
 
-    // Auto-unlock if already granted
+    function clearSavedAccess(){
+      localStorage.removeItem(ACCESS_KEY);
+      // show lock again
+      const lock = document.getElementById("lockScreen");
+      if (lock) lock.style.display = "flex";
+      const input = document.getElementById("accessInput");
+      if (input) input.value = "";
+      showError(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (input) input.focus();
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("bf_access_granted") === "yes") {
+      // Auto-unlock if already granted
+      if (localStorage.getItem(ACCESS_KEY) === "yes") {
         const lock = document.getElementById("lockScreen");
         if (lock) lock.style.display = "none";
       }
+
+      const input = document.getElementById("accessInput");
+
+      // Hide error as soon as they type again
+      if (input) {
+        input.addEventListener("input", () => showError(false));
+
+        // Enter submits
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") unlockApp();
+        });
+
+        // Focus cursor immediately
+        setTimeout(() => input.focus(), 50);
+      }
     });
- <script>
-  const ACCESS_CODE = "3729";
-
-  function unlockApp() {
-    const input = document.getElementById("accessInput");
-    const error = document.getElementById("lockError");
-    if (input.value.trim() === ACCESS_CODE) {
-      localStorage.setItem("bf_access_granted", "yes");
-      document.getElementById("lockScreen").style.display = "none";
-    } else {
-      error.style.display = "block";
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    // auto-unlock
-    if (localStorage.getItem("bf_access_granted") === "yes") {
-      const lock = document.getElementById("lockScreen");
-      if (lock) lock.style.display = "none";
-    }
-
-    // press Enter to unlock
-    const input = document.getElementById("accessInput");
-    if (input) {
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") unlockApp();
-      });
-    }
-  });
-</script>
-
   </script>
-
-</body>
 
 </body>
 </html>
