@@ -238,95 +238,172 @@
     Brave Feelings Lab © 2025
   </div>
 
-  <script>
-    /* ============================
-       PASSWORD SETTINGS
-       ============================ */
-    const ACCESS_CODE = "5511";                 // <-- CHANGE PASSWORD HERE
-    const ACCESS_TOKEN_KEY = "bf_access_token_v1"; // <-- storage key (leave)
+ <script>
+  /* ============================
+     1-HOUR LOGIN SESSION (AUTO-LOGOUT)
+     ============================ */
 
-    function normalizeCode(s){
-      return (s || "").toString().replace(/\D+/g, "");
-    }
-    function expectedToken(){
-      // token changes automatically when password changes
-      return "ok:" + normalizeCode(ACCESS_CODE);
-    }
+  const ACCESS_CODE = "5511";            // change password here
+  const SESSION_MS  = 60 * 60 * 1000;    // 1 hour
 
-    function showLock(show){
-      const lock = document.getElementById("lockScreen");
-      if(!lock) return;
-      lock.style.display = show ? "flex" : "none";
-    }
+  // New session storage key
+  const SESSION_KEY = "bf_access_session_v1";
 
-    function showError(show){
-      const err = document.getElementById("lockError");
-      if(!err) return;
-      err.style.display = show ? "block" : "none";
-    }
+  // Legacy cleanup (from your previous version)
+  const LEGACY_KEY  = "bf_access_token_v1";
 
-    function shakeCard(){
-      const card = document.getElementById("lockCard");
-      if(!card) return;
-      card.classList.remove("shake");
-      void card.offsetWidth;
-      card.classList.add("shake");
-      setTimeout(() => card.classList.remove("shake"), 260);
-    }
+  function normalizeCode(s){
+    return (s || "").toString().replace(/\D+/g, "");
+  }
 
-    function lockNow(){
-      localStorage.removeItem(ACCESS_TOKEN_KEY);
-      showLock(true);
-      const input = document.getElementById("accessInput");
-      if(input) input.value = "";
+  function expectedToken(){
+    return "ok:" + normalizeCode(ACCESS_CODE);
+  }
+
+  function showLock(show){
+    const lock = document.getElementById("lockScreen");
+    if(!lock) return;
+    lock.style.display = show ? "flex" : "none";
+  }
+
+  function showError(show){
+    const err = document.getElementById("lockError");
+    if(!err) return;
+    err.style.display = show ? "block" : "none";
+  }
+
+  function shakeCard(){
+    const card = document.getElementById("lockCard");
+    if(!card) return;
+    card.classList.remove("shake");
+    void card.offsetWidth;
+    card.classList.add("shake");
+    setTimeout(() => card.classList.remove("shake"), 260);
+  }
+
+  function clearSession(){
+    localStorage.removeItem(SESSION_KEY);
+  }
+
+  function saveSession(){
+    const payload = {
+      token: expectedToken(),
+      exp: Date.now() + SESSION_MS
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+    return payload;
+  }
+
+  function loadSession(){
+    try{
+      const raw = localStorage.getItem(SESSION_KEY);
+      if(!raw) return null;
+      const data = JSON.parse(raw);
+      if(!data || typeof data.exp !== "number" || typeof data.token !== "string") return null;
+      return data;
+    }catch{
+      return null;
+    }
+  }
+
+  function sessionIsValid(data){
+    if(!data) return false;
+    if(data.token !== expectedToken()) return false;  // password changed => invalid
+    if(Date.now() >= data.exp) return false;          // expired
+    return true;
+  }
+
+  function focusInputSoon(){
+    const input = document.getElementById("accessInput");
+    setTimeout(() => input && input.focus(), 60);
+  }
+
+  function lockNow(){
+    clearSession();
+    showLock(true);
+    showError(false);
+    const input = document.getElementById("accessInput");
+    if(input) input.value = "";
+    focusInputSoon();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  let logoutTimer = null;
+
+  function armAutoLogout(exp){
+    if(logoutTimer) clearTimeout(logoutTimer);
+    const remaining = exp - Date.now();
+    if(remaining <= 0){
+      lockNow();
+      return;
+    }
+    logoutTimer = setTimeout(() => {
+      lockNow();
+    }, remaining);
+  }
+
+  function unlockApp(){
+    const input = document.getElementById("accessInput");
+    const typed = normalizeCode(input?.value);
+    const expected = normalizeCode(ACCESS_CODE);
+
+    if(typed && typed === expected){
       showError(false);
-      setTimeout(() => input && input.focus(), 60);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      showLock(false);
+      const session = saveSession();
+      armAutoLogout(session.exp);
+    }else{
+      showError(true);
+      shakeCard();
+    }
+  }
+
+  function enforceGate(){
+    // prevent “flash” of unlocked content while we decide
+    document.documentElement.style.visibility = "hidden";
+
+    // clean old token from previous version so it never interferes
+    localStorage.removeItem(LEGACY_KEY);
+
+    const session = loadSession();
+
+    if(sessionIsValid(session)){
+      showLock(false);
+      showError(false);
+      armAutoLogout(session.exp);
+    }else{
+      lockNow();
     }
 
-    function unlockApp(){
-      const input = document.getElementById("accessInput");
-      const typed = normalizeCode(input?.value);
-      const expected = normalizeCode(ACCESS_CODE);
+    document.documentElement.style.visibility = "visible";
+  }
 
-      if(typed && typed === expected){
-        localStorage.setItem(ACCESS_TOKEN_KEY, expectedToken());
-        showLock(false);
-        showError(false);
-      }else{
-        showError(true);
-        shakeCard();
-      }
+  document.addEventListener("DOMContentLoaded", () => {
+    // wire buttons
+    const unlockBtn = document.getElementById("unlockBtn");
+    if(unlockBtn) unlockBtn.addEventListener("click", unlockApp);
+
+    const clearBtn = document.getElementById("clearAccessBtn");
+    if(clearBtn) clearBtn.addEventListener("click", lockNow);
+
+    const input = document.getElementById("accessInput");
+    if(input){
+      input.addEventListener("input", () => showError(false));
+      input.addEventListener("keydown", (e) => {
+        if(e.key === "Enter") unlockApp();
+      });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      // wire buttons
-      const unlockBtn = document.getElementById("unlockBtn");
-      if(unlockBtn) unlockBtn.addEventListener("click", unlockApp);
+    enforceGate();
+  });
 
-      const clearBtn = document.getElementById("clearAccessBtn");
-      if(clearBtn) clearBtn.addEventListener("click", lockNow);
+  // If the tab was left open and comes back, re-check expiry
+  window.addEventListener("focus", enforceGate);
 
-      const input = document.getElementById("accessInput");
-      if(input){
-        input.addEventListener("input", () => showError(false));
-        input.addEventListener("keydown", (e) => {
-          if(e.key === "Enter") unlockApp();
-        });
-      }
+  // If browser restores from back/forward cache, re-check expiry
+  window.addEventListener("pageshow", () => enforceGate);
+</script>
 
-      // IMPORTANT: validate token against CURRENT password
-      const saved = localStorage.getItem(ACCESS_TOKEN_KEY);
-      if(saved === expectedToken()){
-        showLock(false);
-      }else{
-        // if old token exists (or any wrong token), force lock
-        localStorage.removeItem(ACCESS_TOKEN_KEY);
-        showLock(true);
-        setTimeout(() => input && input.focus(), 80);
-      }
-    });
-  </script>
 
 </body>
 </html>
