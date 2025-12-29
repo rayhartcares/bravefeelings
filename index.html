@@ -240,39 +240,46 @@
 
 <script>
   /* ============================
-     LOGIN + 1-HOUR SESSION
-     + IDLE WARNING (2 min)
-     + IDLE LOGOUT (4 min total)
+     PASSWORD LOCK + IDLE WARNING/LOGOUT
+     Buyer-friendly for Etsy:
+     - NO session cap (no forced logout by time)
+     - Warn after 15 minutes of no activity
+     - Logout after 20 minutes of no activity
      ============================ */
 
-  const ACCESS_CODE = "5511";               // change password here
-  const SESSION_MS  = 60 * 60 * 1000;       // 1 hour session
-  const SESSION_KEY = "bf_access_session_v1";
+  const ACCESS_CODE = "5511"; // change password here
 
-  // Idle policy
-  const IDLE_WARN_MS   = 2 * 60 * 1000;     // warn after 2 minutes idle
-  const IDLE_LOGOUT_MS = 4 * 60 * 1000;     // logout after 4 minutes idle (2 min warning window)
+  // Idle policy (no activity)
+  const IDLE_WARN_MS   = 15 * 60 * 1000; // warn after 15 minutes idle
+  const IDLE_LOGOUT_MS = 20 * 60 * 1000; // logout after 20 minutes idle
 
-  // Legacy cleanup (from older versions)
+  // Storage: keep a simple "logged in" flag so refresh doesn't instantly relock,
+  // but idle policy will still force logout.
+  const SESSION_KEY = "bf_access_session_idle_v1";
+
+  // Legacy cleanup (from older builds)
   const LEGACY_KEY = "bf_access_token_v1";
+  const LEGACY_KEY2 = "bf_access_session_v1";
 
-  // ---------- helpers ----------
   function normalizeCode(s){
     return (s || "").toString().replace(/\D+/g, "");
   }
   function expectedToken(){
     return "ok:" + normalizeCode(ACCESS_CODE);
   }
+
   function showLock(show){
     const lock = document.getElementById("lockScreen");
     if(!lock) return;
     lock.style.display = show ? "flex" : "none";
   }
+
   function showError(show){
     const err = document.getElementById("lockError");
     if(!err) return;
     err.style.display = show ? "block" : "none";
   }
+
   function shakeCard(){
     const card = document.getElementById("lockCard");
     if(!card) return;
@@ -282,49 +289,37 @@
     setTimeout(() => card.classList.remove("shake"), 260);
   }
 
-  // ---------- session storage ----------
+  // --------- basic "logged-in" persistence ----------
   function clearSession(){
     localStorage.removeItem(SESSION_KEY);
   }
+
   function saveSession(){
-    const payload = {
-      token: expectedToken(),
-      exp: Date.now() + SESSION_MS
-    };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
-    return payload;
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      token: expectedToken()
+    }));
   }
+
   function loadSession(){
     try{
       const raw = localStorage.getItem(SESSION_KEY);
       if(!raw) return null;
       const data = JSON.parse(raw);
-      if(!data || typeof data.exp !== "number" || typeof data.token !== "string") return null;
+      if(!data || typeof data.token !== "string") return null;
       return data;
     }catch{
       return null;
     }
   }
+
   function sessionIsValid(data){
     if(!data) return false;
-    if(data.token !== expectedToken()) return false; // password changed => invalidate
-    if(Date.now() >= data.exp) return false;         // expired
-    return true;
+    // if password changes, previous session becomes invalid
+    return data.token === expectedToken();
   }
 
   // ---------- lock/unlock ----------
-  let sessionTimer = null;
   let isUnlocked = false;
-
-  function armSessionExpiry(exp){
-    if(sessionTimer) clearTimeout(sessionTimer);
-    const remaining = exp - Date.now();
-    if(remaining <= 0){
-      lockNow();
-      return;
-    }
-    sessionTimer = setTimeout(lockNow, remaining);
-  }
 
   function focusInputSoon(){
     const input = document.getElementById("accessInput");
@@ -354,9 +349,7 @@
       showLock(false);
       isUnlocked = true;
 
-      const session = saveSession();
-      armSessionExpiry(session.exp);
-
+      saveSession();
       startIdleWatch();
       resetIdleTimers();
     }else{
@@ -367,7 +360,7 @@
 
   // ---------- idle warning UI ----------
   let warnTimer = null;
-  let idleLogoutTimer = null;
+  let logoutTimer = null;
   let countdownInterval = null;
   let idleLogoutAt = 0;
   let listenersAttached = false;
@@ -375,7 +368,6 @@
   function ensureIdleWarningUI(){
     if(document.getElementById("bfIdleWarnOverlay")) return;
 
-    // inject minimal CSS (flash effect)
     const style = document.createElement("style");
     style.textContent = `
       @keyframes bfFlash {
@@ -417,7 +409,7 @@
         </div>
         <div style="color:#475569; font-weight:800; font-size:15px; line-height:1.35; margin-bottom: 10px;">
           No activity detected. You will be logged out in
-          <span id="bfIdleCountdown" style="color:#DC2626; font-weight:900;">02:00</span>
+          <span id="bfIdleCountdown" style="color:#DC2626; font-weight:900;">05:00</span>
           unless activity resumes.
         </div>
         <button id="bfStayBtn" type="button" style="
@@ -442,7 +434,6 @@
 
     document.body.appendChild(overlay);
 
-    // button cancels warning + resets timers
     const stayBtn = document.getElementById("bfStayBtn");
     if(stayBtn){
       stayBtn.addEventListener("click", () => {
@@ -479,9 +470,7 @@
       const remain = idleLogoutAt - Date.now();
       const el = document.getElementById("bfIdleCountdown");
       if(el) el.textContent = formatMMSS(remain);
-      if(remain <= 0){
-        stopCountdown();
-      }
+      if(remain <= 0) stopCountdown();
     };
     tick();
     countdownInterval = setInterval(tick, 250);
@@ -498,18 +487,16 @@
     hideIdleWarning();
 
     if(warnTimer) clearTimeout(warnTimer);
-    if(idleLogoutTimer) clearTimeout(idleLogoutTimer);
+    if(logoutTimer) clearTimeout(logoutTimer);
 
     idleLogoutAt = Date.now() + IDLE_LOGOUT_MS;
 
     warnTimer = setTimeout(() => {
-      // only warn if still unlocked
       if(!isUnlocked) return;
       showIdleWarning();
     }, IDLE_WARN_MS);
 
-    idleLogoutTimer = setTimeout(() => {
-      // log out after total idle time
+    logoutTimer = setTimeout(() => {
       lockNow();
     }, IDLE_LOGOUT_MS);
   }
@@ -523,11 +510,9 @@
     if(listenersAttached) return;
     listenersAttached = true;
 
-    // these events count as “activity”
     const events = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "click"];
     events.forEach(evt => window.addEventListener(evt, onAnyActivity, { passive: true }));
 
-    // also re-check on focus / tab changes
     window.addEventListener("focus", checkIdleNow);
     document.addEventListener("visibilitychange", checkIdleNow);
   }
@@ -543,21 +528,21 @@
     document.removeEventListener("visibilitychange", checkIdleNow);
 
     if(warnTimer) clearTimeout(warnTimer);
-    if(idleLogoutTimer) clearTimeout(idleLogoutTimer);
+    if(logoutTimer) clearTimeout(logoutTimer);
     warnTimer = null;
-    idleLogoutTimer = null;
+    logoutTimer = null;
   }
 
   function checkIdleNow(){
     if(!isUnlocked) return;
-    // If timers were throttled (background tab), enforce based on timestamps
+
     const now = Date.now();
     if(idleLogoutAt && now >= idleLogoutAt){
       lockNow();
       return;
     }
-    // If we are within the warning window, ensure warning is visible
-    const warnAt = idleLogoutAt - (IDLE_LOGOUT_MS - IDLE_WARN_MS); // i.e., now >= (start + 2min)
+
+    const warnAt = idleLogoutAt - (IDLE_LOGOUT_MS - IDLE_WARN_MS);
     if(now >= warnAt){
       showIdleWarning();
     }
@@ -565,11 +550,11 @@
 
   // ---------- gate on load ----------
   function enforceGate(){
-    // hide while deciding (prevents “flash”)
     document.documentElement.style.visibility = "hidden";
 
-    // remove old token from older builds
+    // cleanup old keys so they never interfere
     localStorage.removeItem(LEGACY_KEY);
+    localStorage.removeItem(LEGACY_KEY2);
 
     const session = loadSession();
 
@@ -577,7 +562,6 @@
       isUnlocked = true;
       showLock(false);
       showError(false);
-      armSessionExpiry(session.exp);
 
       startIdleWatch();
       resetIdleTimers();
@@ -589,7 +573,6 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    // wire buttons
     const unlockBtn = document.getElementById("unlockBtn");
     if(unlockBtn) unlockBtn.addEventListener("click", unlockApp);
 
@@ -607,9 +590,9 @@
     enforceGate();
   });
 
-  // Back/forward cache restore: re-enforce
   window.addEventListener("pageshow", enforceGate);
 </script>
+
 
 
 
