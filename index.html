@@ -250,8 +250,11 @@
   const ACCESS_CODE = "5511"; // change password here
 
   // Idle policy (no activity)
-  const IDLE_WARN_MS   = 15 * 60 * 1000; // warn after 15 minutes idle
-  const IDLE_LOGOUT_MS = 20 * 60 * 1000; // logout after 20 minutes idle
+  //const IDLE_WARN_MS   = 15 * 60 * 1000; // warn after 15 minutes idle
+  //const IDLE_LOGOUT_MS = 20 * 60 * 1000; // logout after 20 minutes idle
+  const IDLE_WARN_MS   = 15 * 1000;  // 15 seconds
+  const IDLE_LOGOUT_MS = 20 * 1000;  // 20 seconds
+
 
   // Storage: keep a simple "logged in" flag so refresh doesn't instantly relock,
   // but idle policy will still force logout.
