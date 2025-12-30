@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goodbye</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Fredoka', sans-serif; background: #F0F9FF; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+  <div class="bg-white w-full max-w-xl rounded-3xl shadow-xl p-8 text-center border-b-8 border-sky-400">
+    <div class="text-5xl mb-3">👋</div>
+
+    <h1 class="text-3xl font-extrabold text-slate-800 mb-2">All done for now</h1>
+    <p class="text-slate-600 text-lg mb-6">
+      Thanks for using Brave Feelings Lab. You can log out, or return to the home screen.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <button id="logoutBtn"
+        class="w-full rounded-2xl px-5 py-3 font-extrabold text-white bg-sky-500 hover:bg-sky-600">
+        Log out (password required next time)
+      </button>
+
+      <a href="./index.html"
+        class="w-full rounded-2xl px-5 py-3 font-extrabold text-slate-800 bg-slate-100 hover:bg-slate-200 flex items-center justify-center">
+        Return to menu
+      </a>
+
+      <button id="closeBtn"
+        class="w-full rounded-2xl px-5 py-3 font-extrabold text-slate-800 bg-yellow-100 hover:bg-yellow-200">
+        Close tab
+      </button>
+
+      <a href="about:blank"
+        class="w-full rounded-2xl px-5 py-3 font-extrabold text-slate-800 bg-slate-100 hover:bg-slate-200 flex items-center justify-center">
+        Exit to blank page
+      </a>
+    </div>
+
+    <p class="text-slate-500 font-bold text-sm mt-6">
+      Note: Some browsers block “Close tab” unless the tab was opened by a button.
+      If it doesn’t close, use “Exit to blank page.”
+    </p>
+  </div>
+
+  <script>
+    function baseUrlNoHash() {
+      // goodbye.html is in the same folder as index.html
+      const url = new URL(window.location.href);
+      url.hash = "";
+      return url.toString();
+    }
+
+    function staticryptLogoutUrl() {
+      // Staticrypt clears its saved unlock when #staticrypt_logout is present
+      const u = new URL(window.location.href);
+      // go back to the protected entry page (index.html) then logout
+      u.pathname = u.pathname.replace(/goodbye\.html$/i, "index.html");
+      u.hash = "staticrypt_logout";
+      return u.toString();
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      window.location.replace(staticryptLogoutUrl());
+    });
+
+    document.getElementById("closeBtn").addEventListener("click", () => {
+      window.close();
+      // fallback if blocked
+      setTimeout(() => {
+        window.location.href = "about:blank";
+      }, 250);
+    });
+  </script>
+</body>
+</html>
